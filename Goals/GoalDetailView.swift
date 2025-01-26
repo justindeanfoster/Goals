@@ -9,18 +9,9 @@ import SwiftUI
 
 struct GoalDetailView: View {
     @Binding var goal: Goal
-    @State private var newJournalEntry: String = ""
-    @State private var currentMonth: Date = Date()
-    @State private var currentDate: Date  = Date()
+    @StateObject private var calendarViewModel = CalendarViewModel()
+    @State private var showingAddJournalEntryForm = false
 
-    private var startOfMonth: Date {
-        Calendar.current.date(from: Calendar.current.dateComponents([.year, .month], from: currentMonth)) ?? Date()
-    }
-
-    private var daysInMonth: Int {
-        Calendar.current.range(of: .day, in: .month, for: startOfMonth)?.count ?? 30
-    }
-    
     var body: some View {
         VStack(alignment: .leading) {
             // Calendar for goal activity
@@ -30,9 +21,9 @@ struct GoalDetailView: View {
                     .padding(.bottom, 5)
 
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
-                    ForEach(0..<daysInMonth, id: \ .self) { offset in
-                        let date = Calendar.current.date(byAdding: .day, value: offset, to: startOfMonth)!
-                        let isSelected = Calendar.current.isDate(date, inSameDayAs: currentDate)
+                    ForEach(0..<calendarViewModel.daysInMonth, id: \ .self) { offset in
+                        let date = Calendar.current.date(byAdding: .day, value: offset, to: calendarViewModel.startOfMonth)!
+                        let isSelected = Calendar.current.isDate(date, inSameDayAs: calendarViewModel.selectedDate)
 
                         Circle()
                             .fill(isSelected ? Color.blue : Color.gray)
@@ -78,16 +69,15 @@ struct GoalDetailView: View {
             }
 
             HStack {
-                TextField("New Journal Entry", text: $newJournalEntry)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                Spacer()
                 Button(action: {
-                    if !newJournalEntry.isEmpty {
-                        let entry = JournalEntry(timestamp: Date(), text: newJournalEntry)
-                        goal.journalEntries.append(entry)
-                        newJournalEntry = ""
-                    }
+                    showingAddJournalEntryForm = true
                 }) {
-                    Text("Add")
+                    Image(systemName: "plus")
+                        .font(.title)
+                }
+                .sheet(isPresented: $showingAddJournalEntryForm) {
+                    AddJournalEntryForm(goal: $goal)
                 }
             }
             .padding(.vertical)

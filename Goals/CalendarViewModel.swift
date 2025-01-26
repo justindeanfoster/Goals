@@ -12,6 +12,16 @@ class CalendarViewModel: ObservableObject {
         Calendar.current.range(of: .day, in: .month, for: startOfMonth)?.count ?? 30
     }
     
+    var startingWeekday: Int {
+        Calendar.current.component(.weekday, from: startOfMonth) - 1
+    }
+    
+    var daysOfWeek: [String] {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEE"
+        return Calendar.current.shortWeekdaySymbols
+    }
+    
     func goalsWorkedOn(for date: Date, goals: [Goal]) -> [Goal] {
         let startOfDay = Calendar.current.startOfDay(for: date)
         return goals.filter { goal in
@@ -33,5 +43,10 @@ class CalendarViewModel: ObservableObject {
 
     func moveMonth(by value: Int) {
         currentMonth = Calendar.current.date(byAdding: .month, value: value, to: currentMonth) ?? currentMonth
+        
+        print("Current month: \(currentMonth)")
+        print("Start of month: \(startOfMonth)")
+        print("Days in month: \(daysInMonth)")
+        print("Starting weekday: \(startingWeekday)")
     }
 }

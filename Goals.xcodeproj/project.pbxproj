@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C10A3712D46AFD7001C50B8 /* AddJournalEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C10A3702D46AFD7001C50B8 /* AddJournalEntry.swift */; };
 		0CBEFF1E2D45A4B600AB1028 /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CBEFF1D2D45A4B600AB1028 /* CalendarViewModel.swift */; };
 		0CBEFF202D45A55E00AB1028 /* GoalsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CBEFF1F2D45A55E00AB1028 /* GoalsListView.swift */; };
 		0CBEFF222D45A5AF00AB1028 /* GoalDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CBEFF212D45A5AF00AB1028 /* GoalDetailView.swift */; };
@@ -20,6 +21,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0C10A3702D46AFD7001C50B8 /* AddJournalEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddJournalEntry.swift; sourceTree = "<group>"; };
 		0CBEFF1D2D45A4B600AB1028 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
 		0CBEFF1F2D45A55E00AB1028 /* GoalsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsListView.swift; sourceTree = "<group>"; };
 		0CBEFF212D45A5AF00AB1028 /* GoalDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalDetailView.swift; sourceTree = "<group>"; };
@@ -63,6 +65,7 @@
 		0CFFC84E2D1B81F700C8F272 /* Goals */ = {
 			isa = PBXGroup;
 			children = (
+				0C10A3702D46AFD7001C50B8 /* AddJournalEntry.swift */,
 				0CBEFF1D2D45A4B600AB1028 /* CalendarViewModel.swift */,
 				0CFFC84F2D1B81F700C8F272 /* GoalsApp.swift */,
 				0CFFC8512D1B81F700C8F272 /* ContentView.swift */,
@@ -162,6 +165,7 @@
 				0CFFC8522D1B81F700C8F272 /* ContentView.swift in Sources */,
 				0CBEFF202D45A55E00AB1028 /* GoalsListView.swift in Sources */,
 				0CFFC8542D1B81F700C8F272 /* Item.swift in Sources */,
+				0C10A3712D46AFD7001C50B8 /* AddJournalEntry.swift in Sources */,
 				0CFFC8502D1B81F700C8F272 /* GoalsApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
