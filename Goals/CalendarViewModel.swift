@@ -49,4 +49,21 @@ class CalendarViewModel: ObservableObject {
         print("Days in month: \(daysInMonth)")
         print("Starting weekday: \(startingWeekday)")
     }
+    
+    func journalEntries(for date: Date, goals: [Goal]) -> [JournalEntryWithGoal] {
+        let startOfDay = Calendar.current.startOfDay(for: date)
+        var entries: [JournalEntryWithGoal] = []
+        for goal in goals {
+            for entry in goal.journalEntries where Calendar.current.isDate(entry.timestamp, inSameDayAs: startOfDay) {
+                entries.append(JournalEntryWithGoal(text: entry.text, goalTitle: goal.title))
+            }
+        }
+        return entries
+    }
+}
+
+struct JournalEntryWithGoal: Identifiable {
+    let id = UUID()
+    let text: String
+    let goalTitle: String
 }

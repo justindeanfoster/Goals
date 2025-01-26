@@ -97,18 +97,21 @@ struct CalendarView: View {
                 }
                 .padding(.bottom, 5)
 
-                List(calendarViewModel.goalsWorkedOn(for: calendarViewModel.selectedDate, goals: goals)) { goal in
-                    VStack(alignment: .leading) {
-                        Text(goal.title)
-                            .font(.headline)
-                        Text("Milestones: \(goal.milestones.joined(separator: ", "))")
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
+                List {
+                    ForEach(calendarViewModel.journalEntries(for: calendarViewModel.selectedDate, goals: goals)) { entry in
+                        VStack(alignment: .leading) {
+                            Text(entry.text)
+                                .font(.headline)
+                            Text(entry.goalTitle)
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                        }
                     }
                 }
             }
         }
         .navigationTitle("Calendar Progress")
+        .background(Color(UIColor.systemBackground))
     }
     
     private func color(for progress: Double) -> Color {

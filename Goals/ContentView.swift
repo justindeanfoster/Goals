@@ -6,7 +6,7 @@ struct Goal: Identifiable {
     var title: String
     var journalEntries: [JournalEntry] = []
     var deadline: Date
-    var milestones: [String]
+    var milestones: [String] = []
     var notes: String = "" // New field for notes
     var daysWorked: Int {
         let uniqueDays = Set(journalEntries.map { Calendar.current.startOfDay(for: $0.timestamp) })
@@ -58,6 +58,7 @@ struct ContentView: View {
         .sheet(isPresented: $showAddGoalForm) {
             AddGoalForm(goals: $goals)
         }
+        .background(Color(UIColor.systemBackground))
     }
 }
 

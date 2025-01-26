@@ -53,7 +53,7 @@ struct AddGoalForm: View {
             }
             .alert(isPresented: $showValidationError) {
                 Alert(title: Text("Validation Error"),
-                      message: Text("Please provide a title and at least one milestone."),
+                      message: Text("Please provide a title."),
                       dismissButton: .default(Text("OK")))
             }
             .navigationTitle("Add New Goal")
@@ -65,7 +65,7 @@ struct AddGoalForm: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
-                        if title.isEmpty || milestones.isEmpty {
+                        if title.isEmpty {
                             showValidationError = true
                         } else {
                             let newGoal = Goal(title: title, deadline: deadline, milestones: milestones, notes: notes)
@@ -75,6 +75,7 @@ struct AddGoalForm: View {
                     }
                 }
             }
+            .background(Color(UIColor.systemBackground))
         }
     }
 }

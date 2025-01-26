@@ -27,6 +27,7 @@ struct AddJournalEntryForm: View {
                 }
                 presentationMode.wrappedValue.dismiss()
             })
+            .background(Color(UIColor.systemBackground))
         }
     }
 }

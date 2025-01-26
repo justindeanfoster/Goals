@@ -32,6 +32,7 @@ struct GoalsListView: View {
                     Image(systemName: "plus")
                 }
             }
+            .background(Color(UIColor.systemBackground))
         }
     }
 }
