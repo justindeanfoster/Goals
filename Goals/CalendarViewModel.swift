@@ -43,11 +43,6 @@ class CalendarViewModel: ObservableObject {
 
     func moveMonth(by value: Int) {
         currentMonth = Calendar.current.date(byAdding: .month, value: value, to: currentMonth) ?? currentMonth
-        
-        print("Current month: \(currentMonth)")
-        print("Start of month: \(startOfMonth)")
-        print("Days in month: \(daysInMonth)")
-        print("Starting weekday: \(startingWeekday)")
     }
     
     func journalEntries(for date: Date, goals: [Goal]) -> [JournalEntryWithGoal] {
