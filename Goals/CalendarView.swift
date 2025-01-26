@@ -33,6 +33,15 @@ struct CalendarView: View {
                     }) {
                         Image(systemName: "chevron.right")
                     }
+
+                    Button(action: {
+                        calendarViewModel.selectedDate = Date()
+                        calendarViewModel.currentMonth = Date()
+                    }) {
+                        Text("Today")
+                            .font(.headline)
+                            .padding(.leading, 10)
+                    }
                 }
                 .padding(.bottom)
 

@@ -91,9 +91,10 @@ struct GoalDetailView: View {
                                 ForEach(0..<calendarViewModel.daysInMonth, id: \.self) { offset in
                                     let date = Calendar.current.date(byAdding: .day, value: offset, to: calendarViewModel.startOfMonth)!
                                     let isSelected = Calendar.current.isDate(date, inSameDayAs: calendarViewModel.selectedDate)
+                                    let hasJournalEntry = goal.journalEntries.contains { Calendar.current.isDate($0.timestamp, inSameDayAs: date) }
 
                                     Circle()
-                                        .fill(isSelected ? Color.blue : Color.gray)
+                                        .fill(hasJournalEntry ? Color.green : (isSelected ? Color.blue : Color.gray))
                                         .frame(width: 30, height: 30)
                                         .overlay(
                                             Text(Calendar.current.component(.day, from: date).description)
@@ -179,3 +180,4 @@ private var monthYearFormatter: DateFormatter {
     formatter.dateFormat = "MMMM yyyy"
     return formatter
 }
+
