@@ -18,21 +18,26 @@ struct CalendarView: View {
             // Calendar View
             VStack {
                 HStack {
+                    Spacer()
+                    Spacer()
                     Button(action: {
                         calendarViewModel.moveMonth(by: -1)
                     }) {
                         Image(systemName: "chevron.left")
                     }
 
+
                     Text(calendarViewModel.startOfMonth, formatter: monthYearFormatter)
                         .font(.headline)
                         .padding()
+
 
                     Button(action: {
                         calendarViewModel.moveMonth(by: 1)
                     }) {
                         Image(systemName: "chevron.right")
                     }
+
 
                     Button(action: {
                         calendarViewModel.selectedDate = Date()
@@ -42,9 +47,11 @@ struct CalendarView: View {
                             .font(.headline)
                             .padding(.leading, 10)
                     }
+                    Spacer()
                 }
                 .padding(.bottom)
 
+                Divider()
                 // Days of the week header
                 HStack {
                     ForEach(calendarViewModel.daysOfWeek, id: \.self) { day in
@@ -88,7 +95,9 @@ struct CalendarView: View {
 
             // Progress View for Selected Day
             VStack(alignment: .leading, spacing: 10) {
+                Spacer()
                 HStack {
+                    Spacer()
                     Button(action: {
                         calendarViewModel.selectedDate = Calendar.current.date(byAdding: .day, value: -1, to: calendarViewModel.selectedDate) ?? calendarViewModel.selectedDate
                     }) {
@@ -103,8 +112,11 @@ struct CalendarView: View {
                     }) {
                         Image(systemName: "chevron.right")
                     }
+                    Spacer()
                 }
                 .padding(.bottom, 5)
+
+                Divider()
 
                 List {
                     ForEach(calendarViewModel.journalEntries(for: calendarViewModel.selectedDate, goals: goals)) { entry in

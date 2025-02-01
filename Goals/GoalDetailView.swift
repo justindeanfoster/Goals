@@ -12,6 +12,7 @@ struct GoalDetailView: View {
     @StateObject private var calendarViewModel = CalendarViewModel()
     @State private var showingAddJournalEntryForm = false
     @State private var showCalendar = false // State to toggle calendar visibility
+    @State private var showingEditGoalForm = false // State to show edit goal form
 
     var body: some View {
         VStack {
@@ -172,6 +173,23 @@ struct GoalDetailView: View {
         .background(Color(UIColor.systemBackground))
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Menu {
+                    Button(action: {
+                        showingEditGoalForm = true
+                    }) {
+                        Label("Edit Goal", systemImage: "pencil")
+                    }
+                } label: {
+                    Image(systemName: "ellipsis.circle")
+                        .font(.title2) // Smaller font size
+                }
+            }
+        }
+        .sheet(isPresented: $showingEditGoalForm) {
+            EditGoalForm(goal: $goal)
+        }
     }
 }
 

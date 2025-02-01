@@ -8,6 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		0C10A3712D46AFD7001C50B8 /* AddJournalEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C10A3702D46AFD7001C50B8 /* AddJournalEntry.swift */; };
+		0C5792D72D4D9F3A00DB774D /* EditGoalForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5792D62D4D9F3A00DB774D /* EditGoalForm.swift */; };
+		0C5792D92D4DA08700DB774D /* Goal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5792D82D4DA08700DB774D /* Goal.swift */; };
+		0C5792E02D4DA68800DB774D /* EditHabitForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5792DC2D4DA68800DB774D /* EditHabitForm.swift */; };
+		0C5792E12D4DA68800DB774D /* HabitsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5792DD2D4DA68800DB774D /* HabitsListView.swift */; };
+		0C5792E22D4DA68800DB774D /* Habit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5792DE2D4DA68800DB774D /* Habit.swift */; };
+		0C5792E32D4DA68800DB774D /* HabitDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5792DF2D4DA68800DB774D /* HabitDetailView.swift */; };
+		0C5792E52D4DA93400DB774D /* AddHabitForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5792E42D4DA93400DB774D /* AddHabitForm.swift */; };
 		0CBEFF1E2D45A4B600AB1028 /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CBEFF1D2D45A4B600AB1028 /* CalendarViewModel.swift */; };
 		0CBEFF202D45A55E00AB1028 /* GoalsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CBEFF1F2D45A55E00AB1028 /* GoalsListView.swift */; };
 		0CBEFF222D45A5AF00AB1028 /* GoalDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CBEFF212D45A5AF00AB1028 /* GoalDetailView.swift */; };
@@ -22,6 +29,14 @@
 
 /* Begin PBXFileReference section */
 		0C10A3702D46AFD7001C50B8 /* AddJournalEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddJournalEntry.swift; sourceTree = "<group>"; };
+		0C5792C62D48414F00DB774D /* GoalsApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GoalsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0C5792D62D4D9F3A00DB774D /* EditGoalForm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditGoalForm.swift; sourceTree = "<group>"; };
+		0C5792D82D4DA08700DB774D /* Goal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Goal.swift; sourceTree = "<group>"; };
+		0C5792DC2D4DA68800DB774D /* EditHabitForm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditHabitForm.swift; sourceTree = "<group>"; };
+		0C5792DD2D4DA68800DB774D /* HabitsListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HabitsListView.swift; sourceTree = "<group>"; };
+		0C5792DE2D4DA68800DB774D /* Habit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Habit.swift; sourceTree = "<group>"; };
+		0C5792DF2D4DA68800DB774D /* HabitDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HabitDetailView.swift; sourceTree = "<group>"; };
+		0C5792E42D4DA93400DB774D /* AddHabitForm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddHabitForm.swift; sourceTree = "<group>"; };
 		0CBEFF1D2D45A4B600AB1028 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
 		0CBEFF1F2D45A55E00AB1028 /* GoalsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsListView.swift; sourceTree = "<group>"; };
 		0CBEFF212D45A5AF00AB1028 /* GoalDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalDetailView.swift; sourceTree = "<group>"; };
@@ -36,6 +51,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		0C5792C32D48414F00DB774D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		0CFFC8492D1B81F700C8F272 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -58,6 +80,7 @@
 			isa = PBXGroup;
 			children = (
 				0CFFC84C2D1B81F700C8F272 /* Goals.app */,
+				0C5792C62D48414F00DB774D /* GoalsApp.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -65,6 +88,13 @@
 		0CFFC84E2D1B81F700C8F272 /* Goals */ = {
 			isa = PBXGroup;
 			children = (
+				0C5792E42D4DA93400DB774D /* AddHabitForm.swift */,
+				0C5792DC2D4DA68800DB774D /* EditHabitForm.swift */,
+				0C5792DE2D4DA68800DB774D /* Habit.swift */,
+				0C5792DF2D4DA68800DB774D /* HabitDetailView.swift */,
+				0C5792DD2D4DA68800DB774D /* HabitsListView.swift */,
+				0C5792D82D4DA08700DB774D /* Goal.swift */,
+				0C5792D62D4D9F3A00DB774D /* EditGoalForm.swift */,
 				0C10A3702D46AFD7001C50B8 /* AddJournalEntry.swift */,
 				0CBEFF1D2D45A4B600AB1028 /* CalendarViewModel.swift */,
 				0CFFC84F2D1B81F700C8F272 /* GoalsApp.swift */,
@@ -91,6 +121,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		0C5792C52D48414F00DB774D /* GoalsApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0C5792D52D48415000DB774D /* Build configuration list for PBXNativeTarget "GoalsApp" */;
+			buildPhases = (
+				0C5792C22D48414F00DB774D /* Sources */,
+				0C5792C32D48414F00DB774D /* Frameworks */,
+				0C5792C42D48414F00DB774D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GoalsApp;
+			productName = GoalsApp;
+			productReference = 0C5792C62D48414F00DB774D /* GoalsApp.app */;
+			productType = "com.apple.product-type.application";
+		};
 		0CFFC84B2D1B81F700C8F272 /* Goals */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0CFFC85C2D1B81FB00C8F272 /* Build configuration list for PBXNativeTarget "Goals" */;
@@ -118,6 +165,9 @@
 				LastSwiftUpdateCheck = 1530;
 				LastUpgradeCheck = 1530;
 				TargetAttributes = {
+					0C5792C52D48414F00DB774D = {
+						CreatedOnToolsVersion = 15.3;
+					};
 					0CFFC84B2D1B81F700C8F272 = {
 						CreatedOnToolsVersion = 15.3;
 					};
@@ -137,11 +187,19 @@
 			projectRoot = "";
 			targets = (
 				0CFFC84B2D1B81F700C8F272 /* Goals */,
+				0C5792C52D48414F00DB774D /* GoalsApp */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		0C5792C42D48414F00DB774D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		0CFFC84A2D1B81F700C8F272 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -154,15 +212,29 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		0C5792C22D48414F00DB774D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		0CFFC8482D1B81F700C8F272 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				0CBEFF222D45A5AF00AB1028 /* GoalDetailView.swift in Sources */,
 				0CBEFF242D45A5F200AB1028 /* AddGoalForm.swift in Sources */,
+				0C5792E52D4DA93400DB774D /* AddHabitForm.swift in Sources */,
+				0C5792E12D4DA68800DB774D /* HabitsListView.swift in Sources */,
+				0C5792D72D4D9F3A00DB774D /* EditGoalForm.swift in Sources */,
+				0C5792E02D4DA68800DB774D /* EditHabitForm.swift in Sources */,
+				0C5792E32D4DA68800DB774D /* HabitDetailView.swift in Sources */,
+				0C5792E22D4DA68800DB774D /* Habit.swift in Sources */,
 				0CBEFF262D45A62900AB1028 /* CalendarView.swift in Sources */,
 				0CBEFF1E2D45A4B600AB1028 /* CalendarViewModel.swift in Sources */,
 				0CFFC8522D1B81F700C8F272 /* ContentView.swift in Sources */,
+				0C5792D92D4DA08700DB774D /* Goal.swift in Sources */,
 				0CBEFF202D45A55E00AB1028 /* GoalsListView.swift in Sources */,
 				0CFFC8542D1B81F700C8F272 /* Item.swift in Sources */,
 				0C10A3712D46AFD7001C50B8 /* AddJournalEntry.swift in Sources */,
@@ -173,6 +245,64 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		0C5792D32D48415000DB774D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"GoalsApp/Preview Content\"";
+				DEVELOPMENT_TEAM = D6ZV87S8MX;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = jdf.GoalsApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		0C5792D42D48415000DB774D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"GoalsApp/Preview Content\"";
+				DEVELOPMENT_TEAM = D6ZV87S8MX;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = jdf.GoalsApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		0CFFC85A2D1B81FB00C8F272 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -300,6 +430,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Goals/Preview Content\"";
+				DEVELOPMENT_TEAM = D6ZV87S8MX;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -328,6 +459,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Goals/Preview Content\"";
+				DEVELOPMENT_TEAM = D6ZV87S8MX;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -351,6 +483,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		0C5792D52D48415000DB774D /* Build configuration list for PBXNativeTarget "GoalsApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0C5792D32D48415000DB774D /* Debug */,
+				0C5792D42D48415000DB774D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		0CFFC8472D1B81F700C8F272 /* Build configuration list for PBXProject "Goals" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
