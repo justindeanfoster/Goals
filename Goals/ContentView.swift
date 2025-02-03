@@ -16,20 +16,19 @@ struct ContentView: View {
     @State private var goals: [Goal] = []
     @State private var habits: [Habit] = []
 
-    @State private var showAddGoalForm = false
-
     init() {
         loadGoals()
+        loadHabits()
     }
 
     var body: some View {
         TabView {
-            GoalsListView(goals: $goals, showAddGoalForm: $showAddGoalForm)
+            GoalsListView(goals: $goals, habits: $habits)
                 .tabItem {
                     Label("Goals", systemImage: "list.bullet")
                 }
 
-            HabitsListView()
+            HabitsListView(habits: $habits)
                 .tabItem {
                     Label("Habits", systemImage: "checkmark.circle")
                 }
@@ -39,14 +38,11 @@ struct ContentView: View {
                     Label("Calendar", systemImage: "calendar")
                 }
         }
-        .sheet(isPresented: $showAddGoalForm) {
-            AddGoalForm(goals: $goals)
-        }
         .background(Color(UIColor.systemBackground))
-        .onChange(of: goals) {
+        .onChange(of: goals) { 
             saveGoals()
         }
-        .onChange(of: habits) {
+        .onChange(of: habits) { 
             saveHabits()
         }
     }
@@ -60,7 +56,7 @@ struct ContentView: View {
 
     private func saveGoals() {
         if let encodedGoals = try? JSONEncoder().encode(goals) {
-            UserDefaults.standard.set(encodedGoals, forKey: "habits")
+            UserDefaults.standard.set(encodedGoals, forKey: "goals")
         }
     }
     private func loadHabits() {
@@ -72,7 +68,7 @@ struct ContentView: View {
 
     private func saveHabits() {
         if let encodedHabits = try? JSONEncoder().encode(habits) {
-            UserDefaults.standard.set(encodedHabits, forKey: "goals")
+            UserDefaults.standard.set(encodedHabits, forKey: "habits")
         }
     }
 }

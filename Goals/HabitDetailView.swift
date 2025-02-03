@@ -18,9 +18,9 @@ struct HabitDetailView: View {
                     Image(systemName: "plus")
                         .font(.title)
                 }
-//                .sheet(isPresented: $showingAddJournalEntryForm) {
-//                    AddJournalEntryForm(habit: $habit)
-//                }
+                .sheet(isPresented: $showingAddJournalEntryForm) {
+                    AddJournalEntryForm(goal: .constant(nil), habit: .constant(habit))
+                }
             }
             .padding()
 

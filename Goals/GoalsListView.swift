@@ -2,7 +2,9 @@ import SwiftUI
 
 struct GoalsListView: View {
     @Binding var goals: [Goal]
-    @Binding var showAddGoalForm: Bool
+    @Binding var habits: [Habit]
+    
+    @State private var showAddGoalForm: Bool = false
 
     var body: some View {
         NavigationView {
@@ -31,6 +33,8 @@ struct GoalsListView: View {
                 }) {
                     Image(systemName: "plus")
                 }
+            }.sheet(isPresented: $showAddGoalForm) {
+                AddGoalForm(goals: $goals, availableHabits: $habits)
             }
             .background(Color(UIColor.systemBackground))
         }

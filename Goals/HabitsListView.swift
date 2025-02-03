@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct HabitsListView: View {
-    @State private var habits: [Habit] = []
-    @State private var showingAddHabitForm = false
+    @Binding var habits: [Habit]
+    @State private var showingAddHabitForm : Bool = false
 
     var body: some View {
         NavigationView {

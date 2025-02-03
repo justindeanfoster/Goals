@@ -11,6 +11,8 @@ import SwiftUI
 
 struct AddGoalForm: View {
     @Binding var goals: [Goal]
+    @Binding var availableHabits: [Habit]  // This should be passed or fetched from a data source
+
     @Environment(\.presentationMode) var presentationMode
 
     @State private var title: String = ""
@@ -18,6 +20,7 @@ struct AddGoalForm: View {
     @State private var milestones: [String] = []
     @State private var newMilestone: String = ""
     @State private var notes: String = "" // New state for notes
+    @State private var selectedHabits: [Habit] = []
     @State private var showValidationError: Bool = false // State for validation error
 
     var body: some View {
@@ -50,6 +53,32 @@ struct AddGoalForm: View {
                         }
                     }
                 }
+
+                Section(header: Text("Related Habits")) {
+                    ForEach(availableHabits) { habit in
+                        HStack {
+                            Text(habit.title)
+                            Spacer()
+                            if selectedHabits.contains(where: { $0.id == habit.id }) {
+                                Button(action: {
+                                    if let index = selectedHabits.firstIndex(where: { $0.id == habit.id }) {
+                                        selectedHabits.remove(at: index)
+                                    }
+                                }) {
+                                    Image(systemName: "minus.circle.fill")
+                                        .foregroundColor(.red)
+                                }
+                            } else {
+                                Button(action: {
+                                    selectedHabits.append(habit)
+                                }) {
+                                    Image(systemName: "plus.circle.fill")
+                                        .foregroundColor(.green)
+                                }
+                            }
+                        }
+                    }
+                }
             }
             .alert(isPresented: $showValidationError) {
                 Alert(title: Text("Validation Error"),
@@ -68,7 +97,7 @@ struct AddGoalForm: View {
                         if title.isEmpty {
                             showValidationError = true
                         } else {
-                            let newGoal = Goal(title: title, deadline: deadline, milestones: milestones, notes: notes)
+                            let newGoal = Goal(title: title, deadline: deadline, milestones: milestones, notes: notes, relatedHabits: selectedHabits)
                             goals.append(newGoal)
                             presentationMode.wrappedValue.dismiss()
                         }

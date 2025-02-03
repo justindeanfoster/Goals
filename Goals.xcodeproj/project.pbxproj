@@ -15,6 +15,7 @@
 		0C5792E22D4DA68800DB774D /* Habit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5792DE2D4DA68800DB774D /* Habit.swift */; };
 		0C5792E32D4DA68800DB774D /* HabitDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5792DF2D4DA68800DB774D /* HabitDetailView.swift */; };
 		0C5792E52D4DA93400DB774D /* AddHabitForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5792E42D4DA93400DB774D /* AddHabitForm.swift */; };
+		0C5792E72D4FDEBB00DB774D /* JournalEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5792E62D4FDEBB00DB774D /* JournalEntry.swift */; };
 		0CBEFF1E2D45A4B600AB1028 /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CBEFF1D2D45A4B600AB1028 /* CalendarViewModel.swift */; };
 		0CBEFF202D45A55E00AB1028 /* GoalsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CBEFF1F2D45A55E00AB1028 /* GoalsListView.swift */; };
 		0CBEFF222D45A5AF00AB1028 /* GoalDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CBEFF212D45A5AF00AB1028 /* GoalDetailView.swift */; };
@@ -37,6 +38,7 @@
 		0C5792DE2D4DA68800DB774D /* Habit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Habit.swift; sourceTree = "<group>"; };
 		0C5792DF2D4DA68800DB774D /* HabitDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HabitDetailView.swift; sourceTree = "<group>"; };
 		0C5792E42D4DA93400DB774D /* AddHabitForm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddHabitForm.swift; sourceTree = "<group>"; };
+		0C5792E62D4FDEBB00DB774D /* JournalEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JournalEntry.swift; sourceTree = "<group>"; };
 		0CBEFF1D2D45A4B600AB1028 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
 		0CBEFF1F2D45A55E00AB1028 /* GoalsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsListView.swift; sourceTree = "<group>"; };
 		0CBEFF212D45A5AF00AB1028 /* GoalDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalDetailView.swift; sourceTree = "<group>"; };
@@ -88,6 +90,7 @@
 		0CFFC84E2D1B81F700C8F272 /* Goals */ = {
 			isa = PBXGroup;
 			children = (
+				0C5792E62D4FDEBB00DB774D /* JournalEntry.swift */,
 				0C5792E42D4DA93400DB774D /* AddHabitForm.swift */,
 				0C5792DC2D4DA68800DB774D /* EditHabitForm.swift */,
 				0C5792DE2D4DA68800DB774D /* Habit.swift */,
@@ -231,6 +234,7 @@
 				0C5792E02D4DA68800DB774D /* EditHabitForm.swift in Sources */,
 				0C5792E32D4DA68800DB774D /* HabitDetailView.swift in Sources */,
 				0C5792E22D4DA68800DB774D /* Habit.swift in Sources */,
+				0C5792E72D4FDEBB00DB774D /* JournalEntry.swift in Sources */,
 				0CBEFF262D45A62900AB1028 /* CalendarView.swift in Sources */,
 				0CBEFF1E2D45A4B600AB1028 /* CalendarViewModel.swift in Sources */,
 				0CFFC8522D1B81F700C8F272 /* ContentView.swift in Sources */,

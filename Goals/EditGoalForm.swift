@@ -9,6 +9,8 @@ struct EditGoalForm: View {
     @State private var milestones: [String]
     @State private var newMilestone: String = ""
     @State private var notes: String
+    @State private var selectedHabits: [Habit]
+    @State private var availableHabits: [Habit] = [] // This should be passed or fetched from a data source
 
     init(goal: Binding<Goal>) {
         _goal = goal
@@ -16,6 +18,7 @@ struct EditGoalForm: View {
         _deadline = State(initialValue: goal.wrappedValue.deadline)
         _milestones = State(initialValue: goal.wrappedValue.milestones)
         _notes = State(initialValue: goal.wrappedValue.notes)
+        _selectedHabits = State(initialValue: goal.wrappedValue.relatedHabits)
     }
 
     var body: some View {
@@ -48,6 +51,18 @@ struct EditGoalForm: View {
                         }
                     }
                 }
+
+                Section(header: Text("Related Habits")) {
+                    ForEach(availableHabits) { habit in
+                        MultipleSelectionRow(title: habit.title, isSelected: selectedHabits.contains(where: { $0.id == habit.id })) {
+                            if let index = selectedHabits.firstIndex(where: { $0.id == habit.id }) {
+                                selectedHabits.remove(at: index)
+                            } else {
+                                selectedHabits.append(habit)
+                            }
+                        }
+                    }
+                }
             }
             .navigationTitle("Edit Goal")
             .toolbar {
@@ -62,8 +77,27 @@ struct EditGoalForm: View {
                         goal.deadline = deadline
                         goal.milestones = milestones
                         goal.notes = notes
+                        goal.relatedHabits = selectedHabits
                         presentationMode.wrappedValue.dismiss()
                     }
+                }
+            }
+        }
+    }
+}
+
+struct MultipleSelectionRow: View {
+    var title: String
+    var isSelected: Bool
+    var action: () -> Void
+
+    var body: some View {
+        Button(action: self.action) {
+            HStack {
+                Text(self.title)
+                if self.isSelected {
+                    Spacer()
+                    Image(systemName: "checkmark")
                 }
             }
         }

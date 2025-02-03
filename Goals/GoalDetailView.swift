@@ -5,6 +5,8 @@
 //  Created by Justin F on 1/25/25.
 //
 
+
+
 import SwiftUI
 
 struct GoalDetailView: View {
@@ -28,7 +30,7 @@ struct GoalDetailView: View {
                         .font(.title)
                 }
                 .sheet(isPresented: $showingAddJournalEntryForm) {
-                    AddJournalEntryForm(goal: $goal)
+                    AddJournalEntryForm(goal: .constant(goal), habit: .constant(nil))
                 }
             }
             .padding()
@@ -84,10 +86,10 @@ struct GoalDetailView: View {
 
                             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
                                 // Add empty cells for days before the start of the month
-                                ForEach(0..<calendarViewModel.startingWeekday, id: \.self) { _ in
+                                ForEach(0..<calendarViewModel.startingWeekday, id: \.self) { index in
                                     Text("")
                                         .frame(width: 30, height: 30)
-                                        .id("empty-\(String(describing: index))") // Unique identifier for empty cells
+                                        .id("empty-\(index)") // Unique identifier for empty cells
                                 }
                                 ForEach(0..<calendarViewModel.daysInMonth, id: \.self) { offset in
                                     let date = Calendar.current.date(byAdding: .day, value: offset, to: calendarViewModel.startOfMonth)!
@@ -150,9 +152,26 @@ struct GoalDetailView: View {
 
                     Text("Milestones")
                         .font(.headline)
-                    ForEach(goal.milestones, id: \ .self) { milestone in
+                    ForEach(goal.milestones, id: \.self) { milestone in
                         Text("- \(milestone)")
                     }
+
+                    Divider()
+
+                    Text("Related Habits")
+                        .font(.headline)
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))], spacing: 2) {
+                        ForEach(goal.relatedHabits) { habit in
+                            NavigationLink(destination: HabitDetailView(habit: .constant(habit))) {
+                                Text(habit.title)
+                                    .padding()
+                                    .background(Color.blue.opacity(0.2))
+                                    .cornerRadius(10)
+                                    .foregroundColor(.primary)
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
 
                     Divider()
 
@@ -166,6 +185,9 @@ struct GoalDetailView: View {
                                 .foregroundColor(.gray)
                         }
                     }
+                    
+                    Divider()
+
                 }
                 .padding()
             }

@@ -1,12 +1,13 @@
 import Foundation
 
-struct Goal: Identifiable, Codable, Equatable {
+class Goal: Identifiable, ObservableObject, Equatable, Codable {
     let id: UUID
-    var title: String
-    var journalEntries: [JournalEntry]
-    var deadline: Date
-    var milestones: [String]
-    var notes: String
+    @Published var title: String
+    @Published var journalEntries: [JournalEntry] = []
+    @Published var deadline: Date
+    @Published var milestones: [String]
+    @Published var notes: String
+    @Published var relatedHabits: [Habit] = []
 
     var daysWorked: Int {
         let uniqueDays = Set(journalEntries.map { Calendar.current.startOfDay(for: $0.timestamp) })
@@ -18,28 +19,44 @@ struct Goal: Identifiable, Codable, Equatable {
         return max(remaining, 0)
     }
 
-    init(id: UUID = UUID(), title: String, journalEntries: [JournalEntry] = [], deadline: Date, milestones: [String] = [], notes: String = "") {
+    init(id: UUID = UUID(), title: String, journalEntries: [JournalEntry] = [], deadline: Date, milestones: [String] = [], notes: String = "", relatedHabits: [Habit] = []) {
         self.id = id
         self.title = title
         self.journalEntries = journalEntries
         self.deadline = deadline
         self.milestones = milestones
         self.notes = notes
+        self.relatedHabits = relatedHabits
     }
 
     static func == (lhs: Goal, rhs: Goal) -> Bool {
         return lhs.id == rhs.id
     }
-}
 
-struct JournalEntry: Identifiable, Codable {
-    let id: UUID
-    let timestamp: Date
-    let text: String
+    enum CodingKeys: String, CodingKey {
+        case id, title, journalEntries, deadline, milestones, notes, relatedHabits
+    }
 
-    init(id: UUID = UUID(), timestamp: Date, text: String) {
-        self.id = id
-        self.timestamp = timestamp
-        self.text = text
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(UUID.self, forKey: .id)
+        title = try container.decode(String.self, forKey: .title)
+        journalEntries = try container.decode([JournalEntry].self, forKey: .journalEntries)
+        deadline = try container.decode(Date.self, forKey: .deadline)
+        milestones = try container.decode([String].self, forKey: .milestones)
+        notes = try container.decode(String.self, forKey: .notes)
+        relatedHabits = try container.decode([Habit].self, forKey: .relatedHabits)
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(title, forKey: .title)
+        try container.encode(journalEntries, forKey: .journalEntries)
+        try container.encode(deadline, forKey: .deadline)
+        try container.encode(milestones, forKey: .milestones)
+        try container.encode(notes, forKey: .notes)
+        try container.encode(relatedHabits, forKey: .relatedHabits)
     }
 }
+
