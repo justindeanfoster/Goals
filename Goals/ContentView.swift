@@ -39,36 +39,51 @@ struct ContentView: View {
                 }
         }
         .background(Color(UIColor.systemBackground))
-        .onChange(of: goals) { 
+        .onChange(of: goals) {
             saveGoals()
         }
-        .onChange(of: habits) { 
+        .onChange(of: habits) {
             saveHabits()
         }
     }
 
     private func loadGoals() {
-        if let data = UserDefaults.standard.data(forKey: "goals"),
-           let decodedGoals = try? JSONDecoder().decode([Goal].self, from: data) {
-            goals = decodedGoals
+        do {
+            if let data = UserDefaults.standard.data(forKey: "goals") {
+                let decodedGoals = try JSONDecoder().decode([Goal].self, from: data)
+                goals = decodedGoals
+            }
+        } catch {
+            print("Failed to load goals: \(error.localizedDescription)")
         }
     }
 
     private func saveGoals() {
-        if let encodedGoals = try? JSONEncoder().encode(goals) {
+        do {
+            let encodedGoals = try JSONEncoder().encode(goals)
             UserDefaults.standard.set(encodedGoals, forKey: "goals")
+        } catch {
+            print("Failed to save goals: \(error.localizedDescription)")
         }
     }
+
     private func loadHabits() {
-        if let data = UserDefaults.standard.data(forKey: "habits"),
-           let decodedHabits = try? JSONDecoder().decode([Habit].self, from: data) {
-            habits = decodedHabits
+        do {
+            if let data = UserDefaults.standard.data(forKey: "habits") {
+                let decodedHabits = try JSONDecoder().decode([Habit].self, from: data)
+                habits = decodedHabits
+            }
+        } catch {
+            print("Failed to load habits: \(error.localizedDescription)")
         }
     }
 
     private func saveHabits() {
-        if let encodedHabits = try? JSONEncoder().encode(habits) {
+        do {
+            let encodedHabits = try JSONEncoder().encode(habits)
             UserDefaults.standard.set(encodedHabits, forKey: "habits")
+        } catch {
+            print("Failed to save habits: \(error.localizedDescription)")
         }
     }
 }
