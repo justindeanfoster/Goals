@@ -5,6 +5,8 @@ struct GoalsListView: View {
     @Binding var habits: [Habit]
     
     @State private var showAddGoalForm: Bool = false
+    @State private var selectedGoal: Goal?
+    @State private var showEditGoalForm: Bool = false
 
     var body: some View {
         NavigationView {
@@ -24,6 +26,19 @@ struct GoalsListView: View {
                         }
                         .padding(.vertical, 5)
                     }
+                    .contextMenu {
+                        Button(action: {
+                            selectedGoal = goals[index]
+                            showEditGoalForm = true
+                        }) {
+                            Label("Edit Goal", systemImage: "pencil")
+                        }
+                        Button(action: {
+                            goals.remove(at: index)
+                        }) {
+                            Label("Delete Goal", systemImage: "trash")
+                        }
+                    }
                 }
             }
             .navigationTitle("Goals")
@@ -33,8 +48,19 @@ struct GoalsListView: View {
                 }) {
                     Image(systemName: "plus")
                 }
-            }.sheet(isPresented: $showAddGoalForm) {
+            }
+            .sheet(isPresented: $showAddGoalForm) {
                 AddGoalForm(goals: $goals, availableHabits: $habits)
+            }
+            .sheet(item: $selectedGoal) { goal in
+                EditGoalForm(goal: Binding(
+                    get: { goal },
+                    set: { updatedGoal in
+                        if let index = goals.firstIndex(where: { $0.id == updatedGoal.id }) {
+                            goals[index] = updatedGoal
+                        }
+                    }
+                ), availableHabits: $habits)
             }
             .background(Color(UIColor.systemBackground))
         }

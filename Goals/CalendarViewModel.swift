@@ -8,6 +8,10 @@ class CalendarViewModel: ObservableObject {
         Calendar.current.date(from: Calendar.current.dateComponents([.year, .month], from: currentMonth)) ?? Date()
     }
 
+    var startOfWeek: Date {
+        Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: currentMonth)) ?? Date()
+    }
+
     var daysInMonth: Int {
         Calendar.current.range(of: .day, in: .month, for: startOfMonth)?.count ?? 30
     }
@@ -43,6 +47,10 @@ class CalendarViewModel: ObservableObject {
 
     func moveMonth(by value: Int) {
         currentMonth = Calendar.current.date(byAdding: .month, value: value, to: currentMonth) ?? currentMonth
+    }
+
+    func moveWeek(by value: Int) {
+        currentMonth = Calendar.current.date(byAdding: .weekOfMonth, value: value, to: currentMonth) ?? currentMonth
     }
     
     func journalEntries(for date: Date, goals: [Goal]) -> [JournalEntryWithGoal] {

@@ -2,8 +2,9 @@ import SwiftUI
 
 struct HabitDetailView: View {
     @Binding var habit: Habit
+    @StateObject private var calendarViewModel = CalendarViewModel()
     @State private var showingAddJournalEntryForm = false
-    @State private var showingEditHabitForm = false
+    @State private var showCalendar = false
 
     var body: some View {
         VStack {
@@ -26,6 +27,124 @@ struct HabitDetailView: View {
 
             ScrollView {
                 VStack(alignment: .leading) {
+                    // Toggle button for calendar visibility
+                    Button(action: {
+                        withAnimation {
+                            showCalendar.toggle()
+                        }
+                    }) {
+                        HStack {
+                            Text("Goal Activity Calendar")
+                                .font(.headline)
+                            Spacer()
+                            Image(systemName: showCalendar ? "chevron.up" : "chevron.down")
+                        }
+                        .padding(.bottom, 5)
+                    }
+
+                    if showCalendar {
+                        // Calendar for habit activity
+                        VStack {
+                            HStack {
+                                Button(action: {
+                                    calendarViewModel.moveMonth(by: -1)
+                                }) {
+                                    Image(systemName: "chevron.left")
+                                }
+
+                                Text(calendarViewModel.startOfMonth, formatter: monthYearFormatter)
+                                    .font(.headline)
+                                    .padding()
+
+                                Button(action: {
+                                    calendarViewModel.moveMonth(by: 1)
+                                }) {
+                                    Image(systemName: "chevron.right")
+                                }
+                            }
+                            .padding(.bottom)
+
+                            // Days of the week header
+                            HStack {
+                                ForEach(calendarViewModel.daysOfWeek, id: \.self) { day in
+                                    Text(day)
+                                        .font(.subheadline)
+                                        .frame(maxWidth: .infinity)
+                                }
+                            }
+                            .padding(.bottom, 5)
+
+                            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
+                                 ForEach(0..<calendarViewModel.startingWeekday, id: \.self) { index in
+                                    Text("")
+                                        .frame(width: 30, height: 30)
+                                        .id("empty-\(index)") // Unique identifier for empty cells
+                                }
+                                ForEach(0..<calendarViewModel.daysInMonth, id: \.self) { offset in
+                                    let date = Calendar.current.date(byAdding: .day, value: offset, to: calendarViewModel.startOfMonth)!
+                                    let isToday = Calendar.current.isDateInToday(date)
+                                    let hasJournalEntry = habit.journalEntries.contains { Calendar.current.isDate($0.timestamp, inSameDayAs: date) }
+
+                                    VStack {
+                                        Circle()
+                                            .fill(hasJournalEntry ? Color.green :  Color.gray)
+                                            .frame(width: 30, height: 30)
+                                            .overlay(
+                                                Text(Calendar.current.component(.day, from: date).description)
+                                                    .font(.caption)
+                                                    .foregroundColor(.white)
+                                            )
+                                        if isToday {
+                                            Rectangle()
+                                                .fill(Color.blue)
+                                                .frame(height: 2)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        .padding(.bottom)
+                    } else {
+                        // Last week view
+                        VStack {
+                            HStack {
+                                ForEach(calendarViewModel.daysOfWeek, id: \.self) { day in
+                                    Text(day)
+                                        .font(.subheadline)
+                                        .frame(maxWidth: .infinity)
+                                }
+                            }
+                            .padding(.bottom, 5)
+
+                            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
+                                ForEach(0..<7, id: \.self) { offset in
+                                    let date = Calendar.current.date(byAdding: .day, value: offset, to: calendarViewModel.startOfWeek)!
+                                    let isToday = Calendar.current.isDateInToday(date)
+                                    let hasJournalEntry = habit.journalEntries.contains { Calendar.current.isDate($0.timestamp, inSameDayAs: date) }
+
+                                    VStack {
+                                        Circle()
+                                            .fill(hasJournalEntry ? Color.green : Color.gray)
+                                            .frame(width: 30, height: 30)
+                                            .overlay(
+                                                Text(Calendar.current.component(.day, from: date).description)
+                                                    .font(.caption)
+                                                    .foregroundColor(.white)
+                                            )
+                                        if isToday {
+                                            Rectangle()
+                                                .fill(Color.blue)
+                                                .frame(height: 2)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        .padding(.bottom)
+                    }
+
+                    Divider()
+
                     // Statistics Section
                     VStack(alignment: .leading) {
                         Text("Statistics")
@@ -52,7 +171,7 @@ struct HabitDetailView: View {
 
                     Text("Milestones")
                         .font(.headline)
-                    ForEach(habit.milestones, id: \ .self) { milestone in
+                    ForEach(habit.milestones, id: \.self) { milestone in
                         Text("- \(milestone)")
                     }
 
@@ -75,22 +194,11 @@ struct HabitDetailView: View {
         .background(Color(UIColor.systemBackground))
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Menu {
-                    Button(action: {
-                        showingEditHabitForm = true
-                    }) {
-                        Label("Edit Habit", systemImage: "pencil")
-                    }
-                } label: {
-                    Image(systemName: "ellipsis.circle")
-                        .font(.title2) // Smaller font size
-                }
-            }
-        }
-        .sheet(isPresented: $showingEditHabitForm) {
-            EditHabitForm(habit: $habit)
-        }
     }
+}
+
+private var monthYearFormatter: DateFormatter {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "MMMM yyyy"
+    return formatter
 }

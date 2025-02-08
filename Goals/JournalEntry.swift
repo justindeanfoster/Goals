@@ -1,7 +1,6 @@
 import Foundation
 
-
-struct JournalEntry: Identifiable, Codable {
+struct JournalEntry: Identifiable, Codable, Hashable {
     let id: UUID
     let timestamp: Date
     let text: String
@@ -10,5 +9,13 @@ struct JournalEntry: Identifiable, Codable {
         self.id = id
         self.timestamp = timestamp
         self.text = text
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+
+    static func == (lhs: JournalEntry, rhs: JournalEntry) -> Bool {
+        return lhs.id == rhs.id
     }
 }

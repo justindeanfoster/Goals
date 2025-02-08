@@ -14,7 +14,6 @@ struct GoalDetailView: View {
     @StateObject private var calendarViewModel = CalendarViewModel()
     @State private var showingAddJournalEntryForm = false
     @State private var showCalendar = false // State to toggle calendar visibility
-    @State private var showingEditGoalForm = false // State to show edit goal form
 
     var body: some View {
         VStack {
@@ -38,6 +37,7 @@ struct GoalDetailView: View {
             ScrollView {
                 VStack(alignment: .leading) {
                     // Toggle button for calendar visibility
+
                     Button(action: {
                         withAnimation {
                             showCalendar.toggle()
@@ -51,9 +51,10 @@ struct GoalDetailView: View {
                         }
                         .padding(.bottom, 5)
                     }
-
+                    let allJournalEntries = Array(Set(goal.journalEntries + goal.relatedHabits.flatMap { $0.journalEntries }))
                     if showCalendar {
-                        // Calendar for goal activity
+                        // Calendar for habit activity
+                        
                         VStack {
                             HStack {
                                 Button(action: {
@@ -83,34 +84,91 @@ struct GoalDetailView: View {
                                 }
                             }
                             .padding(.bottom, 5)
+                        
 
                             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
-                                // Add empty cells for days before the start of the month
-                                ForEach(0..<calendarViewModel.startingWeekday, id: \.self) { index in
+                                 ForEach(0..<calendarViewModel.startingWeekday, id: \.self) { index in
                                     Text("")
                                         .frame(width: 30, height: 30)
                                         .id("empty-\(index)") // Unique identifier for empty cells
                                 }
                                 ForEach(0..<calendarViewModel.daysInMonth, id: \.self) { offset in
                                     let date = Calendar.current.date(byAdding: .day, value: offset, to: calendarViewModel.startOfMonth)!
-                                    let isSelected = Calendar.current.isDate(date, inSameDayAs: calendarViewModel.selectedDate)
-                                    let hasJournalEntry = goal.journalEntries.contains { Calendar.current.isDate($0.timestamp, inSameDayAs: date) }
+                                    let isToday = Calendar.current.isDateInToday(date)
+                                    let isDeadline = Calendar.current.isDate(date, inSameDayAs: goal.deadline)
+                                    let hasJournalEntry = allJournalEntries.contains { Calendar.current.isDate($0.timestamp, inSameDayAs: date) }
 
-                                    Circle()
-                                        .fill(hasJournalEntry ? Color.green : (isSelected ? Color.blue : Color.gray))
-                                        .frame(width: 30, height: 30)
-                                        .overlay(
-                                            Text(Calendar.current.component(.day, from: date).description)
-                                                .font(.caption)
-                                                .foregroundColor(.white)
-                                        )
+                                    VStack {
+                                        Circle()
+                                            .fill(hasJournalEntry ? Color.green :  Color.gray)
+                                            .frame(width: 30, height: 30)
+                                            .overlay(
+                                                Text(Calendar.current.component(.day, from: date).description)
+                                                    .font(.caption)
+                                                    .foregroundColor(.white)
+                                            )
+                                        if isToday {
+                                            Rectangle()
+                                                .fill(Color.blue)
+                                                .frame(height: 2)
+                                        }
+                                        if isDeadline {
+                                            Rectangle()
+                                                .fill(Color.red)
+                                                .frame(height: 2)
+                                        }
+                                    }
                                 }
                             }
                         }
                         .padding(.bottom)
+                    } else {
+                        // Last week view
+                        VStack {
+                            HStack {
+                                ForEach(calendarViewModel.daysOfWeek, id: \.self) { day in
+                                    Text(day)
+                                        .font(.subheadline)
+                                        .frame(maxWidth: .infinity)
+                                }
+                            }
+                            .padding(.bottom, 5)
 
-                        Divider()
+                            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
+                                ForEach(0..<7, id: \.self) { offset in
+                                    let date = Calendar.current.date(byAdding: .day, value: offset, to: calendarViewModel.startOfWeek)!
+                                    let isToday = Calendar.current.isDateInToday(date)
+                                    let isDeadline = Calendar.current.isDate(date, inSameDayAs: goal.deadline)
+                                    let hasJournalEntry = allJournalEntries.contains { Calendar.current.isDate($0.timestamp, inSameDayAs: date) }
+
+                                    VStack {
+                                        Circle()
+                                            .fill(hasJournalEntry ? Color.green : Color.gray)
+                                            .frame(width: 30, height: 30)
+                                            .overlay(
+                                                Text(Calendar.current.component(.day, from: date).description)
+                                                    .font(.caption)
+                                                    .foregroundColor(.white)
+                                            )
+                                        if isToday {
+                                            Rectangle()
+                                                .fill(Color.blue)
+                                                .frame(height: 2)
+                                        }
+                                        if isDeadline {
+                                            Rectangle()
+                                                .fill(Color.red)
+                                                .frame(height: 2)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        .padding(.bottom)
                     }
+
+                    Divider()
+                    
 
                     // Statistics Section
                     VStack(alignment: .leading) {
@@ -160,7 +218,7 @@ struct GoalDetailView: View {
 
                     Text("Related Habits")
                         .font(.headline)
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))], spacing: 2) {
+                    List {
                         ForEach(goal.relatedHabits) { habit in
                             NavigationLink(destination: HabitDetailView(habit: .constant(habit))) {
                                 Text(habit.title)
@@ -177,7 +235,7 @@ struct GoalDetailView: View {
 
                     Text("Journal Entries")
                         .font(.headline)
-                    ForEach(goal.journalEntries) { entry in
+                    ForEach(allJournalEntries) { entry in
                         VStack(alignment: .leading) {
                             Text(" - \(entry.text)")
                             Text(entry.timestamp, style: .date)
@@ -195,23 +253,6 @@ struct GoalDetailView: View {
         .background(Color(UIColor.systemBackground))
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Menu {
-                    Button(action: {
-                        showingEditGoalForm = true
-                    }) {
-                        Label("Edit Goal", systemImage: "pencil")
-                    }
-                } label: {
-                    Image(systemName: "ellipsis.circle")
-                        .font(.title2) // Smaller font size
-                }
-            }
-        }
-        .sheet(isPresented: $showingEditGoalForm) {
-            EditGoalForm(goal: $goal)
-        }
     }
 }
 

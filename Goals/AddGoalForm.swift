@@ -32,8 +32,8 @@ struct AddGoalForm: View {
                     Text("Notes:")
                     TextEditor(text: $notes) // Notes input
                         .frame(minHeight: 100)
-                        .border(Color.gray, width: 1)
-                        .padding(.top, 5)
+                        .cornerRadius(10)
+                        .padding(.bottom, 5)
                 }
 
                 Section(header: Text("Milestones")) {
@@ -56,25 +56,11 @@ struct AddGoalForm: View {
 
                 Section(header: Text("Related Habits")) {
                     ForEach(availableHabits) { habit in
-                        HStack {
-                            Text(habit.title)
-                            Spacer()
-                            if selectedHabits.contains(where: { $0.id == habit.id }) {
-                                Button(action: {
-                                    if let index = selectedHabits.firstIndex(where: { $0.id == habit.id }) {
-                                        selectedHabits.remove(at: index)
-                                    }
-                                }) {
-                                    Image(systemName: "minus.circle.fill")
-                                        .foregroundColor(.red)
-                                }
+                        MultipleSelectionRow(title: habit.title, isSelected: selectedHabits.contains(where: { $0.id == habit.id })) {
+                            if let index = selectedHabits.firstIndex(where: { $0.id == habit.id }) {
+                                selectedHabits.remove(at: index)
                             } else {
-                                Button(action: {
-                                    selectedHabits.append(habit)
-                                }) {
-                                    Image(systemName: "plus.circle.fill")
-                                        .foregroundColor(.green)
-                                }
+                                selectedHabits.append(habit)
                             }
                         }
                     }
@@ -105,6 +91,29 @@ struct AddGoalForm: View {
                 }
             }
             .background(Color(UIColor.systemBackground))
+        }
+    }
+}
+
+struct MultipleSelectionRow: View {
+    var title: String
+    var isSelected: Bool
+    var action: () -> Void
+
+    var body: some View {
+        Button(action: self.action) {
+            HStack {
+                Text(self.title)
+                    .padding(.vertical, 5)
+                    .padding(.horizontal)
+                    .cornerRadius(10)
+                    .foregroundColor(isSelected ? .blue : .primary)
+                if self.isSelected {
+                    Spacer()
+                    Image(systemName: "checkmark")
+                        .foregroundColor(.blue)
+                }
+            }
         }
     }
 }

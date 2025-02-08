@@ -23,11 +23,10 @@ struct AddHabitForm: View {
         NavigationView {
             Form {
                 Section(header: Text("Goal Details")) {
-                    TextField("Goal Title", text: $title)
+                    TextField("Habit Title", text: $title)
                     Text("Notes:")
                     TextEditor(text: $notes) // Notes input
                         .frame(minHeight: 100)
-                        .border(Color.gray, width: 1)
                         .padding(.top, 5)
                 }
 

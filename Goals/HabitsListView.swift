@@ -2,7 +2,9 @@ import SwiftUI
 
 struct HabitsListView: View {
     @Binding var habits: [Habit]
-    @State private var showingAddHabitForm : Bool = false
+    @State private var showingAddHabitForm: Bool = false
+    @State private var selectedHabit: Habit?
+    @State private var showEditHabitForm: Bool = false
 
     var body: some View {
         NavigationView {
@@ -20,6 +22,19 @@ struct HabitsListView: View {
                         }
                         .padding(.vertical, 5)
                     }
+                    .contextMenu {
+                        Button(action: {
+                            selectedHabit = habits[index]
+                            showEditHabitForm = true
+                        }) {
+                            Label("Edit Habit", systemImage: "pencil")
+                        }
+                        Button(action: {
+                            habits.remove(at: index)
+                        }) {
+                            Label("Delete Habit", systemImage: "trash")
+                        }
+                    }
                 }
             }
             .navigationTitle("Habits")
@@ -33,6 +48,16 @@ struct HabitsListView: View {
             .background(Color(UIColor.systemBackground))
             .sheet(isPresented: $showingAddHabitForm) {
                 AddHabitForm(habits: $habits)
+            }
+            .sheet(item: $selectedHabit) { habit in
+                EditHabitForm(habit: Binding(
+                    get: { habit },
+                    set: { updatedHabit in
+                        if let index = habits.firstIndex(where: { $0.id == updatedHabit.id }) {
+                            habits[index] = updatedHabit
+                        }
+                    }
+                ))
             }
         }
     }

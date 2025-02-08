@@ -2,6 +2,7 @@ import SwiftUI
 
 struct EditGoalForm: View {
     @Binding var goal: Goal
+    @Binding var availableHabits: [Habit]
     @Environment(\.presentationMode) var presentationMode
 
     @State private var title: String
@@ -10,10 +11,10 @@ struct EditGoalForm: View {
     @State private var newMilestone: String = ""
     @State private var notes: String
     @State private var selectedHabits: [Habit]
-    @State private var availableHabits: [Habit] = [] // This should be passed or fetched from a data source
 
-    init(goal: Binding<Goal>) {
+    init(goal: Binding<Goal>, availableHabits: Binding<[Habit]>) {
         _goal = goal
+        _availableHabits = availableHabits
         _title = State(initialValue: goal.wrappedValue.title)
         _deadline = State(initialValue: goal.wrappedValue.deadline)
         _milestones = State(initialValue: goal.wrappedValue.milestones)
@@ -80,24 +81,6 @@ struct EditGoalForm: View {
                         goal.relatedHabits = selectedHabits
                         presentationMode.wrappedValue.dismiss()
                     }
-                }
-            }
-        }
-    }
-}
-
-struct MultipleSelectionRow: View {
-    var title: String
-    var isSelected: Bool
-    var action: () -> Void
-
-    var body: some View {
-        Button(action: self.action) {
-            HStack {
-                Text(self.title)
-                if self.isSelected {
-                    Spacer()
-                    Image(systemName: "checkmark")
                 }
             }
         }
