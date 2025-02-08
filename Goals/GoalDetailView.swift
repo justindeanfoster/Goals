@@ -216,23 +216,6 @@ struct GoalDetailView: View {
 
                     Divider()
 
-                    Text("Related Habits")
-                        .font(.headline)
-                    List {
-                        ForEach(goal.relatedHabits) { habit in
-                            NavigationLink(destination: HabitDetailView(habit: .constant(habit))) {
-                                Text(habit.title)
-                                    .padding()
-                                    .background(Color.blue.opacity(0.2))
-                                    .cornerRadius(10)
-                                    .foregroundColor(.primary)
-                            }
-                        }
-                    }
-                    .padding(.horizontal)
-
-                    Divider()
-
                     Text("Journal Entries")
                         .font(.headline)
                     ForEach(allJournalEntries) { entry in
@@ -245,6 +228,22 @@ struct GoalDetailView: View {
                     }
                     
                     Divider()
+                    Text("Related Habits")
+                        .font(.headline)
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 150))], alignment: .leading, content: {
+                        {
+                            ForEach(goal.relatedHabits) { habit in
+                                NavigationLink(destination: HabitDetailView(habit: .constant(habit))) {
+                                    Text(habit.title)
+                                        .padding()
+                                        .background(Color.blue.opacity(0.2))
+                                        .cornerRadius(10)
+                                        .foregroundColor(.primary)
+                                }
+                            }
+                        }()
+                        .padding(.horizontal)
+                    })
 
                 }
                 .padding()
