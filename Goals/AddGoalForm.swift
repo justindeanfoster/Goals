@@ -1,27 +1,22 @@
-//
-//  AddGoalForm.swift
-//  Goals
-//
-//  Created by Justin F on 1/25/25.
-//
-
 import SwiftUI
-
-
+import SwiftData
 
 struct AddGoalForm: View {
-    @Binding var goals: [Goal]
-    @Binding var availableHabits: [Habit]  // This should be passed or fetched from a data source
-
     @Environment(\.presentationMode) var presentationMode
+    @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
+    
+    @Query private var availableHabits: [Habit]
 
     @State private var title: String = ""
     @State private var deadline: Date = Date()
     @State private var milestones: [String] = []
     @State private var newMilestone: String = ""
-    @State private var notes: String = "" // New state for notes
+    @State private var notes: String = ""
     @State private var selectedHabits: [Habit] = []
-    @State private var showValidationError: Bool = false // State for validation error
+    @State private var showValidationError: Bool = false
+    @State private var showError: Bool = false
+    @State private var errorMessage: String = ""
 
     var body: some View {
         NavigationView {
@@ -30,10 +25,16 @@ struct AddGoalForm: View {
                     TextField("Goal Title", text: $title)
                     DatePicker("Deadline", selection: $deadline, displayedComponents: .date)
                     Text("Notes:")
-                    TextEditor(text: $notes) // Notes input
-                        .frame(minHeight: 100)
-                        .cornerRadius(10)
-                        .padding(.bottom, 5)
+                    ZStack(alignment: .topLeading) {
+                        TextEditor(text: $notes)
+                            .frame(height: 100)
+                        if notes.isEmpty {
+                            Text("Write about your progress...")
+                                .foregroundColor(Color(.placeholderText))
+                                .padding(.horizontal, 4)
+                                .padding(.vertical, 8)
+                        }
+                    }
                 }
 
                 Section(header: Text("Milestones")) {
@@ -71,6 +72,11 @@ struct AddGoalForm: View {
                       message: Text("Please provide a title."),
                       dismissButton: .default(Text("OK")))
             }
+            .alert("Error", isPresented: $showError) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(errorMessage)
+            }
             .navigationTitle("Add New Goal")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -83,9 +89,16 @@ struct AddGoalForm: View {
                         if title.isEmpty {
                             showValidationError = true
                         } else {
-                            let newGoal = Goal(title: title, deadline: deadline, milestones: milestones, notes: notes, relatedHabits: selectedHabits)
-                            goals.append(newGoal)
-                            presentationMode.wrappedValue.dismiss()
+                            do {
+                                let newGoal = Goal(title: title, deadline: deadline, milestones: milestones, notes: notes, relatedHabits: selectedHabits)
+                                modelContext.insert(newGoal)
+                                try modelContext.save()
+                                dismiss()
+                            } catch {
+                                errorMessage = error.localizedDescription
+                                showError = true
+                                print("Save error: \(error)")
+                            }
                         }
                     }
                 }

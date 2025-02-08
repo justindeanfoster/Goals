@@ -1,8 +1,11 @@
 import SwiftUI
+import SwiftData
 
 struct GoalsListView: View {
-    @Binding var goals: [Goal]
-    @Binding var habits: [Habit]
+    @Environment(\.modelContext) private var modelContext
+    @Query private var goals: [Goal]
+    @Query private var habits: [Habit]
+
     
     @State private var showAddGoalForm: Bool = false
     @State private var selectedGoal: Goal?
@@ -11,15 +14,15 @@ struct GoalsListView: View {
     var body: some View {
         NavigationView {
             List {
-                ForEach(goals.indices, id: \.self) { index in
-                    NavigationLink(destination: GoalDetailView(goal: $goals[index])) {
+                ForEach(goals) { goal in
+                    NavigationLink(destination: GoalDetailView(goal: goal)) {
                         VStack(alignment: .leading) {
-                            Text(goals[index].title)
+                            Text(goal.title)
                                 .font(.headline)
                             HStack {
-                                Text("Days Worked: \(goals[index].daysWorked)")
+                                Text("Days Worked: \(goal.daysWorked)")
                                 Spacer()
-                                Text("Days Remaining: \(goals[index].daysRemaining)")
+                                Text("Days Remaining: \(goal.daysRemaining)")
                             }
                             .font(.caption)
                             .foregroundColor(.gray)
@@ -28,13 +31,14 @@ struct GoalsListView: View {
                     }
                     .contextMenu {
                         Button(action: {
-                            selectedGoal = goals[index]
+                            selectedGoal = goal
                             showEditGoalForm = true
                         }) {
                             Label("Edit Goal", systemImage: "pencil")
                         }
                         Button(action: {
-                            goals.remove(at: index)
+                            modelContext.delete(goal)
+                            try? modelContext.save()
                         }) {
                             Label("Delete Goal", systemImage: "trash")
                         }
@@ -50,17 +54,10 @@ struct GoalsListView: View {
                 }
             }
             .sheet(isPresented: $showAddGoalForm) {
-                AddGoalForm(goals: $goals, availableHabits: $habits)
+                AddGoalForm()
             }
             .sheet(item: $selectedGoal) { goal in
-                EditGoalForm(goal: Binding(
-                    get: { goal },
-                    set: { updatedGoal in
-                        if let index = goals.firstIndex(where: { $0.id == updatedGoal.id }) {
-                            goals[index] = updatedGoal
-                        }
-                    }
-                ), availableHabits: $habits)
+                EditGoalForm(goal: goal)
             }
             .background(Color(UIColor.systemBackground))
         }

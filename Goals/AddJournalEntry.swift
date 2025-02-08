@@ -1,8 +1,9 @@
 import SwiftUI
+import SwiftData
 
 struct AddJournalEntryForm: View {
-    @Binding var goal: Goal?
-    @Binding var habit: Habit?
+    let goal: Goal?
+    let habit: Habit?
     @State private var newJournalEntry: String = ""
     @State private var entryDate: Date = Date()
     @State private var selectedHabits: [Habit] = []
@@ -10,60 +11,54 @@ struct AddJournalEntryForm: View {
 
     var body: some View {
         NavigationView {
-            VStack {
-                DatePicker("Entry Date", selection: $entryDate, displayedComponents: .date)
-                    .padding()
-
-                TextField("New Journal Entry", text: $newJournalEntry)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding()
+            Form {
+                Section {
+                    DatePicker("Entry Date", selection: $entryDate, displayedComponents: .date)
+                    ZStack(alignment: .topLeading) {
+                        TextEditor(text: $newJournalEntry)
+                            .frame(height: 100)
+                        if newJournalEntry.isEmpty {
+                            Text("Write about your progress...")
+                                .foregroundColor(Color(.placeholderText))
+                                .padding(.horizontal, 4)
+                                .padding(.vertical, 8)
+                        }
+                    }
+                }
+                
 
                 if let goal = goal {
                     Section(header: Text("Related Habits")) {
                         ForEach(goal.relatedHabits) { habit in
-                            HStack {
-                                Text(habit.title)
-                                Spacer()
-                                if selectedHabits.contains(where: { $0.id == habit.id }) {
-                                    Button(action: {
-                                        if let index = selectedHabits.firstIndex(where: { $0.id == habit.id }) {
-                                            selectedHabits.remove(at: index)
-                                        }
-                                    }) {
-                                        Image(systemName: "minus.circle.fill")
-                                            .foregroundColor(.red)
-                                    }
+                            MultipleSelectionRow(title: habit.title, isSelected: selectedHabits.contains(where: { $0.id == habit.id })) {
+                                if let index = selectedHabits.firstIndex(where: { $0.id == habit.id }) {
+                                    selectedHabits.remove(at: index)
                                 } else {
-                                    Button(action: {
-                                        selectedHabits.append(habit)
-                                    }) {
-                                        Image(systemName: "plus.circle.fill")
-                                            .foregroundColor(.green)
-                                    }
+                                    selectedHabits.append(habit)
                                 }
-                            }.padding()
+                            }
                         }
                     }
                 }
-
-                Spacer()
             }
             .navigationTitle("Add Journal Entry")
-            .navigationBarItems(trailing: Button("Done") {
-                if !newJournalEntry.isEmpty {
-                    let entry = JournalEntry(timestamp: entryDate, text: newJournalEntry)
-                    if let goal = goal {
-                        goal.journalEntries.append(entry)
-                        for habit in selectedHabits {
+            .toolbar {
+                Button("Done") {
+                    if (!newJournalEntry.isEmpty) {
+                        let entry = JournalEntry(timestamp: entryDate, text: newJournalEntry)
+                        if let goal = goal {
+                            goal.journalEntries.append(entry)
+                            for habit in selectedHabits {
+                                habit.journalEntries.append(entry)
+                            }
+                        } else if let habit = habit {
                             habit.journalEntries.append(entry)
                         }
-                    } else if let habit = habit {
-                        habit.journalEntries.append(entry)
+                        newJournalEntry = ""
                     }
-                    newJournalEntry = ""
+                    presentationMode.wrappedValue.dismiss()
                 }
-                presentationMode.wrappedValue.dismiss()
-            })
+            }
             .background(Color(UIColor.systemBackground))
         }
     }

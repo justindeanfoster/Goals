@@ -1,7 +1,10 @@
 import SwiftUI
+import SwiftData
 
 struct HabitsListView: View {
-    @Binding var habits: [Habit]
+    @Environment(\.modelContext) private var modelContext
+
+    @Query var habits: [Habit]
     @State private var showingAddHabitForm: Bool = false
     @State private var selectedHabit: Habit?
     @State private var showEditHabitForm: Bool = false
@@ -9,13 +12,13 @@ struct HabitsListView: View {
     var body: some View {
         NavigationView {
             List {
-                ForEach(habits.indices, id: \.self) { index in
-                    NavigationLink(destination: HabitDetailView(habit: $habits[index])) {
+                ForEach(habits) { habit in
+                    NavigationLink(destination: HabitDetailView(habit: habit)) {
                         VStack(alignment: .leading) {
-                            Text(habits[index].title)
+                            Text(habit.title)
                                 .font(.headline)
                             HStack {
-                                Text("Days Worked: \(habits[index].daysWorked)")
+                                Text("Days Worked: \(habit.daysWorked)")
                             }
                             .font(.caption)
                             .foregroundColor(.gray)
@@ -24,13 +27,14 @@ struct HabitsListView: View {
                     }
                     .contextMenu {
                         Button(action: {
-                            selectedHabit = habits[index]
+                            selectedHabit = habit
                             showEditHabitForm = true
                         }) {
                             Label("Edit Habit", systemImage: "pencil")
                         }
                         Button(action: {
-                            habits.remove(at: index)
+                            modelContext.delete(habit)
+                            try? modelContext.save()
                         }) {
                             Label("Delete Habit", systemImage: "trash")
                         }
@@ -47,17 +51,10 @@ struct HabitsListView: View {
             }
             .background(Color(UIColor.systemBackground))
             .sheet(isPresented: $showingAddHabitForm) {
-                AddHabitForm(habits: $habits)
+                AddHabitForm()
             }
             .sheet(item: $selectedHabit) { habit in
-                EditHabitForm(habit: Binding(
-                    get: { habit },
-                    set: { updatedHabit in
-                        if let index = habits.firstIndex(where: { $0.id == updatedHabit.id }) {
-                            habits[index] = updatedHabit
-                        }
-                    }
-                ))
+                EditHabitForm(habit: habit)
             }
         }
     }

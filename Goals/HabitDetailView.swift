@@ -1,7 +1,8 @@
 import SwiftUI
+import SwiftData
 
 struct HabitDetailView: View {
-    @Binding var habit: Habit
+    let habit: Habit  // Changed from var to let
     @StateObject private var calendarViewModel = CalendarViewModel()
     @State private var showingAddJournalEntryForm = false
     @State private var showCalendar = false
@@ -20,7 +21,7 @@ struct HabitDetailView: View {
                         .font(.title)
                 }
                 .sheet(isPresented: $showingAddJournalEntryForm) {
-                    AddJournalEntryForm(goal: .constant(nil), habit: .constant(habit))
+                    AddJournalEntryForm(goal: nil, habit: habit)  // Remove .constant wrapper
                 }
             }
             .padding()

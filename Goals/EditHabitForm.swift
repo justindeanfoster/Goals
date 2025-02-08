@@ -1,19 +1,22 @@
 import SwiftUI
+import SwiftData
 
 struct EditHabitForm: View {
-    @Binding var habit: Habit
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.presentationMode) var presentationMode
 
+    let habit: Habit
+    
     @State private var title: String
     @State private var milestones: [String]
     @State private var newMilestone: String = ""
     @State private var notes: String
 
-    init(habit: Binding<Habit>) {
-        _habit = habit
-        _title = State(initialValue: habit.wrappedValue.title)
-        _milestones = State(initialValue: habit.wrappedValue.milestones)
-        _notes = State(initialValue: habit.wrappedValue.notes)
+    init(habit: Habit) {
+        self.habit = habit
+        _title = State(initialValue: habit.title)
+        _milestones = State(initialValue: habit.milestones)
+        _notes = State(initialValue: habit.notes)
     }
 
     var body: some View {
@@ -58,6 +61,7 @@ struct EditHabitForm: View {
                         habit.title = title
                         habit.milestones = milestones
                         habit.notes = notes
+                        try? modelContext.save()
                         presentationMode.wrappedValue.dismiss()
                     }
                 }

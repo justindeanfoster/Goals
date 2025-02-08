@@ -8,9 +8,10 @@
 
 
 import SwiftUI
+import SwiftData
 
 struct GoalDetailView: View {
-    @Binding var goal: Goal
+    let goal: Goal  // Changed from @Binding to direct reference
     @StateObject private var calendarViewModel = CalendarViewModel()
     @State private var showingAddJournalEntryForm = false
     @State private var showCalendar = false // State to toggle calendar visibility
@@ -29,7 +30,7 @@ struct GoalDetailView: View {
                         .font(.title)
                 }
                 .sheet(isPresented: $showingAddJournalEntryForm) {
-                    AddJournalEntryForm(goal: .constant(goal), habit: .constant(nil))
+                    AddJournalEntryForm(goal: goal, habit: nil)
                 }
             }
             .padding()
@@ -233,7 +234,7 @@ struct GoalDetailView: View {
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 150))], alignment: .leading, content: {
                         {
                             ForEach(goal.relatedHabits) { habit in
-                                NavigationLink(destination: HabitDetailView(habit: .constant(habit))) {
+                                NavigationLink(destination: HabitDetailView(habit: habit)) {
                                     Text(habit.title)
                                         .padding()
                                         .background(Color.blue.opacity(0.2))

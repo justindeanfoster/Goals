@@ -6,12 +6,13 @@
 //
 
 import SwiftUI
-
+import SwiftData
 
 struct CalendarView: View {
-    let goals: [Goal]
+    @Environment(\.managedObjectContext) private var context
+    
     @StateObject private var calendarViewModel = CalendarViewModel()
-
+    @Query var goals: [Goal]
     
     var body: some View {
         VStack {
@@ -75,17 +76,21 @@ struct CalendarView: View {
                         let isSelected = Calendar.current.isDate(date, inSameDayAs: calendarViewModel.selectedDate)
                         let progress = calendarViewModel.pctGoalsWorkedOn(for: date, goals: goals)
 
-                        Circle()
-                            .fill(isSelected ? Color.blue : color(for: progress))
-                            .frame(width: 30, height: 30)
-                            .overlay(
-                                Text(Calendar.current.component(.day, from: date).description)
-                                    .font(.caption)
-                                    .foregroundColor(.white)
-                            )
-                            .onTapGesture {
+                        VStack {
+                            Circle()
+                                .fill(color(for: progress))
+                                .frame(width: 30, height: 30)
+                                .overlay(
+                                    Text(Calendar.current.component(.day, from: date).description)
+                                        .font(.caption)
+                                        .foregroundColor(.white)
+                                ).onTapGesture {
                                 calendarViewModel.selectedDate = date
                             }
+                            Rectangle()
+                                .fill(isSelected ? Color.blue : Color.clear)
+                                .frame(height: 2)
+                        }
                     }
                 }
             }

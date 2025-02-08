@@ -1,10 +1,14 @@
 import SwiftUI
+import SwiftData
 
 struct EditGoalForm: View {
-    @Binding var goal: Goal
-    @Binding var availableHabits: [Habit]
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.presentationMode) var presentationMode
-
+    
+    @Query private var availableHabits: [Habit]
+    
+    let goal: Goal
+    
     @State private var title: String
     @State private var deadline: Date
     @State private var milestones: [String]
@@ -12,14 +16,13 @@ struct EditGoalForm: View {
     @State private var notes: String
     @State private var selectedHabits: [Habit]
 
-    init(goal: Binding<Goal>, availableHabits: Binding<[Habit]>) {
-        _goal = goal
-        _availableHabits = availableHabits
-        _title = State(initialValue: goal.wrappedValue.title)
-        _deadline = State(initialValue: goal.wrappedValue.deadline)
-        _milestones = State(initialValue: goal.wrappedValue.milestones)
-        _notes = State(initialValue: goal.wrappedValue.notes)
-        _selectedHabits = State(initialValue: goal.wrappedValue.relatedHabits)
+    init(goal: Goal) {
+        self.goal = goal
+        _title = State(initialValue: goal.title)
+        _deadline = State(initialValue: goal.deadline)
+        _milestones = State(initialValue: goal.milestones)
+        _notes = State(initialValue: goal.notes)
+        _selectedHabits = State(initialValue: goal.relatedHabits)
     }
 
     var body: some View {
@@ -79,6 +82,7 @@ struct EditGoalForm: View {
                         goal.milestones = milestones
                         goal.notes = notes
                         goal.relatedHabits = selectedHabits
+                        try? modelContext.save()
                         presentationMode.wrappedValue.dismiss()
                     }
                 }

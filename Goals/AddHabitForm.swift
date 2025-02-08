@@ -6,18 +6,20 @@
 //
 
 import SwiftUI
-
-
+import SwiftData
 
 struct AddHabitForm: View {
-    @Binding var habits: [Habit]
+    
     @Environment(\.presentationMode) var presentationMode
+    @Environment(\.modelContext) private var modelContext
 
     @State private var title: String = ""
     @State private var milestones: [String] = []
     @State private var newMilestone: String = ""
-    @State private var notes: String = "" // New state for notes
-    @State private var showValidationError: Bool = false // State for validation error
+    @State private var notes: String = ""
+    @State private var showValidationError: Bool = false
+    @State private var showError: Bool = false
+    @State private var errorMessage: String = ""
 
     var body: some View {
         NavigationView {
@@ -25,9 +27,16 @@ struct AddHabitForm: View {
                 Section(header: Text("Goal Details")) {
                     TextField("Habit Title", text: $title)
                     Text("Notes:")
-                    TextEditor(text: $notes) // Notes input
-                        .frame(minHeight: 100)
-                        .padding(.top, 5)
+                    ZStack(alignment: .topLeading) {
+                        TextEditor(text: $notes)
+                            .frame(height: 100)
+                        if notes.isEmpty {
+                            Text("Write about your progress...")
+                                .foregroundColor(Color(.placeholderText))
+                                .padding(.horizontal, 4)
+                                .padding(.vertical, 8)
+                        }
+                    }
                 }
 
                 Section(header: Text("Milestones")) {
@@ -53,6 +62,11 @@ struct AddHabitForm: View {
                       message: Text("Please provide a title."),
                       dismissButton: .default(Text("OK")))
             }
+            .alert("Error", isPresented: $showError) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(errorMessage)
+            }
             .navigationTitle("Add New Habit")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -65,9 +79,16 @@ struct AddHabitForm: View {
                         if title.isEmpty {
                             showValidationError = true
                         } else {
-                            let newHabit = Habit(title: title, milestones: milestones, notes: notes)
-                            habits.append(newHabit)
-                            presentationMode.wrappedValue.dismiss()
+                            do {
+                                let newHabit = Habit(title: title, milestones: milestones, notes: notes)
+                                modelContext.insert(newHabit)
+                                try modelContext.save()
+                                presentationMode.wrappedValue.dismiss()
+                            } catch {
+                                errorMessage = "Failed to save: \(error.localizedDescription)"
+                                showError = true
+                                print("Save error: \(error)")
+                            }
                         }
                     }
                 }

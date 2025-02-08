@@ -1,21 +1,15 @@
 import Foundation
+import SwiftData
 
-struct JournalEntry: Identifiable, Codable, Hashable {
-    let id: UUID
-    let timestamp: Date
-    let text: String
+@Model
+final class JournalEntry {
+    var timestamp: Date
+    var text: String
+    var goalId: UUID?
+    var habitId: UUID?
 
-    init(id: UUID = UUID(), timestamp: Date, text: String) {
-        self.id = id
+    init(timestamp: Date, text: String) {
         self.timestamp = timestamp
         self.text = text
-    }
-
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
-
-    static func == (lhs: JournalEntry, rhs: JournalEntry) -> Bool {
-        return lhs.id == rhs.id
     }
 }
