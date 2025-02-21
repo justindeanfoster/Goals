@@ -13,6 +13,8 @@ struct CalendarView: View {
     
     @StateObject private var calendarViewModel = CalendarViewModel()
     @Query var goals: [Goal]
+    @Query var habits: [Habit]
+    @Query var journalEntries: [JournalEntry]
     
     var body: some View {
         VStack {
@@ -74,19 +76,18 @@ struct CalendarView: View {
                     ForEach(0..<calendarViewModel.daysInMonth, id: \.self) { offset in
                         let date = Calendar.current.date(byAdding: .day, value: offset , to: calendarViewModel.startOfMonth)!
                         let isSelected = Calendar.current.isDate(date, inSameDayAs: calendarViewModel.selectedDate)
-                        let progress = calendarViewModel.pctGoalsWorkedOn(for: date, goals: goals)
 
                         VStack {
                             Circle()
-                                .fill(color(for: progress))
+                                .fill(color(for: date))
                                 .frame(width: 30, height: 30)
                                 .overlay(
                                     Text(Calendar.current.component(.day, from: date).description)
                                         .font(.caption)
                                         .foregroundColor(.white)
                                 ).onTapGesture {
-                                calendarViewModel.selectedDate = date
-                            }
+                                    calendarViewModel.selectedDate = date
+                                }
                             Rectangle()
                                 .fill(isSelected ? Color.blue : Color.clear)
                                 .frame(height: 2)
@@ -124,14 +125,18 @@ struct CalendarView: View {
                 Divider()
 
                 List {
-                    ForEach(calendarViewModel.journalEntries(for: calendarViewModel.selectedDate, goals: goals)) { entry in
-                        VStack(alignment: .leading) {
+                    ForEach(calendarViewModel.journalEntries(for: calendarViewModel.selectedDate, goals: goals, habits: habits)) { entry in
+                        VStack(alignment: .leading, spacing: 8) {
                             Text(entry.text)
-                                .font(.headline)
-                            Text(entry.goalTitle)
-                                .font(.subheadline)
-                                .foregroundColor(.gray)
+                                .font(.body)
+                            HStack {
+                                Text(entry.sourceName)
+                                Text("(\(entry.sourceType))")
+                            }
+                            .font(.caption)
+                            .foregroundColor(.secondary)
                         }
+                        .padding(.vertical, 4)
                     }
                 }
             }
@@ -140,18 +145,9 @@ struct CalendarView: View {
         .background(Color(UIColor.systemBackground))
     }
     
-    private func color(for progress: Double) -> Color {
-            switch progress {
-            case 0:
-                return .gray
-            case 0..<0.5:
-                return .yellow
-            case 0.5..<1:
-                return .teal
-            default:
-                return .green
-            }
-        }
+    private func color(for date: Date) -> Color {
+        return calendarViewModel.hasJournalEntries(for: date, goals: goals, habits: habits) ? .blue : .gray
+    }
 
     private var monthYearFormatter: DateFormatter {
         let formatter = DateFormatter()

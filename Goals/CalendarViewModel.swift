@@ -53,20 +53,50 @@ class CalendarViewModel: ObservableObject {
         currentMonth = Calendar.current.date(byAdding: .weekOfMonth, value: value, to: currentMonth) ?? currentMonth
     }
     
-    func journalEntries(for date: Date, goals: [Goal]) -> [JournalEntryWithGoal] {
+    func journalEntries(for date: Date, goals: [Goal], habits: [Habit]) -> [JournalEntryWithSource] {
         let startOfDay = Calendar.current.startOfDay(for: date)
-        var entries: [JournalEntryWithGoal] = []
+        var entries: [JournalEntryWithSource] = []
+        
+        // Get entries from goals
         for goal in goals {
             for entry in goal.journalEntries where Calendar.current.isDate(entry.timestamp, inSameDayAs: startOfDay) {
-                entries.append(JournalEntryWithGoal(text: entry.text, goalTitle: goal.title))
+                entries.append(JournalEntryWithSource(text: entry.text, sourceName: goal.title, sourceType: "Goal", timestamp: entry.timestamp))
             }
         }
-        return entries
+        
+        // Get entries from habits
+        for habit in habits {
+            for entry in habit.journalEntries where Calendar.current.isDate(entry.timestamp, inSameDayAs: startOfDay) {
+                entries.append(JournalEntryWithSource(text: entry.text, sourceName: habit.title, sourceType: "Habit", timestamp: entry.timestamp))
+            }
+        }
+        
+        return entries.sorted { $0.timestamp > $1.timestamp }
+    }
+
+    func filterJournalEntriesByDate(entries: [JournalEntry], date: Date) -> [JournalEntry] {
+        let startOfDay = Calendar.current.startOfDay(for: date)
+        return entries.filter { Calendar.current.isDate($0.timestamp, inSameDayAs: startOfDay) }
+    }
+
+    func hasJournalEntries(for date: Date, goals: [Goal], habits: [Habit]) -> Bool {
+        let startOfDay = Calendar.current.startOfDay(for: date)
+        return goals.contains { goal in
+            goal.journalEntries.contains { entry in
+                Calendar.current.isDate(entry.timestamp, inSameDayAs: startOfDay)
+            }
+        } || habits.contains { habit in
+            habit.journalEntries.contains { entry in
+                Calendar.current.isDate(entry.timestamp, inSameDayAs: startOfDay)
+            }
+        }
     }
 }
 
-struct JournalEntryWithGoal: Identifiable {
+struct JournalEntryWithSource: Identifiable {
     let id = UUID()
     let text: String
-    let goalTitle: String
+    let sourceName: String
+    let sourceType: String
+    let timestamp: Date
 }
