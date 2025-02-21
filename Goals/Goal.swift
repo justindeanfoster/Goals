@@ -16,8 +16,12 @@ final class Goal {
     var relatedHabits: [Habit] = []
 
     var daysWorked: Int {
-        let uniqueDays = Set(journalEntries.map { Calendar.current.startOfDay(for: $0.timestamp) })
-        return uniqueDays.count
+        let calendar = Calendar.current
+        let uniqueDates = Set(journalEntries.map { calendar.startOfDay(for: $0.timestamp) })
+        let habitDates = Set(relatedHabits.flatMap { habit in
+            habit.journalEntries.map { calendar.startOfDay(for: $0.timestamp) }
+        })
+        return Set(uniqueDates).union(habitDates).count
     }
 
     var daysRemaining: Int {
