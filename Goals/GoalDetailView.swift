@@ -15,6 +15,8 @@ struct GoalDetailView: View {
     @StateObject private var calendarViewModel = CalendarViewModel()
     @State private var showingAddJournalEntryForm = false
     @State private var showCalendar = false // State to toggle calendar visibility
+    @State private var showingEditJournalEntry = false
+    @State private var selectedEntry: JournalEntry?
 
     var body: some View {
         VStack {
@@ -99,24 +101,26 @@ struct GoalDetailView: View {
                                     let isDeadline = Calendar.current.isDate(date, inSameDayAs: goal.deadline)
                                     let hasJournalEntry = allJournalEntries.contains { Calendar.current.isDate($0.timestamp, inSameDayAs: date) }
 
-                                    VStack {
-                                        Circle()
-                                            .fill(hasJournalEntry ? Color.green :  Color.gray)
-                                            .frame(width: 30, height: 30)
-                                            .overlay(
-                                                Text(Calendar.current.component(.day, from: date).description)
-                                                    .font(.caption)
-                                                    .foregroundColor(.white)
-                                            )
-                                        if isToday {
-                                            Rectangle()
-                                                .fill(Color.blue)
-                                                .frame(height: 2)
-                                        }
-                                        if isDeadline {
-                                            Rectangle()
-                                                .fill(Color.red)
-                                                .frame(height: 2)
+                                    NavigationLink(destination: DayView(date: date, goals: [goal], habits: Array(goal.relatedHabits))) {
+                                        VStack {
+                                            Circle()
+                                                .fill(hasJournalEntry ? Color.green :  Color.gray)
+                                                .frame(width: 30, height: 30)
+                                                .overlay(
+                                                    Text(Calendar.current.component(.day, from: date).description)
+                                                        .font(.caption)
+                                                        .foregroundColor(.white)
+                                                )
+                                            if isToday {
+                                                Rectangle()
+                                                    .fill(Color.blue)
+                                                    .frame(height: 2)
+                                            }
+                                            if isDeadline {
+                                                Rectangle()
+                                                    .fill(Color.red)
+                                                    .frame(height: 2)
+                                            }
                                         }
                                     }
                                 }
@@ -142,24 +146,26 @@ struct GoalDetailView: View {
                                     let isDeadline = Calendar.current.isDate(date, inSameDayAs: goal.deadline)
                                     let hasJournalEntry = allJournalEntries.contains { Calendar.current.isDate($0.timestamp, inSameDayAs: date) }
 
-                                    VStack {
-                                        Circle()
-                                            .fill(hasJournalEntry ? Color.green : Color.gray)
-                                            .frame(width: 30, height: 30)
-                                            .overlay(
-                                                Text(Calendar.current.component(.day, from: date).description)
-                                                    .font(.caption)
-                                                    .foregroundColor(.white)
-                                            )
-                                        if isToday {
-                                            Rectangle()
-                                                .fill(Color.blue)
-                                                .frame(height: 2)
-                                        }
-                                        if isDeadline {
-                                            Rectangle()
-                                                .fill(Color.red)
-                                                .frame(height: 2)
+                                    NavigationLink(destination: DayView(date: date, goals: [goal], habits: Array(goal.relatedHabits))) {
+                                        VStack {
+                                            Circle()
+                                                .fill(hasJournalEntry ? Color.green : Color.gray)
+                                                .frame(width: 30, height: 30)
+                                                .overlay(
+                                                    Text(Calendar.current.component(.day, from: date).description)
+                                                        .font(.caption)
+                                                        .foregroundColor(.white)
+                                                )
+                                            if isToday {
+                                                Rectangle()
+                                                    .fill(Color.blue)
+                                                    .frame(height: 2)
+                                            }
+                                            if isDeadline {
+                                                Rectangle()
+                                                    .fill(Color.red)
+                                                    .frame(height: 2)
+                                            }
                                         }
                                     }
                                 }
@@ -219,14 +225,42 @@ struct GoalDetailView: View {
 
                     Text("Journal Entries")
                         .font(.headline)
-                    ForEach(allJournalEntries) { entry in
-                        VStack(alignment: .leading) {
-                            Text(" - \(entry.text)")
-                            Text(entry.timestamp, style: .date)
-                                .font(.caption)
-                                .foregroundColor(.gray)
+                        ForEach(goal.journalEntries) { entry in
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text(entry.text)
+                                    .font(.body)
+                                    .fixedSize(horizontal: false, vertical: true)
+                                Text(entry.timestamp, style: .date)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            .padding()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .fill(Color(.systemGray6))
+                            )
+                            .padding(.vertical, 4)
+                            .contextMenu {
+                                Button(action: {
+                                    selectedEntry = entry
+                                    showingEditJournalEntry = true
+                                }) {
+                                    Label("Edit", systemImage: "pencil")
+                                }
+                                Button(role: .destructive, action: {
+                                    goal.journalEntries.removeAll { $0.id == entry.id }
+                                }) {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
                         }
-                    }
+                        .sheet(isPresented: $showingEditJournalEntry, content: {
+                            if let entry = selectedEntry {
+                                EditJournalEntryView(entry: entry)
+                            }
+                        })
+                    
                     
                     Divider()
                     Text("Related Habits")

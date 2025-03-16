@@ -15,6 +15,7 @@ struct CalendarView: View {
     @Query var goals: [Goal]
     @Query var habits: [Habit]
     @Query var journalEntries: [JournalEntry]
+    @State private var showingFilter = false
     
     var body: some View {
         VStack {
@@ -22,6 +23,22 @@ struct CalendarView: View {
             VStack {
                 HStack {
                     Spacer()
+                    Button(action: {
+                        withAnimation {
+                            showingFilter.toggle()
+                        }
+                    }) {
+                        Image(systemName: "line.3.horizontal.decrease.circle")
+                            .font(.title2)
+                            .foregroundColor(showingFilter ? .primary : .blue)
+                    }
+                    .overlay(alignment: .topLeading) {
+                        if showingFilter {
+                            FilterMenu(viewModel: calendarViewModel, goals: goals, habits: habits)
+                                .offset(y: 90)
+                                .transition(.move(edge: .top).combined(with: .opacity))
+                        }
+                    }
                     Spacer()
                     Button(action: {
                         calendarViewModel.moveMonth(by: -1)
@@ -53,44 +70,46 @@ struct CalendarView: View {
                     Spacer()
                 }
                 .padding(.bottom)
+                .zIndex(1) // Ensure buttons stay on top
 
-                Divider()
-                // Days of the week header
-                HStack {
-                    ForEach(calendarViewModel.daysOfWeek, id: \.self) { day in
-                        Text(day)
-                            .font(.subheadline)
-                            .frame(maxWidth: .infinity)
+                VStack {
+                    // Days of the week header and calendar grid
+                    HStack {
+                        ForEach(calendarViewModel.daysOfWeek, id: \.self) { day in
+                            Text(day)
+                                .font(.subheadline)
+                                .frame(maxWidth: .infinity)
+                        }
                     }
-                }
-                .padding(.bottom, 5)
+                    .padding(.bottom, 5)
 
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
-                    // Add empty cells for days before the start of the month
-                    ForEach(0..<calendarViewModel.startingWeekday, id: \.self) { index in
-                        Text("")
-                            .frame(width: 30, height: 30)
-                            .id("empty-\(index)") // Unique identifier for empty cells
-
-                    }
-                    ForEach(0..<calendarViewModel.daysInMonth, id: \.self) { offset in
-                        let date = Calendar.current.date(byAdding: .day, value: offset , to: calendarViewModel.startOfMonth)!
-                        let isSelected = Calendar.current.isDate(date, inSameDayAs: calendarViewModel.selectedDate)
-
-                        VStack {
-                            Circle()
-                                .fill(color(for: date))
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
+                        // Add empty cells for days before the start of the month
+                        ForEach(0..<calendarViewModel.startingWeekday, id: \.self) { index in
+                            Text("")
                                 .frame(width: 30, height: 30)
-                                .overlay(
-                                    Text(Calendar.current.component(.day, from: date).description)
-                                        .font(.caption)
-                                        .foregroundColor(.white)
-                                ).onTapGesture {
-                                    calendarViewModel.selectedDate = date
-                                }
-                            Rectangle()
-                                .fill(isSelected ? Color.blue : Color.clear)
-                                .frame(height: 2)
+                                .id("empty-\(index)") // Unique identifier for empty cells
+
+                        }
+                        ForEach(0..<calendarViewModel.daysInMonth, id: \.self) { offset in
+                            let date = Calendar.current.date(byAdding: .day, value: offset , to: calendarViewModel.startOfMonth)!
+                            let isSelected = Calendar.current.isDate(date, inSameDayAs: calendarViewModel.selectedDate)
+
+                            VStack {
+                                Circle()
+                                    .fill(color(for: date))
+                                    .frame(width: 30, height: 30)
+                                    .overlay(
+                                        Text(Calendar.current.component(.day, from: date).description)
+                                            .font(.caption)
+                                            .foregroundColor(.white)
+                                    ).onTapGesture {
+                                        calendarViewModel.selectedDate = date
+                                    }
+                                Rectangle()
+                                    .fill(isSelected ? Color.blue : Color.clear)
+                                    .frame(height: 2)
+                            }
                         }
                     }
                 }
@@ -105,7 +124,7 @@ struct CalendarView: View {
                 HStack {
                     Spacer()
                     Button(action: {
-                        calendarViewModel.selectedDate = Calendar.current.date(byAdding: .day, value: -1, to: calendarViewModel.selectedDate) ?? calendarViewModel.selectedDate
+                        calendarViewModel.moveDay(by: -1)
                     }) {
                         Image(systemName: "chevron.left")
                     }
@@ -114,7 +133,7 @@ struct CalendarView: View {
                         .font(.headline)
 
                     Button(action: {
-                        calendarViewModel.selectedDate = Calendar.current.date(byAdding: .day, value: 1, to: calendarViewModel.selectedDate) ?? calendarViewModel.selectedDate
+                        calendarViewModel.moveDay(by: 1)
                     }) {
                         Image(systemName: "chevron.right")
                     }
@@ -143,6 +162,9 @@ struct CalendarView: View {
         }
         .navigationTitle("Calendar Progress")
         .background(Color(UIColor.systemBackground))
+        .onAppear {
+            calendarViewModel.initializeFilters(goals: goals, habits: habits)
+        }
     }
     
     private func color(for date: Date) -> Color {

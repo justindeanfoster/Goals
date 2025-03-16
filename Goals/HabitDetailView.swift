@@ -6,6 +6,8 @@ struct HabitDetailView: View {
     @StateObject private var calendarViewModel = CalendarViewModel()
     @State private var showingAddJournalEntryForm = false
     @State private var showCalendar = false
+    @State private var showingEditJournalEntry = false
+    @State private var selectedEntry: JournalEntry?
 
     var body: some View {
         VStack {
@@ -86,19 +88,21 @@ struct HabitDetailView: View {
                                     let isToday = Calendar.current.isDateInToday(date)
                                     let hasJournalEntry = habit.journalEntries.contains { Calendar.current.isDate($0.timestamp, inSameDayAs: date) }
 
-                                    VStack {
-                                        Circle()
-                                            .fill(hasJournalEntry ? Color.green :  Color.gray)
-                                            .frame(width: 30, height: 30)
-                                            .overlay(
-                                                Text(Calendar.current.component(.day, from: date).description)
-                                                    .font(.caption)
-                                                    .foregroundColor(.white)
-                                            )
-                                        if isToday {
-                                            Rectangle()
-                                                .fill(Color.blue)
-                                                .frame(height: 2)
+                                    NavigationLink(destination: DayView(date: date, goals: [], habits: [habit])) {
+                                        VStack {
+                                            Circle()
+                                                .fill(hasJournalEntry ? Color.green :  Color.gray)
+                                                .frame(width: 30, height: 30)
+                                                .overlay(
+                                                    Text(Calendar.current.component(.day, from: date).description)
+                                                        .font(.caption)
+                                                        .foregroundColor(.white)
+                                                )
+                                            if isToday {
+                                                Rectangle()
+                                                    .fill(Color.blue)
+                                                    .frame(height: 2)
+                                            }
                                         }
                                     }
                                 }
@@ -123,19 +127,21 @@ struct HabitDetailView: View {
                                     let isToday = Calendar.current.isDateInToday(date)
                                     let hasJournalEntry = habit.journalEntries.contains { Calendar.current.isDate($0.timestamp, inSameDayAs: date) }
 
-                                    VStack {
-                                        Circle()
-                                            .fill(hasJournalEntry ? Color.green : Color.gray)
-                                            .frame(width: 30, height: 30)
-                                            .overlay(
-                                                Text(Calendar.current.component(.day, from: date).description)
-                                                    .font(.caption)
-                                                    .foregroundColor(.white)
-                                            )
-                                        if isToday {
-                                            Rectangle()
-                                                .fill(Color.blue)
-                                                .frame(height: 2)
+                                    NavigationLink(destination: DayView(date: date, goals: [], habits: [habit])) {
+                                        VStack {
+                                            Circle()
+                                                .fill(hasJournalEntry ? Color.green : Color.gray)
+                                                .frame(width: 30, height: 30)
+                                                .overlay(
+                                                    Text(Calendar.current.component(.day, from: date).description)
+                                                        .font(.caption)
+                                                        .foregroundColor(.white)
+                                                )
+                                            if isToday {
+                                                Rectangle()
+                                                    .fill(Color.blue)
+                                                    .frame(height: 2)
+                                            }
                                         }
                                     }
                                 }
@@ -181,13 +187,40 @@ struct HabitDetailView: View {
                     Text("Journal Entries")
                         .font(.headline)
                     ForEach(habit.journalEntries) { entry in
-                        VStack(alignment: .leading) {
-                            Text(" - \(entry.text)")
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(entry.text)
+                                .font(.body)
+                                .fixedSize(horizontal: false, vertical: true)
                             Text(entry.timestamp, style: .date)
                                 .font(.caption)
-                                .foregroundColor(.gray)
+                                .foregroundColor(.secondary)
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(Color(.systemGray6))
+                        )
+                        .padding(.vertical, 4)
+                        .contextMenu {
+                            Button(action: {
+                                selectedEntry = entry
+                                showingEditJournalEntry = true
+                            }) {
+                                Label("Edit", systemImage: "pencil")
+                            }
+                            Button(role: .destructive, action: {
+                                habit.journalEntries.removeAll { $0.id == entry.id }
+                            }) {
+                                Label("Delete", systemImage: "trash")
+                            }
                         }
                     }
+                    .sheet(isPresented: $showingEditJournalEntry, content: {
+                        if let entry = selectedEntry {
+                            EditJournalEntryView(entry: entry)
+                        }
+                    })
                 }
                 .padding()
             }

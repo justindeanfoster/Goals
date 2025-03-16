@@ -3,7 +3,9 @@ import SwiftUI
 class CalendarViewModel: ObservableObject {
     @Published var currentMonth: Date = Date()
     @Published var selectedDate: Date = Date()
-
+    @Published var selectedGoals: Set<UUID> = []
+    @Published var selectedHabits: Set<UUID> = []
+    
     var startOfMonth: Date {
         Calendar.current.date(from: Calendar.current.dateComponents([.year, .month], from: currentMonth)) ?? Date()
     }
@@ -53,19 +55,34 @@ class CalendarViewModel: ObservableObject {
         currentMonth = Calendar.current.date(byAdding: .weekOfMonth, value: value, to: currentMonth) ?? currentMonth
     }
     
+    func moveDay(by days: Int) {
+        let newDate = Calendar.current.date(byAdding: .day, value: days, to: selectedDate) ?? selectedDate
+        selectedDate = newDate
+        
+        // Check if we need to update the current month
+        if !Calendar.current.isDate(newDate, equalTo: currentMonth, toGranularity: .month) {
+            currentMonth = newDate
+        }
+    }
+    
+    func initializeFilters(goals: [Goal], habits: [Habit]) {
+        selectedGoals = Set(goals.map { $0.id })
+        selectedHabits = Set(habits.map { $0.id })
+    }
+    
     func journalEntries(for date: Date, goals: [Goal], habits: [Habit]) -> [JournalEntryWithSource] {
         let startOfDay = Calendar.current.startOfDay(for: date)
         var entries: [JournalEntryWithSource] = []
         
-        // Get entries from goals
-        for goal in goals {
+        // Get entries from filtered goals
+        for goal in goals where selectedGoals.contains(goal.id) {
             for entry in goal.journalEntries where Calendar.current.isDate(entry.timestamp, inSameDayAs: startOfDay) {
                 entries.append(JournalEntryWithSource(text: entry.text, sourceName: goal.title, sourceType: "Goal", timestamp: entry.timestamp))
             }
         }
         
-        // Get entries from habits
-        for habit in habits {
+        // Get entries from filtered habits
+        for habit in habits where selectedHabits.contains(habit.id) {
             for entry in habit.journalEntries where Calendar.current.isDate(entry.timestamp, inSameDayAs: startOfDay) {
                 entries.append(JournalEntryWithSource(text: entry.text, sourceName: habit.title, sourceType: "Habit", timestamp: entry.timestamp))
             }
@@ -82,10 +99,12 @@ class CalendarViewModel: ObservableObject {
     func hasJournalEntries(for date: Date, goals: [Goal], habits: [Habit]) -> Bool {
         let startOfDay = Calendar.current.startOfDay(for: date)
         return goals.contains { goal in
+            selectedGoals.contains(goal.id) &&
             goal.journalEntries.contains { entry in
                 Calendar.current.isDate(entry.timestamp, inSameDayAs: startOfDay)
             }
         } || habits.contains { habit in
+            selectedHabits.contains(habit.id) &&
             habit.journalEntries.contains { entry in
                 Calendar.current.isDate(entry.timestamp, inSameDayAs: startOfDay)
             }

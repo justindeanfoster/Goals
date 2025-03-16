@@ -16,6 +16,9 @@
 		0C5792E32D4DA68800DB774D /* HabitDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5792DF2D4DA68800DB774D /* HabitDetailView.swift */; };
 		0C5792E52D4DA93400DB774D /* AddHabitForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5792E42D4DA93400DB774D /* AddHabitForm.swift */; };
 		0C5792E72D4FDEBB00DB774D /* JournalEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5792E62D4FDEBB00DB774D /* JournalEntry.swift */; };
+		0C8485D32D8650CC003B1D34 /* DayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C8485D22D8650CC003B1D34 /* DayView.swift */; };
+		0C8485D52D8652BF003B1D34 /* EditJournalEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C8485D42D8652BF003B1D34 /* EditJournalEntryView.swift */; };
+		0C8485DB2D8659B3003B1D34 /* FilterMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C8485DA2D8659B3003B1D34 /* FilterMenu.swift */; };
 		0CBEFF1E2D45A4B600AB1028 /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CBEFF1D2D45A4B600AB1028 /* CalendarViewModel.swift */; };
 		0CBEFF202D45A55E00AB1028 /* GoalsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CBEFF1F2D45A55E00AB1028 /* GoalsListView.swift */; };
 		0CBEFF222D45A5AF00AB1028 /* GoalDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CBEFF212D45A5AF00AB1028 /* GoalDetailView.swift */; };
@@ -39,6 +42,9 @@
 		0C5792DF2D4DA68800DB774D /* HabitDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HabitDetailView.swift; sourceTree = "<group>"; };
 		0C5792E42D4DA93400DB774D /* AddHabitForm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddHabitForm.swift; sourceTree = "<group>"; };
 		0C5792E62D4FDEBB00DB774D /* JournalEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JournalEntry.swift; sourceTree = "<group>"; };
+		0C8485D22D8650CC003B1D34 /* DayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayView.swift; sourceTree = "<group>"; };
+		0C8485D42D8652BF003B1D34 /* EditJournalEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditJournalEntryView.swift; sourceTree = "<group>"; };
+		0C8485DA2D8659B3003B1D34 /* FilterMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterMenu.swift; sourceTree = "<group>"; };
 		0CBEFF1D2D45A4B600AB1028 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
 		0CBEFF1F2D45A55E00AB1028 /* GoalsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsListView.swift; sourceTree = "<group>"; };
 		0CBEFF212D45A5AF00AB1028 /* GoalDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalDetailView.swift; sourceTree = "<group>"; };
@@ -90,6 +96,9 @@
 		0CFFC84E2D1B81F700C8F272 /* Goals */ = {
 			isa = PBXGroup;
 			children = (
+				0C8485DA2D8659B3003B1D34 /* FilterMenu.swift */,
+				0C8485D42D8652BF003B1D34 /* EditJournalEntryView.swift */,
+				0C8485D22D8650CC003B1D34 /* DayView.swift */,
 				0C5792E62D4FDEBB00DB774D /* JournalEntry.swift */,
 				0C5792E42D4DA93400DB774D /* AddHabitForm.swift */,
 				0C5792DC2D4DA68800DB774D /* EditHabitForm.swift */,
@@ -227,10 +236,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				0CBEFF222D45A5AF00AB1028 /* GoalDetailView.swift in Sources */,
+				0C8485D52D8652BF003B1D34 /* EditJournalEntryView.swift in Sources */,
 				0CBEFF242D45A5F200AB1028 /* AddGoalForm.swift in Sources */,
 				0C5792E52D4DA93400DB774D /* AddHabitForm.swift in Sources */,
 				0C5792E12D4DA68800DB774D /* HabitsListView.swift in Sources */,
 				0C5792D72D4D9F3A00DB774D /* EditGoalForm.swift in Sources */,
+				0C8485DB2D8659B3003B1D34 /* FilterMenu.swift in Sources */,
 				0C5792E02D4DA68800DB774D /* EditHabitForm.swift in Sources */,
 				0C5792E32D4DA68800DB774D /* HabitDetailView.swift in Sources */,
 				0C5792E22D4DA68800DB774D /* Habit.swift in Sources */,
@@ -239,6 +250,7 @@
 				0CBEFF1E2D45A4B600AB1028 /* CalendarViewModel.swift in Sources */,
 				0CFFC8522D1B81F700C8F272 /* ContentView.swift in Sources */,
 				0C5792D92D4DA08700DB774D /* Goal.swift in Sources */,
+				0C8485D32D8650CC003B1D34 /* DayView.swift in Sources */,
 				0CBEFF202D45A55E00AB1028 /* GoalsListView.swift in Sources */,
 				0CFFC8542D1B81F700C8F272 /* Item.swift in Sources */,
 				0C10A3712D46AFD7001C50B8 /* AddJournalEntry.swift in Sources */,
