@@ -8,6 +8,8 @@ struct HabitDetailView: View {
     @State private var showCalendar = false
     @State private var showingEditJournalEntry = false
     @State private var selectedEntry: JournalEntry?
+    @State private var selectedDate: Date?
+    @State private var showingDayView = false
 
     var body: some View {
         VStack {
@@ -88,21 +90,23 @@ struct HabitDetailView: View {
                                     let isToday = Calendar.current.isDateInToday(date)
                                     let hasJournalEntry = habit.journalEntries.contains { Calendar.current.isDate($0.timestamp, inSameDayAs: date) }
 
-                                    NavigationLink(destination: DayView(date: date, goals: [], habits: [habit])) {
-                                        VStack {
-                                            Circle()
-                                                .fill(hasJournalEntry ? Color.green :  Color.gray)
-                                                .frame(width: 30, height: 30)
-                                                .overlay(
-                                                    Text(Calendar.current.component(.day, from: date).description)
-                                                        .font(.caption)
-                                                        .foregroundColor(.white)
-                                                )
-                                            if isToday {
-                                                Rectangle()
-                                                    .fill(Color.blue)
-                                                    .frame(height: 2)
+                                    VStack {
+                                        Circle()
+                                            .fill(hasJournalEntry ? Color.green :  Color.gray)
+                                            .frame(width: 30, height: 30)
+                                            .overlay(
+                                                Text(Calendar.current.component(.day, from: date).description)
+                                                    .font(.caption)
+                                                    .foregroundColor(.white)
+                                            )
+                                            .onTapGesture {
+                                                selectedDate = date
+                                                showingDayView = true
                                             }
+                                        if isToday {
+                                            Rectangle()
+                                                .fill(Color.blue)
+                                                .frame(height: 2)
                                         }
                                     }
                                 }
@@ -127,21 +131,23 @@ struct HabitDetailView: View {
                                     let isToday = Calendar.current.isDateInToday(date)
                                     let hasJournalEntry = habit.journalEntries.contains { Calendar.current.isDate($0.timestamp, inSameDayAs: date) }
 
-                                    NavigationLink(destination: DayView(date: date, goals: [], habits: [habit])) {
-                                        VStack {
-                                            Circle()
-                                                .fill(hasJournalEntry ? Color.green : Color.gray)
-                                                .frame(width: 30, height: 30)
-                                                .overlay(
-                                                    Text(Calendar.current.component(.day, from: date).description)
-                                                        .font(.caption)
-                                                        .foregroundColor(.white)
-                                                )
-                                            if isToday {
-                                                Rectangle()
-                                                    .fill(Color.blue)
-                                                    .frame(height: 2)
+                                    VStack {
+                                        Circle()
+                                            .fill(hasJournalEntry ? Color.green : Color.gray)
+                                            .frame(width: 30, height: 30)
+                                            .overlay(
+                                                Text(Calendar.current.component(.day, from: date).description)
+                                                    .font(.caption)
+                                                    .foregroundColor(.white)
+                                            )
+                                            .onTapGesture {
+                                                selectedDate = date
+                                                showingDayView = true
                                             }
+                                        if isToday {
+                                            Rectangle()
+                                                .fill(Color.blue)
+                                                .frame(height: 2)
                                         }
                                     }
                                 }
@@ -228,6 +234,11 @@ struct HabitDetailView: View {
         .background(Color(UIColor.systemBackground))
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $showingDayView) {
+            if let date = selectedDate {
+                DayView(date: date, goals: [], habits: [habit])
+            }
+        }
     }
 }
 
