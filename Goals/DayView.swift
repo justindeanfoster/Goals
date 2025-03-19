@@ -6,8 +6,9 @@ struct DayView: View {
     let date: Date
     let goals: [Goal]
     let habits: [Habit]
+    @State private var entries: [(String, [JournalEntry])] = []
     
-    private var entriesForDate: [(item: String, entries: [JournalEntry])] {
+    private func loadEntries() {
         var result: [(String, [JournalEntry])] = []
         
         // Filter goals with entries on this date
@@ -30,13 +31,13 @@ struct DayView: View {
             }
         }
         
-        return result
+        entries = result
     }
     
     var body: some View {
         NavigationView {
             Group {
-                if entriesForDate.isEmpty {
+                if entries.isEmpty {
                     VStack {
                         Spacer()
                         Text("You ain't do nothing today!")
@@ -48,7 +49,7 @@ struct DayView: View {
                     }
                 } else {
                     List {
-                        ForEach(entriesForDate, id: \.item) { item, entries in
+                        ForEach(entries, id: \.0) { item, entries in
                             Section(header: Text(item)) {
                                 ForEach(entries) { entry in
                                     VStack(alignment: .leading, spacing: 8) {
@@ -72,6 +73,18 @@ struct DayView: View {
                     }
                 }
             }
+        }
+        .onAppear {
+            loadEntries()
+        }
+        .onChange(of: date) { 
+            loadEntries()
+        }
+        .onChange(of: goals) { 
+            loadEntries()
+        }
+        .onChange(of: habits) { 
+            loadEntries()
         }
     }
 }

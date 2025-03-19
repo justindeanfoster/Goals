@@ -206,11 +206,10 @@ struct GoalDetailView: View {
                         HStack {
                             Text("Total Journal Entries:")
                             Spacer()
-                            Text("\(goal.journalEntries.count)")
+                            Text("\(allJournalEntries.count)")
                         }
                         .padding(.bottom, 2)
                     }
-                    .padding(.bottom)
 
                     Divider()
 
