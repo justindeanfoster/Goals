@@ -37,6 +37,7 @@ struct CalendarGridView: View {
                 ForEach(0..<calendarViewModel.startingWeekday, id: \.self) { index in
                     Text("")
                         .frame(width: 30, height: 30)
+                        .id("empty-\(index)")
                 }
                 
                 ForEach(0..<calendarViewModel.daysInMonth, id: \.self) { offset in
