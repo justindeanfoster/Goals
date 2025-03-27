@@ -5,6 +5,7 @@ class CalendarViewModel: ObservableObject {
     @Published var selectedDate: Date = Date()
     @Published var selectedGoals: Set<UUID> = []
     @Published var selectedHabits: Set<UUID> = []
+    @Published var timeframeChanged = false
     
     var startOfMonth: Date {
         Calendar.current.date(from: Calendar.current.dateComponents([.year, .month], from: currentMonth)) ?? Date()
@@ -49,10 +50,12 @@ class CalendarViewModel: ObservableObject {
 
     func moveMonth(by value: Int) {
         currentMonth = Calendar.current.date(byAdding: .month, value: value, to: currentMonth) ?? currentMonth
+        timeframeChanged.toggle()
     }
 
     func moveWeek(by value: Int) {
         currentMonth = Calendar.current.date(byAdding: .weekOfMonth, value: value, to: currentMonth) ?? currentMonth
+        timeframeChanged.toggle()
     }
     
     func moveDay(by days: Int) {
@@ -107,6 +110,22 @@ class CalendarViewModel: ObservableObject {
             selectedHabits.contains(habit.id) &&
             habit.journalEntries.contains { entry in
                 Calendar.current.isDate(entry.timestamp, inSameDayAs: startOfDay)
+            }
+        }
+    }
+    
+    func getEntriesForCurrentTimeframe(_ entries: [JournalEntry], isExpanded: Bool) -> [JournalEntry] {
+        if isExpanded {
+            // Show entries for current month
+            return entries.filter { entry in
+                Calendar.current.isDate(entry.timestamp, equalTo: currentMonth, toGranularity: .month)
+            }
+        } else {
+            // Show entries for current week
+            let startOfWeek = self.startOfWeek
+            let endOfWeek = Calendar.current.date(byAdding: .day, value: 7, to: startOfWeek)!
+            return entries.filter { entry in
+                entry.timestamp >= startOfWeek && entry.timestamp < endOfWeek
             }
         }
     }

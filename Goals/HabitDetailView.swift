@@ -67,7 +67,10 @@ struct HabitDetailView: View {
                     // Journal Entries
                     Text("Journal Entries").font(.headline)
                     JournalEntriesListView(
-                        entries: habit.journalEntries,
+                        entries: calendarViewModel.getEntriesForCurrentTimeframe(
+                            habit.journalEntries, 
+                            isExpanded: showCalendar
+                        ),
                         onEntryTapped: { entry in
                             selectedDate = entry.timestamp
                             showingDayView = true

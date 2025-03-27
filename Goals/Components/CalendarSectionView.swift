@@ -6,6 +6,7 @@ struct CalendarSectionView: View {
     let onDateSelected: (Date) -> Void
     let isDeadlineDate: ((Date) -> Bool)?
     @Binding var showCalendar: Bool
+    @State private var lastTimeframeUpdate = Date()
     
     var body: some View {
         VStack {
@@ -38,6 +39,12 @@ struct CalendarSectionView: View {
                     isDeadlineDate: isDeadlineDate
                 )
             }
+        }
+        .onChange(of: showCalendar) { _, _ in
+            lastTimeframeUpdate = Date()
+        }
+        .onChange(of: calendarViewModel.timeframeChanged) { _, _ in
+            lastTimeframeUpdate = Date()
         }
     }
 }

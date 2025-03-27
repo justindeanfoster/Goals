@@ -19,6 +19,7 @@ struct GoalDetailView: View {
     @State private var selectedEntry: JournalEntry?
     @State private var selectedDate: Date?
     @State private var dayViewData: (goals: [Goal], habits: [Habit], date: Date)?
+    @State private var timeframeUpdateTrigger = Date()
 
     @State private var showingDayView = false
 
@@ -83,7 +84,10 @@ struct GoalDetailView: View {
                     // Journal Entries
                     Text("Journal Entries").font(.headline)
                     JournalEntriesListView(
-                        entries: allJournalEntries,
+                        entries: calendarViewModel.getEntriesForCurrentTimeframe(
+                            allJournalEntries, 
+                            isExpanded: showCalendar
+                        ),
                         onEntryTapped: { entry in
                             selectedDate = entry.timestamp
                             showingDayView = true
@@ -105,6 +109,7 @@ struct GoalDetailView: View {
                             return ""
                         }
                     )
+                    .id(timeframeUpdateTrigger)
                 }
                 .padding()
             }
@@ -129,6 +134,12 @@ struct GoalDetailView: View {
             if let entry = selectedEntry {
                 EditJournalEntryView(entry: entry)
             }
+        }
+        .onChange(of: showCalendar) { _, _ in
+            timeframeUpdateTrigger = Date()
+        }
+        .onChange(of: calendarViewModel.timeframeChanged) { _, _ in
+            timeframeUpdateTrigger = Date()
         }
     }
 }
