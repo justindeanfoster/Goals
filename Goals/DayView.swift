@@ -57,7 +57,6 @@ struct DayView: View {
             }
         }
         .presentationDetents([.height(300)])
-        .interactiveDismissDisabled()
         .onAppear {
             entries = DayView.loadEntries(for: date, goals: goals, habits: habits)
         }
