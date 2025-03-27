@@ -6,34 +6,16 @@ struct DayView: View {
     let date: Date
     let goals: [Goal]
     let habits: [Habit]
-    @State private var entries: [(String, [JournalEntry])] = []
-    
-    private func loadEntries() {
-        var result: [(String, [JournalEntry])] = []
-        
-        // Filter goals with entries on this date
-        for goal in goals {
-            let entries = goal.journalEntries.filter { 
-                Calendar.current.isDate($0.timestamp, inSameDayAs: date)
-            }
-            if !entries.isEmpty {
-                result.append((goal.title, entries))
-            }
-        }
-        
-        // Filter habits with entries on this date
-        for habit in habits {
-            let entries = habit.journalEntries.filter {
-                Calendar.current.isDate($0.timestamp, inSameDayAs: date)
-            }
-            if !entries.isEmpty {
-                result.append((habit.title, entries))
-            }
-        }
-        
-        entries = result
+    @State private var entries: [(String, [JournalEntry])]
+
+    init(date: Date, goals: [Goal], habits: [Habit]) {
+        self.date = date
+        self.goals = goals
+        self.habits = habits
+        // Initialize entries immediately
+        self._entries = State(initialValue: DayView.loadEntries(for: date, goals: goals, habits: habits))
     }
-    
+
     var body: some View {
         NavigationView {
             Group {
@@ -74,17 +56,37 @@ struct DayView: View {
                 }
             }
         }
+        .presentationDetents([.height(300)])
+        .interactiveDismissDisabled()
         .onAppear {
-            loadEntries()
+            entries = DayView.loadEntries(for: date, goals: goals, habits: habits)
         }
-        .onChange(of: date) { 
-            loadEntries()
+    }
+
+    private static func loadEntries(for date: Date, goals: [Goal], habits: [Habit]) -> [(String, [JournalEntry])] {
+        var result: [(String, [JournalEntry])] = []
+        let calendar = Calendar.current
+
+        // Filter goals with entries on this date
+        for goal in goals {
+            let entries = goal.journalEntries.filter {
+                calendar.isDate($0.timestamp, inSameDayAs: date)
+            }
+            if !entries.isEmpty {
+                result.append((goal.title, entries))
+            }
         }
-        .onChange(of: goals) { 
-            loadEntries()
+
+        // Filter habits with entries on this date
+        for habit in habits {
+            let entries = habit.journalEntries.filter {
+                calendar.isDate($0.timestamp, inSameDayAs: date)
+            }
+            if !entries.isEmpty {
+                result.append((habit.title, entries))
+            }
         }
-        .onChange(of: habits) { 
-            loadEntries()
-        }
+
+        return result
     }
 }
