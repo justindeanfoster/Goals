@@ -27,7 +27,10 @@ struct StatisticsListView: View {
                                     }
                                 }
                                 YearGridView(
-                                    entries: goal.journalEntries.map { $0.timestamp },
+                                    entries: Array(Set(
+                                        goal.journalEntries.map { $0.timestamp } +
+                                        goal.relatedHabits.flatMap { $0.journalEntries.map { $0.timestamp } }
+                                    )),
                                     calendarViewModel: calendarViewModel
                                 )
                                 .allowsHitTesting(false) // Prevent YearGridView from intercepting taps

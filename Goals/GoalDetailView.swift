@@ -60,11 +60,19 @@ struct GoalDetailView: View {
                     Divider()
                     
                     // Statistics Section
-                    StatisticsSectionView(statistics: [
-                        StatisticRow(label: "Days Worked:", value: "\(goal.daysWorked)"),
-                        StatisticRow(label: "Days Remaining:", value: "\(goal.daysRemaining)"),
-                        StatisticRow(label: "Total Journal Entries:", value: "\(allJournalEntries.count)")
-                    ])
+                    VStack(alignment: .leading, spacing: 15) {
+                        NavigationLink(destination: StatisticsDetailView(item: .goal(goal))) {
+                            Text("Statistics")
+                                .font(.headline)
+                                .foregroundColor(.blue)
+                        }
+                        
+                        StatisticsSectionView(statistics: [
+                            StatisticRow(label: "Days Worked:", value: "\(goal.daysWorked)"),
+                            StatisticRow(label: "Days Remaining:", value: "\(goal.daysRemaining)"),
+                            StatisticRow(label: "Total Journal Entries:", value: "\(allJournalEntries.count)")
+                        ])
+                    }
                     
                     Divider()
                     

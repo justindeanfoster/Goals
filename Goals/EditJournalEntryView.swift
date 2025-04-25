@@ -16,7 +16,13 @@ struct EditJournalEntryView: View {
         NavigationView {
             Form {
                 Section {
-                    DatePicker("Entry Date", selection: $editedDate, displayedComponents: .date)
+                    HStack {
+                        Text("Entry Date")
+                        Spacer()
+                        DatePicker("", selection: $editedDate, displayedComponents: .date)
+                            .labelsHidden()
+                            .datePickerStyle(.compact)
+                    }
                     ZStack(alignment: .topLeading) {
                         TextEditor(text: $editedText)
                             .frame(height: 100)

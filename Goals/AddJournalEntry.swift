@@ -4,16 +4,30 @@ import SwiftData
 struct AddJournalEntryForm: View {
     let goal: Goal?
     let habit: Habit?
+    let onCompletion: (() -> Void)?
     @State private var newJournalEntry: String = ""
-    @State private var entryDate: Date = Date()
+    @State private var entryDate: Date
     @State private var selectedHabits: [Habit] = []
     @Environment(\.presentationMode) var presentationMode
+    
+    init(goal: Goal?, habit: Habit?, initialDate: Date = Date(), onCompletion: (() -> Void)? = nil) {
+        self.goal = goal
+        self.habit = habit
+        _entryDate = State(initialValue: initialDate)
+        self.onCompletion = onCompletion
+    }
 
     var body: some View {
         NavigationView {
             Form {
                 Section {
-                    DatePicker("Entry Date", selection: $entryDate, displayedComponents: .date)
+                    HStack {
+                        Text("Entry Date")
+                        Spacer()
+                        DatePicker("", selection: $entryDate, displayedComponents: .date)
+                            .labelsHidden()
+                            .datePickerStyle(.compact)
+                    }
                     ZStack(alignment: .topLeading) {
                         TextEditor(text: $newJournalEntry)
                             .frame(height: 100)
@@ -55,6 +69,7 @@ struct AddJournalEntryForm: View {
                             habit.journalEntries.append(entry)
                         }
                         newJournalEntry = ""
+                        onCompletion?()
                     }
                     presentationMode.wrappedValue.dismiss()
                 }

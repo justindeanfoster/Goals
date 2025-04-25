@@ -45,9 +45,17 @@ struct HabitDetailView: View {
                     Divider()
                     
                     // Statistics Section
-                    StatisticsSectionView(statistics: [
-                        StatisticRow(label: "Days Worked:", value: "\(habit.daysWorked)")
-                    ])
+                    VStack(alignment: .leading, spacing: 15) {
+                        NavigationLink(destination: StatisticsDetailView(item: .habit(habit))) {
+                            Text("Statistics")
+                                .font(.headline)
+                                .foregroundColor(.blue)
+                        }
+                        
+                        StatisticsSectionView(statistics: [
+                            StatisticRow(label: "Days Worked:", value: "\(habit.daysWorked)")
+                        ])
+                    }
                     
                     Divider()
                     

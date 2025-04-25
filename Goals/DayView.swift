@@ -7,6 +7,7 @@ struct DayView: View {
     let goals: [Goal]
     let habits: [Habit]
     @State private var entries: [(String, [JournalEntry])]
+    @State private var showingAddJournalEntryForm = false
 
     init(date: Date, goals: [Goal], habits: [Habit]) {
         self.date = date
@@ -49,14 +50,26 @@ struct DayView: View {
             }
             .navigationTitle(date.formatted(date: .complete, time: .omitted))
             .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") {
-                        dismiss()
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        showingAddJournalEntryForm = true
+                    }) {
+                        Image(systemName: "plus")
                     }
                 }
             }
         }
         .presentationDetents([.height(300)])
+        .sheet(isPresented: $showingAddJournalEntryForm) {
+            AddJournalEntryForm(
+                goal: goals.first,
+                habit: habits.first,
+                initialDate: date,
+                onCompletion: {
+                    dismiss()
+                }
+            )
+        }
         .onAppear {
             entries = DayView.loadEntries(for: date, goals: goals, habits: habits)
         }
