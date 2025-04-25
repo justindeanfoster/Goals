@@ -46,7 +46,7 @@ struct HabitDetailView: View {
                     
                     // Statistics Section
                     StatisticsSectionView(statistics: [
-                        StatisticsItem(label: "Days Worked:", value: "\(habit.daysWorked)")
+                        StatisticRow(label: "Days Worked:", value: "\(habit.daysWorked)")
                     ])
                     
                     Divider()

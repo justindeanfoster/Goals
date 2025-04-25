@@ -6,6 +6,7 @@ class CalendarViewModel: ObservableObject {
     @Published var selectedGoals: Set<UUID> = []
     @Published var selectedHabits: Set<UUID> = []
     @Published var timeframeChanged = false
+    @Published var selectedYear: Int = Calendar.current.component(.year, from: Date())
     
     var startOfMonth: Date {
         Calendar.current.date(from: Calendar.current.dateComponents([.year, .month], from: currentMonth)) ?? Date()
@@ -15,10 +16,21 @@ class CalendarViewModel: ObservableObject {
         Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: currentMonth)) ?? Date()
     }
 
+    var startOfYear: Date {
+        let components = Calendar.current.dateComponents([.year], from: Date())
+        return Calendar.current.date(from: components) ?? Date()
+    }
+
     var daysInMonth: Int {
         Calendar.current.range(of: .day, in: .month, for: startOfMonth)?.count ?? 30
     }
     
+    var daysInCurrentYear: Int {
+        let today = Date()
+        // Add 1 to include today
+        return (Calendar.current.dateComponents([.day], from: startOfYear, to: today).day ?? 0) + 1
+    }
+
     var startingWeekday: Int {
         Calendar.current.component(.weekday, from: startOfMonth) - 1
     }
@@ -27,6 +39,11 @@ class CalendarViewModel: ObservableObject {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEE"
         return Calendar.current.shortWeekdaySymbols
+    }
+    
+    var selectedYearStartDate: Date {
+        let components = DateComponents(year: selectedYear, month: 1, day: 1)
+        return Calendar.current.date(from: components) ?? Date()
     }
     
     func goalsWorkedOn(for date: Date, goals: [Goal]) -> [Goal] {
@@ -66,6 +83,11 @@ class CalendarViewModel: ObservableObject {
         if !Calendar.current.isDate(newDate, equalTo: currentMonth, toGranularity: .month) {
             currentMonth = newDate
         }
+    }
+    
+    func moveYear(by value: Int) {
+        selectedYear += value
+        timeframeChanged.toggle()
     }
     
     func initializeFilters(goals: [Goal], habits: [Habit]) {
@@ -127,6 +149,16 @@ class CalendarViewModel: ObservableObject {
             return entries.filter { entry in
                 entry.timestamp >= startOfWeek && entry.timestamp < endOfWeek
             }
+        }
+    }
+    
+    func daysInYear(_ year: Int) -> Int {
+        let isCurrentYear = year == Calendar.current.component(.year, from: Date())
+        if (isCurrentYear) {
+            return daysInCurrentYear
+        } else {
+            let yearDate = Calendar.current.date(from: DateComponents(year: year))!
+            return Calendar.current.range(of: .day, in: .year, for: yearDate)?.count ?? 365
         }
     }
 }

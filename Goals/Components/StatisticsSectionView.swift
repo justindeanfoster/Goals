@@ -1,13 +1,13 @@
 import SwiftUI
 
-struct StatisticsItem: Identifiable {
+struct StatisticRow: Identifiable {
     let id = UUID()
     let label: String
     let value: String
 }
 
 struct StatisticsSectionView: View {
-    let statistics: [StatisticsItem]
+    let statistics: [StatisticRow]
     
     var body: some View {
         VStack(alignment: .leading) {

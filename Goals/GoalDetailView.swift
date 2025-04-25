@@ -61,9 +61,9 @@ struct GoalDetailView: View {
                     
                     // Statistics Section
                     StatisticsSectionView(statistics: [
-                        StatisticsItem(label: "Days Worked:", value: "\(goal.daysWorked)"),
-                        StatisticsItem(label: "Days Remaining:", value: "\(goal.daysRemaining)"),
-                        StatisticsItem(label: "Total Journal Entries:", value: "\(allJournalEntries.count)")
+                        StatisticRow(label: "Days Worked:", value: "\(goal.daysWorked)"),
+                        StatisticRow(label: "Days Remaining:", value: "\(goal.daysRemaining)"),
+                        StatisticRow(label: "Total Journal Entries:", value: "\(allJournalEntries.count)")
                     ])
                     
                     Divider()

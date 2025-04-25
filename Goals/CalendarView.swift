@@ -18,11 +18,10 @@ struct CalendarView: View {
     @State private var showingFilter = false
     
     var body: some View {
-        VStack {
-            // Calendar View
-            VStack {
+        ScrollView {
+            VStack(spacing: 20) {
+                // Filter and Calendar Controls
                 HStack {
-                    Spacer()
                     Button(action: {
                         withAnimation {
                             showingFilter.toggle()
@@ -39,41 +38,35 @@ struct CalendarView: View {
                                 .transition(.move(edge: .top).combined(with: .opacity))
                         }
                     }
+                    
                     Spacer()
-                    Button(action: {
-                        calendarViewModel.moveMonth(by: -1)
-                    }) {
+                    
+                    Button(action: { calendarViewModel.moveMonth(by: -1) }) {
                         Image(systemName: "chevron.left")
                     }
-
-
+                    
                     Text(calendarViewModel.startOfMonth, formatter: monthYearFormatter)
                         .font(.headline)
-                        .padding()
-
-
-                    Button(action: {
-                        calendarViewModel.moveMonth(by: 1)
-                    }) {
+                    
+                    Button(action: { calendarViewModel.moveMonth(by: 1) }) {
                         Image(systemName: "chevron.right")
                     }
-
-
+                        
+                    
+                    Spacer()
                     Button(action: {
                         calendarViewModel.selectedDate = Date()
                         calendarViewModel.currentMonth = Date()
                     }) {
                         Text("Today")
                             .font(.headline)
-                            .padding(.leading, 10)
                     }
-                    Spacer()
                 }
-                .padding(.bottom)
-                .zIndex(1) // Ensure buttons stay on top
-
+                .padding(.horizontal)
+                .zIndex(1)
+                
+                // Calendar Grid
                 VStack {
-                    // Days of the week header and calendar grid
                     HStack {
                         ForEach(calendarViewModel.daysOfWeek, id: \.self) { day in
                             Text(day)
@@ -113,37 +106,17 @@ struct CalendarView: View {
                         }
                     }
                 }
-            }
-            .padding(.top)
-
-            Divider()
-
-            // Progress View for Selected Day
-            VStack(alignment: .leading, spacing: 10) {
-                Spacer()
-                HStack {
-                    Spacer()
-                    Button(action: {
-                        calendarViewModel.moveDay(by: -1)
-                    }) {
-                        Image(systemName: "chevron.left")
-                    }
-
-                    Text("\(calendarViewModel.selectedDate, formatter: dayFormatter)")
-                        .font(.headline)
-
-                    Button(action: {
-                        calendarViewModel.moveDay(by: 1)
-                    }) {
-                        Image(systemName: "chevron.right")
-                    }
-                    Spacer()
-                }
-                .padding(.bottom, 5)
-
+                .padding(.horizontal)
+                
                 Divider()
-
-                List {
+                    .padding(.horizontal)
+                
+                // Journal Entries Section
+                VStack(alignment: .leading, spacing: 10) {
+                    Text(calendarViewModel.selectedDate.formatted(date: .complete, time: .omitted))
+                        .font(.headline)
+                        .padding(.horizontal)
+                    
                     ForEach(calendarViewModel.journalEntries(for: calendarViewModel.selectedDate, goals: goals, habits: habits)) { entry in
                         VStack(alignment: .leading, spacing: 8) {
                             Text(entry.text)
@@ -155,10 +128,15 @@ struct CalendarView: View {
                             .font(.caption)
                             .foregroundColor(.secondary)
                         }
-                        .padding(.vertical, 4)
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(Color(.systemGray6))
+                        .cornerRadius(10)
+                        .padding(.horizontal)
                     }
                 }
             }
+            .padding(.vertical)
         }
         .navigationTitle("Calendar Progress")
         .background(Color(UIColor.systemBackground))
