@@ -118,6 +118,29 @@ struct GoalDetailView: View {
                         }
                     )
                     .id(timeframeUpdateTrigger)
+                    
+                    Divider()
+                    
+                    // Related Habits Tags
+                    if !goal.relatedHabits.isEmpty {
+                        Text("Related Habits")
+                            .font(.headline)
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 8) {
+                                ForEach(goal.relatedHabits) { habit in
+                                    NavigationLink(destination: HabitDetailView(habit: habit)) {
+                                        Text(habit.title)
+                                            .padding(.horizontal, 12)
+                                            .padding(.vertical, 6)
+                                            .background(Color.blue.opacity(0.2))
+                                            .foregroundColor(.blue)
+                                            .cornerRadius(16)
+                                    }
+                                }
+                            }
+                            .padding(.vertical, 4)
+                        }
+                    }
                 }
                 .padding()
             }

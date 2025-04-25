@@ -11,10 +11,6 @@ struct StatisticsSectionView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text("Statistics")
-                .font(.headline)
-                .padding(.bottom, 5)
-            
             ForEach(statistics) { stat in
                 HStack {
                     Text(stat.label)
