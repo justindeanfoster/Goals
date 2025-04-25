@@ -30,24 +30,10 @@ struct StatisticsDetailView: View {
                 }
                 .padding(.vertical, 5)
                 
-                // Year Navigation
-                HStack {
-                    Button(action: { calendarViewModel.moveYear(by: -1) }) {
-                        Image(systemName: "chevron.left")
-                    }
-                    Spacer()
-                    Text(String(calendarViewModel.selectedYear))
-                        .font(.title2.bold())
-                    Spacer()
-                    Button(action: { calendarViewModel.moveYear(by: 1) }) {
-                        Image(systemName: "chevron.right")
-                    }
-                }
-                .padding(.horizontal)
                 
                 // Year View
                 VStack(alignment: .leading) {
-                    Text("Year Overview")
+                    Text("\(String(calendarViewModel.selectedYear)) Year Overview ")
                         .font(.headline)
                     YearGridView(
                         entries: getEntriesForSelectedYear(),
