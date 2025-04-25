@@ -74,6 +74,18 @@ struct CalendarGridView: View {
                 }
             }
         }
+        .gesture(
+            DragGesture()
+                .onEnded { value in
+                    if value.translation.width > 50 {
+                        // Swipe right - go back
+                        calendarViewModel.moveMonth(by: -1)
+                    } else if value.translation.width < -50 {
+                        // Swipe left - go forward
+                        calendarViewModel.moveMonth(by: 1)
+                    }
+                }
+        )
     }
     
     private var monthFormatter: DateFormatter {

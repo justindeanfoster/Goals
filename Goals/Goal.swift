@@ -12,8 +12,12 @@ final class Goal {
     @Relationship(deleteRule: .cascade) 
     var journalEntries: [JournalEntry] = []
     
-    @Relationship(deleteRule: .nullify) 
-    var relatedHabits: [Habit] = []
+    @Relationship(deleteRule: .cascade) 
+    var habitRelations: [GoalHabitRelation] = []
+    
+    var relatedHabits: [Habit] {
+        habitRelations.compactMap { $0.habit }
+    }
 
     var daysWorked: Int {
         let calendar = Calendar.current
@@ -35,8 +39,11 @@ final class Goal {
         self.deadline = deadline
         self.milestones = milestones
         self.notes = notes
-        self.relatedHabits = relatedHabits
         self.journalEntries = []
+        // Create relations for each habit
+        self.habitRelations = relatedHabits.map { habit in
+            GoalHabitRelation(goal: self, habit: habit)
+        }
     }
 }
 

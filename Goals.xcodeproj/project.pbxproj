@@ -27,6 +27,7 @@
 		0C97179A2DBBE70D0072B569 /* StatisticsDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9717972DBBE70D0072B569 /* StatisticsDetailView.swift */; };
 		0C97179B2DBBE70D0072B569 /* StatisticsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9717982DBBE70D0072B569 /* StatisticsListView.swift */; };
 		0C97179F2DBBEBF30072B569 /* YearGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C97179E2DBBEBF30072B569 /* YearGridView.swift */; };
+		0C9717A22DBC41E60072B569 /* GoalHabitRelation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9717A02DBC41E60072B569 /* GoalHabitRelation.swift */; };
 		0CBEFF1E2D45A4B600AB1028 /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CBEFF1D2D45A4B600AB1028 /* CalendarViewModel.swift */; };
 		0CBEFF202D45A55E00AB1028 /* GoalsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CBEFF1F2D45A55E00AB1028 /* GoalsListView.swift */; };
 		0CBEFF222D45A5AF00AB1028 /* GoalDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CBEFF212D45A5AF00AB1028 /* GoalDetailView.swift */; };
@@ -61,6 +62,7 @@
 		0C9717972DBBE70D0072B569 /* StatisticsDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsDetailView.swift; sourceTree = "<group>"; };
 		0C9717982DBBE70D0072B569 /* StatisticsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsListView.swift; sourceTree = "<group>"; };
 		0C97179E2DBBEBF30072B569 /* YearGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearGridView.swift; sourceTree = "<group>"; };
+		0C9717A02DBC41E60072B569 /* GoalHabitRelation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalHabitRelation.swift; sourceTree = "<group>"; };
 		0CBEFF1D2D45A4B600AB1028 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
 		0CBEFF1F2D45A55E00AB1028 /* GoalsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsListView.swift; sourceTree = "<group>"; };
 		0CBEFF212D45A5AF00AB1028 /* GoalDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalDetailView.swift; sourceTree = "<group>"; };
@@ -114,6 +116,14 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		0C9717A12DBC41E60072B569 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				0C9717A02DBC41E60072B569 /* GoalHabitRelation.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		0CFFC8432D1B81F700C8F272 = {
 			isa = PBXGroup;
 			children = (
@@ -134,6 +144,7 @@
 		0CFFC84E2D1B81F700C8F272 /* Goals */ = {
 			isa = PBXGroup;
 			children = (
+				0C9717A12DBC41E60072B569 /* Models */,
 				0C9717992DBBE70D0072B569 /* Views */,
 				0C8485E52D94EF65003B1D34 /* Components */,
 				0C8485DA2D8659B3003B1D34 /* FilterMenu.swift */,
@@ -297,6 +308,7 @@
 				0CBEFF262D45A62900AB1028 /* CalendarView.swift in Sources */,
 				0CBEFF1E2D45A4B600AB1028 /* CalendarViewModel.swift in Sources */,
 				0CFFC8522D1B81F700C8F272 /* ContentView.swift in Sources */,
+				0C9717A22DBC41E60072B569 /* GoalHabitRelation.swift in Sources */,
 				0C5792D92D4DA08700DB774D /* Goal.swift in Sources */,
 				0C8485D32D8650CC003B1D34 /* DayView.swift in Sources */,
 				0CBEFF202D45A55E00AB1028 /* GoalsListView.swift in Sources */,

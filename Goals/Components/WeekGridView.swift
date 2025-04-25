@@ -53,5 +53,17 @@ struct WeekGridView: View {
                 }
             }
         }
+        .gesture(
+            DragGesture()
+                .onEnded { value in
+                    if value.translation.width > 50 {
+                        // Swipe right - go back
+                        calendarViewModel.moveWeek(by: -1)
+                    } else if value.translation.width < -50 {
+                        // Swipe left - go forward
+                        calendarViewModel.moveWeek(by: 1)
+                    }
+                }
+        )
     }
 }

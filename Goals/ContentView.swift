@@ -44,6 +44,6 @@ struct ContentView: View {
 
 #Preview{
     ContentView()                
-    .modelContainer(for :[Goal.self, Habit.self, JournalEntry.self])
+    .modelContainer(for: [Goal.self, Habit.self, JournalEntry.self, GoalHabitRelation.self])
 
 }

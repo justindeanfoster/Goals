@@ -11,6 +11,13 @@ final class Habit {
     @Relationship(deleteRule: .cascade) 
     var journalEntries: [JournalEntry] = []
 
+    @Relationship(deleteRule: .cascade) 
+    var goalRelations: [GoalHabitRelation] = []
+    
+    var relatedGoals: [Goal] {
+        goalRelations.compactMap { $0.goal }
+    }
+
     var daysWorked: Int {
         let uniqueDays = Set(journalEntries.map { Calendar.current.startOfDay(for: $0.timestamp) })
         return uniqueDays.count

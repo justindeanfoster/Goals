@@ -37,8 +37,18 @@ struct GoalsListView: View {
                             Label("Edit Goal", systemImage: "pencil")
                         }
                         Button(action: {
+                            // Remove relations first
+                            let relations = goal.habitRelations
+                            goal.habitRelations.removeAll()
+                            
+                            for relation in relations {
+                                if let habit = relation.habit {
+                                    habit.goalRelations.removeAll { $0.id == relation.id }
+                                }
+                                modelContext.delete(relation)
+                            }
+                            
                             modelContext.delete(goal)
-                            try? modelContext.save()
                         }) {
                             Label("Delete Goal", systemImage: "trash")
                         }

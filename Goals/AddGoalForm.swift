@@ -89,21 +89,26 @@ struct AddGoalForm: View {
                         if title.isEmpty {
                             showValidationError = true
                         } else {
-                            do {
-                                let newGoal = Goal(title: title, deadline: deadline, milestones: milestones, notes: notes, relatedHabits: selectedHabits)
-                                modelContext.insert(newGoal)
-                                try modelContext.save()
-                                dismiss()
-                            } catch {
-                                errorMessage = error.localizedDescription
-                                showError = true
-                                print("Save error: \(error)")
-                            }
+                            saveGoal()
+                            dismiss()
                         }
                     }
                 }
             }
             .background(Color(UIColor.systemBackground))
+        }
+    }
+    
+    private func saveGoal() {
+        let newGoal = Goal(title: title, deadline: deadline, milestones: milestones, notes: notes)
+        modelContext.insert(newGoal)
+        
+        // Create relationships after goal is inserted
+        for habit in selectedHabits {
+            let relation = GoalHabitRelation(goal: newGoal, habit: habit)
+            modelContext.insert(relation) // Insert relation first
+            habit.goalRelations.append(relation)
+            newGoal.habitRelations.append(relation)
         }
     }
 }

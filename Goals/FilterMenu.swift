@@ -6,15 +6,19 @@ struct FilterMenu: View {
     let habits: [Habit]
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            if !goals.isEmpty {
+        HStack(alignment: .top, spacing: 16) {
+            // Goals Column
+            VStack(alignment: .leading, spacing: 8) {
                 Text("Goals")
                     .font(.headline)
+                    .padding(.bottom, 4)
+                
                 ForEach(goals) { goal in
                     HStack {
                         Image(systemName: viewModel.selectedGoals.contains(goal.id) ? "checkmark.square.fill" : "square")
                             .foregroundColor(viewModel.selectedGoals.contains(goal.id) ? .blue : .gray)
                         Text(goal.title)
+                            .lineLimit(1)
                     }
                     .contentShape(Rectangle())
                     .onTapGesture {
@@ -26,16 +30,22 @@ struct FilterMenu: View {
                     }
                 }
             }
+            .frame(maxWidth: .infinity)
             
-            if !habits.isEmpty {
+            Divider()
+            
+            // Habits Column
+            VStack(alignment: .leading, spacing: 8) {
                 Text("Habits")
                     .font(.headline)
-                    .padding(.top, 8)
+                    .padding(.bottom, 4)
+                
                 ForEach(habits) { habit in
                     HStack {
                         Image(systemName: viewModel.selectedHabits.contains(habit.id) ? "checkmark.square.fill" : "square")
                             .foregroundColor(viewModel.selectedHabits.contains(habit.id) ? .blue : .gray)
                         Text(habit.title)
+                            .lineLimit(1)
                     }
                     .contentShape(Rectangle())
                     .onTapGesture {
@@ -47,13 +57,16 @@ struct FilterMenu: View {
                     }
                 }
             }
+            .frame(maxWidth: .infinity)
         }
         .padding()
         .background(Color(.systemBackground))
         .cornerRadius(10)
         .shadow(radius: 5)
-        .frame(width: 250)
+        .frame(width: 300)
+        .fixedSize(horizontal: false, vertical: true)  // Only take up needed vertical space
         .clipped()
-        .padding(.horizontal)
+        .offset(x: -8) // Align to left edge
+        .transition(.move(edge: .top).combined(with: .opacity))
     }
 }
