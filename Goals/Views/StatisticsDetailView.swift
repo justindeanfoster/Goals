@@ -75,6 +75,41 @@ struct StatisticsDetailView: View {
                 .padding()
                 .background(Color(.systemGray6))
                 .cornerRadius(10)
+                
+                // Pie Charts Section
+                VStack(spacing: 20) {
+                    VStack(alignment: .leading) {
+                        HStack(alignment: .center, spacing: 20) {
+                            Text("Activity by Day of Week")
+                                .font(.headline)
+                                .padding(.horizontal)
+                            Spacer()
+                        }
+                        PieChartView(
+                            slices: isAllTimeStats ? getDayOfWeekBreakdown(entries: getEntries()) : getDayOfWeekBreakdown(entries: getEntriesForSelectedYear()),
+                            title: ""
+                        )
+                    }
+                    .padding()
+                    .background(Color(.systemGray6))
+                    .cornerRadius(10)
+                    
+                    VStack(alignment: .leading) {
+                        HStack(alignment: .center, spacing: 20) {
+                            Text("Monthly Activity Distribution")
+                                .font(.headline)
+                                .padding(.horizontal)
+                            Spacer()
+                        }
+                        PieChartView(
+                            slices: isAllTimeStats ? getMonthlyBreakdown(entries: getEntries()) : getMonthlyBreakdown(entries: getEntriesForSelectedYear()),
+                            title: ""
+                        )
+                    }
+                    .padding()
+                    .background(Color(.systemGray6))
+                    .cornerRadius(10)
+                }
             }
             .padding()
         }
@@ -202,6 +237,42 @@ struct StatisticsDetailView: View {
         
         // Handle case where current streak might be the longest
         return max(longestStreak, currentStreak)
+    }
+    
+    private func getDayOfWeekBreakdown(entries: [Date]) -> [PieSlice] {
+        var dayCount: [Int: Int] = [:]
+        let days = Calendar.current.shortWeekdaySymbols
+        
+        entries.forEach { date in
+            let weekday = Calendar.current.component(.weekday, from: date)
+            dayCount[weekday, default: 0] += 1
+        }
+        
+        return dayCount.sorted { $0.key < $1.key }.map { weekday, count in
+            PieSlice(
+                value: Double(count),
+                color: Color.blue.opacity(Double(weekday) / 7.0),
+                label: days[weekday - 1]
+            )
+        }
+    }
+    
+    private func getMonthlyBreakdown(entries: [Date]) -> [PieSlice] {
+        var monthCount: [Int: Int] = [:]
+        let months = Calendar.current.shortMonthSymbols
+        
+        entries.forEach { date in
+            let month = Calendar.current.component(.month, from: date)
+            monthCount[month, default: 0] += 1
+        }
+        
+        return monthCount.sorted { $0.key < $1.key }.map { month, count in
+            PieSlice(
+                value: Double(count),
+                color: Color.green.opacity(Double(month) / 12.0),
+                label: months[month - 1]
+            )
+        }
     }
 }
 
