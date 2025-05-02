@@ -101,9 +101,11 @@ struct StatisticsDetailView: View {
                                 .padding(.horizontal)
                             Spacer()
                         }
-                        PieChartView(
-                            slices: isAllTimeStats ? getMonthlyBreakdown(entries: getEntries()) : getMonthlyBreakdown(entries: getEntriesForSelectedYear()),
-                            title: ""
+                        HistogramView(
+                            monthSections: isAllTimeStats ? 
+                                getMonthlyHistogramData(entries: getEntries()) : 
+                                getMonthlyHistogramData(entries: getEntriesForSelectedYear()),
+                            maxCount: 50 // Adjust this value based on your needs
                         )
                     }
                     .padding()
@@ -273,6 +275,37 @@ struct StatisticsDetailView: View {
                 label: months[month - 1]
             )
         }
+    }
+    
+    private func getMonthlyHistogramData(entries: [Date]) -> [MonthSection] {
+        let calendar = Calendar.current
+        let currentDate = Date()
+        let (startDate, endDate) = calendarViewModel.getRecentMonthRange(months: 12)
+        
+        // Get months between start and end date
+        var monthSections: [MonthSection] = []
+        var date = startDate
+        
+        while date <= endDate {
+            let monthEntries = entries.filter { 
+                calendar.isDate($0, equalTo: date, toGranularity: .month)
+            }
+            var weekBins: [HistogramBin] = []
+            
+            let weeksInMonth = calendar.range(of: .weekOfMonth, in: .month, for: date)?.count ?? 0
+            
+            for week in 1...weeksInMonth {
+                let count = monthEntries.filter { calendar.component(.weekOfMonth, from: $0) == week }.count
+                weekBins.append(HistogramBin(count: count, weekNumber: week))
+            }
+            
+            let monthName = calendar.shortMonthSymbols[calendar.component(.month, from: date) - 1]
+            monthSections.append(MonthSection(month: monthName, bins: weekBins))
+            
+            date = calendar.date(byAdding: .month, value: 1, to: date)!
+        }
+        
+        return monthSections
     }
 }
 

@@ -161,6 +161,27 @@ class CalendarViewModel: ObservableObject {
             return Calendar.current.range(of: .day, in: .year, for: yearDate)?.count ?? 365
         }
     }
+    
+    func hasDeadlines(on date: Date, goals: [Goal]) -> Bool {
+        let calendar = Calendar.current
+        return goals.contains { calendar.isDate($0.deadline, inSameDayAs: date) }
+    }
+    
+    func deadlinesForDate(_ date: Date, goals: [Goal]) -> [Goal] {
+        let calendar = Calendar.current
+        return goals.filter { calendar.isDate($0.deadline, inSameDayAs: date) }
+    }
+    
+    func getRecentMonthRange(months: Int) -> (start: Date, end: Date) {
+        let calendar = Calendar.current
+        let end = Date()
+        let start = calendar.date(byAdding: .month, value: -(months-1), to: startOfMonth(for: end))!
+        return (start, end)
+    }
+    
+    func startOfMonth(for date: Date) -> Date {
+        Calendar.current.date(from: Calendar.current.dateComponents([.year, .month], from: date)) ?? date
+    }
 }
 
 struct JournalEntryWithSource: Identifiable {

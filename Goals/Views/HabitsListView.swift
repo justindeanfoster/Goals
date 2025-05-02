@@ -9,6 +9,26 @@ struct HabitsListView: View {
     @State private var selectedHabit: Habit?
     @State private var showEditHabitForm: Bool = false
 
+    private func safelyDeleteHabit(_ habit: Habit) {
+        do {
+            // First delete all journal entries
+            habit.journalEntries.forEach { modelContext.delete($0) }
+            
+            // Then delete all goal relations
+            habit.goalRelations.forEach { modelContext.delete($0) }
+            
+            // Clear the arrays to remove references
+            habit.journalEntries.removeAll()
+            habit.goalRelations.removeAll()
+            
+            // Finally delete the habit
+            modelContext.delete(habit)
+            try modelContext.save()
+        } catch {
+            print("Failed to delete habit: \(error)")
+        }
+    }
+
     var body: some View {
         NavigationView {
             List {
@@ -33,8 +53,7 @@ struct HabitsListView: View {
                             Label("Edit Habit", systemImage: "pencil")
                         }
                         Button(action: {
-                            modelContext.delete(habit)
-                            try? modelContext.save()
+                            safelyDeleteHabit(habit)
                         }) {
                             Label("Delete Habit", systemImage: "trash")
                         }

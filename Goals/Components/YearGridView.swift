@@ -26,6 +26,7 @@ struct YearGridView: View {
                 }
             }
             .frame(height: 60)
+            .padding(.vertical, 1)
             .gesture(
                 DragGesture()
                     .onEnded { value in
