@@ -97,6 +97,12 @@ struct CalendarView: View {
                                                     .frame(width: 35, height: 35)
                                                     .zIndex(1)
                                             }
+                                            if isSelected {
+                                                RoundedRectangle(cornerRadius: 5)
+                                                    .fill(Color.blue.opacity(0.8))
+                                                    .frame(width: 35, height: 35)
+                                                    .zIndex(1)
+                                            }
                                             Circle()
                                                 .fill(color(for: date))
                                                 .frame(width: 30, height: 30)
@@ -111,9 +117,6 @@ struct CalendarView: View {
                                         .onTapGesture {
                                             calendarViewModel.selectedDate = date
                                         }
-                                        Rectangle()
-                                            .fill(isSelected ? Color.blue : Color.clear)
-                                            .frame(height: 2)
                                     }
                                 }
                             }
@@ -225,7 +228,11 @@ struct CalendarView: View {
     }
     
     private func color(for date: Date) -> Color {
-        return calendarViewModel.hasJournalEntries(for: date, goals: goals, habits: habits) ? .blue : .gray
+        let progress = calendarViewModel.getDailyProgress(for: date, goals: goals, habits: habits)
+        if progress > 0 {
+            return Color.blue.opacity(0.3 + (progress * 0.7)) // Scale opacity from 0.3 to 1.0
+        }
+        return .gray
     }
 
     private var monthYearFormatter: DateFormatter {

@@ -8,6 +8,7 @@ struct WeekGridView: View {
     
     var body: some View {
         VStack {
+            Divider()
             // Days of the week header
             HStack {
                 ForEach(calendarViewModel.daysOfWeek, id: \.self) { day in
@@ -17,53 +18,46 @@ struct WeekGridView: View {
                 }
             }
             .padding(.bottom, 5)
-            
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
-                ForEach(0..<7, id: \.self) { offset in
-                    let date = Calendar.current.date(byAdding: .day, value: offset, to: calendarViewModel.startOfWeek)!
-                    let isToday = Calendar.current.isDateInToday(date)
-                    let isDeadline = isDeadlineDate?(date) ?? false
-                    
-                    VStack {
+            Divider()
+        LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
+            ForEach(0..<7) { offset in
+                let date = Calendar.current.date(byAdding: .day, value: offset, to: calendarViewModel.startOfWeek)!
+                let isToday = Calendar.current.isDateInToday(date)
+                let isDeadline = isDeadlineDate?(date) ?? false
+                let isSelected = Calendar.current.isDate(date, inSameDayAs: calendarViewModel.selectedDate)
+                
+                VStack {
+                    ZStack {
+                        if isDeadline {
+                            RoundedRectangle(cornerRadius: 5)
+                                .fill(Color.red.opacity(0.8))
+                                .frame(width: 35, height: 35)
+                                .zIndex(1)
+                        }
+                        if isSelected {
+                            RoundedRectangle(cornerRadius: 5)
+                                .fill(Color.blue.opacity(0.8))
+                                .frame(width: 35, height: 35)
+                                .zIndex(1)
+                        }
                         Circle()
                             .fill(hasJournalEntry(date) ? Color.green : Color.gray)
                             .frame(width: 30, height: 30)
+                            .zIndex(2)
                             .overlay(
                                 Text(Calendar.current.component(.day, from: date).description)
                                     .font(.caption)
                                     .foregroundColor(.white)
+                                    .zIndex(3)
                             )
-                            .onTapGesture {
-                                calendarViewModel.selectedDate = date
-                                DispatchQueue.main.async {
-                                    onDateSelected(date)
-                                }
-                            }
-                        if isToday {
-                            Rectangle()
-                                .fill(Color.blue)
-                                .frame(height: 2)
-                        }
-                        if isDeadline {
-                            Rectangle()
-                                .fill(Color.red)
-                                .frame(height: 2)
-                        }
+                    }
+                    .onTapGesture {
+                        calendarViewModel.selectedDate = date
+                        onDateSelected(date)
                     }
                 }
             }
         }
-        .gesture(
-            DragGesture()
-                .onEnded { value in
-                    if value.translation.width > 50 {
-                        // Swipe right - go back
-                        calendarViewModel.moveWeek(by: -1)
-                    } else if value.translation.width < -50 {
-                        // Swipe left - go forward
-                        calendarViewModel.moveWeek(by: 1)
-                    }
-                }
-        )
+        }
     }
 }

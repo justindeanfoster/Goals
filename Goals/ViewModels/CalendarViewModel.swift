@@ -182,6 +182,44 @@ class CalendarViewModel: ObservableObject {
     func startOfMonth(for date: Date) -> Date {
         Calendar.current.date(from: Calendar.current.dateComponents([.year, .month], from: date)) ?? date
     }
+
+    func getDailyProgress(for date: Date, goals: [Goal], habits: [Habit]) -> Double {
+        let startOfDay = Calendar.current.startOfDay(for: date)
+        
+        // Count selected goals and habits
+        var totalSelected = 0
+        var completedCount = 0
+        
+        // Process goals
+        for goal in goals where selectedGoals.contains(goal.id) {
+            totalSelected += 1
+            
+            // Check if goal has entries for this date
+            if goal.journalEntries.contains(where: { Calendar.current.isDate($0.timestamp, inSameDayAs: startOfDay) }) {
+                completedCount += 1
+            } else {
+                // Check if any related habits were done
+                if goal.relatedHabits.contains(where: { habit in
+                    selectedHabits.contains(habit.id) &&
+                    habit.journalEntries.contains(where: { Calendar.current.isDate($0.timestamp, inSameDayAs: startOfDay) })
+                }) {
+                    completedCount += 1
+                }
+            }
+        }
+        
+        // Process habits that aren't related to selected goals
+        for habit in habits where selectedHabits.contains(habit.id) {
+            if !habit.relatedGoals.contains(where: { selectedGoals.contains($0.id) }) {
+                totalSelected += 1
+                if habit.journalEntries.contains(where: { Calendar.current.isDate($0.timestamp, inSameDayAs: startOfDay) }) {
+                    completedCount += 1
+                }
+            }
+        }
+        
+        return totalSelected > 0 ? Double(completedCount) / Double(totalSelected) : 0
+    }
 }
 
 struct JournalEntryWithSource: Identifiable {
