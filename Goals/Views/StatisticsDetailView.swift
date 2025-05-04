@@ -76,6 +76,25 @@ struct StatisticsDetailView: View {
                 .background(Color(.systemGray6))
                 .cornerRadius(10)
                 
+                // Monthly Activity Distribution (Histogram) moved here
+                VStack(alignment: .leading) {
+                    HStack(alignment: .center, spacing: 20) {
+                        Text("Monthly Activity Distribution")
+                            .font(.headline)
+                            .padding(.horizontal)
+                        Spacer()
+                    }
+                    HistogramView(
+                        monthSections: isAllTimeStats ? 
+                            getMonthlyHistogramData(entries: getEntries()) : 
+                            getMonthlyHistogramData(entries: getEntriesForSelectedYear()),
+                        maxCount: 50
+                    )
+                }
+                .padding()
+                .background(Color(.systemGray6))
+                .cornerRadius(10)
+                
                 // Pie Charts Section
                 VStack(spacing: 20) {
                     VStack(alignment: .leading) {
@@ -88,24 +107,6 @@ struct StatisticsDetailView: View {
                         PieChartView(
                             slices: isAllTimeStats ? getDayOfWeekBreakdown(entries: getEntries()) : getDayOfWeekBreakdown(entries: getEntriesForSelectedYear()),
                             title: ""
-                        )
-                    }
-                    .padding()
-                    .background(Color(.systemGray6))
-                    .cornerRadius(10)
-                    
-                    VStack(alignment: .leading) {
-                        HStack(alignment: .center, spacing: 20) {
-                            Text("Monthly Activity Distribution")
-                                .font(.headline)
-                                .padding(.horizontal)
-                            Spacer()
-                        }
-                        HistogramView(
-                            monthSections: isAllTimeStats ? 
-                                getMonthlyHistogramData(entries: getEntries()) : 
-                                getMonthlyHistogramData(entries: getEntriesForSelectedYear()),
-                            maxCount: 50 // Adjust this value based on your needs
                         )
                     }
                     .padding()

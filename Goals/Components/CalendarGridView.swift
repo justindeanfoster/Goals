@@ -21,7 +21,6 @@ struct CalendarGridView: View {
                     Image(systemName: "chevron.right")
                 }
             }
-            .padding(.bottom)
             
             // Days of the week header
             HStack {

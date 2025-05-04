@@ -20,6 +20,5 @@ struct StatisticsSectionView: View {
                 .padding(.bottom, 2)
             }
         }
-        .padding(.bottom)
     }
 }

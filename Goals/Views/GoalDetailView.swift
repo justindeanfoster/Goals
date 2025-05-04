@@ -56,40 +56,28 @@ struct GoalDetailView: View {
                         },
                         showCalendar: $showCalendar
                     )
-                    
-                    Divider()
-                    
-                    // Statistics Section
-                    VStack(alignment: .leading, spacing: 15) {
-                        NavigationLink(destination: StatisticsDetailView(item: .goal(goal))) {
-                            Text("Statistics")
-                                .font(.headline)
-                                .foregroundColor(.blue)
+                    .onChange(of: showCalendar) { oldValue, newValue in
+                        if (!newValue) {
+                            // Reset to current week when collapsing
+                            calendarViewModel.currentMonth = Date()
                         }
-                        
-                        StatisticsSectionView(statistics: [
-                            StatisticRow(label: "Days Worked:", value: "\(goal.daysWorked)"),
-                            StatisticRow(label: "Days Remaining:", value: "\(goal.daysRemaining)"),
-                            StatisticRow(label: "Total Journal Entries:", value: "\(allJournalEntries.count)")
-                        ])
                     }
                     
                     Divider()
-                    
-                    // Notes and Milestones
+
+                    // Notes Section
                     if (!goal.notes.isEmpty) {
-                        Text("Notes").font(.headline)
-                        Text(goal.notes).padding(.bottom, 10)
+                        CollapsibleSectionView(title: "Notes", content: goal.notes)
+                        Divider()
                     }
                     
-                    Text("Milestones").font(.headline)
-                    ForEach(goal.milestones, id: \.self) { milestone in
-                        Text("- \(milestone)")
+                    // Milestones Section
+                    if !goal.milestones.isEmpty {
+                        MilestoneListView(milestones: goal.milestones)
+                        Divider()
                     }
                     
-                    Divider()
-                    
-                    // Journal Entries
+                    // Journal Entries Section
                     Text("Journal Entries").font(.headline)
                     JournalEntriesListView(
                         entries: calendarViewModel.getEntriesForCurrentTimeframe(
@@ -118,11 +106,29 @@ struct GoalDetailView: View {
                         }
                     )
                     .id(timeframeUpdateTrigger)
+                    Divider()
                     
+                    // Statistics Section
+                    VStack(alignment: .leading, spacing: 15) {
+                        NavigationLink(destination: StatisticsDetailView(item: .goal(goal))) {
+                            Text("Statistics")
+                                .font(.headline)
+                                .foregroundColor(.blue)
+                        }
+                        
+                        StatisticsSectionView(statistics: [
+                            StatisticRow(label: "Days Worked:", value: "\(goal.daysWorked)"),
+                            StatisticRow(label: "Days Remaining:", value: "\(goal.daysRemaining)"),
+                            StatisticRow(label: "Total Journal Entries:", value: "\(allJournalEntries.count)")
+                        ])
+                    }
+                    .padding()
+                    .background(Color(.systemGray6))
+                    .cornerRadius(10)
                     Divider()
                     
                     // Related Habits Tags
-                    if !goal.relatedHabits.isEmpty {
+                    if (!goal.relatedHabits.isEmpty) {
                         Text("Related Habits")
                             .font(.headline)
                         ScrollView(.horizontal, showsIndicators: false) {
@@ -149,6 +155,8 @@ struct GoalDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showingAddJournalEntryForm) {
             AddJournalEntryForm(goal: goal, habit: nil)
+                .presentationDetents([.medium])
+                .presentationDragIndicator(.visible)
         }
         .onChange(of: selectedDate) { _, newValue in
             if let date = newValue {

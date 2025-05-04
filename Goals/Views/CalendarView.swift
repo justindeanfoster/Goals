@@ -36,8 +36,21 @@ struct CalendarView: View {
                             
                             Spacer()
                             
-                            Text(calendarViewModel.startOfMonth, formatter: monthYearFormatter)
-                                .font(.headline)
+                            HStack {
+                                Spacer()
+                                Button(action: { calendarViewModel.moveMonth(by: -1) }) {
+                                    Image(systemName: "chevron.left")
+                                }
+                                Spacer()
+                                
+                                Text(calendarViewModel.startOfMonth, formatter: monthYearFormatter)
+                                    .font(.headline)
+                                Spacer()
+                                Button(action: { calendarViewModel.moveMonth(by: 1) }) {
+                                    Image(systemName: "chevron.right")
+                                }
+                                Spacer()
+                            }
                                 
                             Spacer()
                             

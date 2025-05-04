@@ -9,7 +9,7 @@ struct CalendarSectionView: View {
     @State private var lastTimeframeUpdate = Date()
     
     var body: some View {
-        VStack {
+        VStack(alignment: .leading, spacing: 0) {  // Added spacing: 0
             Button(action: {
                 withAnimation {
                     showCalendar.toggle()
@@ -18,27 +18,45 @@ struct CalendarSectionView: View {
                 HStack {
                     Text("Activity Calendar")
                         .font(.headline)
-                    Spacer()
                     Image(systemName: showCalendar ? "chevron.up" : "chevron.down")
                 }
+                .foregroundColor(.blue)
                 .padding(.bottom, 5)
             }
             
-            if showCalendar {
-                CalendarGridView(
-                    calendarViewModel: calendarViewModel,
-                    hasJournalEntry: hasJournalEntry,
-                    onDateSelected: onDateSelected,
-                    isDeadlineDate: isDeadlineDate
-                )
-            } else {
-                WeekGridView(
-                    calendarViewModel: calendarViewModel,
-                    hasJournalEntry: hasJournalEntry,
-                    onDateSelected: onDateSelected,
-                    isDeadlineDate: isDeadlineDate
-                )
-            }
+            VStack(spacing: 5) { // New container for consistent spacing
+                if !showCalendar {
+                    WeekRangeView(calendarViewModel: calendarViewModel)
+                }
+                
+                // Days of week header - now outside conditional rendering
+                // HStack {
+                //     ForEach(calendarViewModel.daysOfWeek, id: \.self) { day in
+                //         Text(day)
+                //             .font(.subheadline)
+                //             .frame(maxWidth: .infinity)
+                //     }
+                // }
+                // .padding(.bottom, 5)
+                
+                if showCalendar {
+                    CalendarGridView(
+                        calendarViewModel: calendarViewModel,
+                        hasJournalEntry: hasJournalEntry,
+                        onDateSelected: onDateSelected,
+                        isDeadlineDate: isDeadlineDate
+                    )
+                } else {
+                    WeekGridView(
+                        calendarViewModel: calendarViewModel,
+                        hasJournalEntry: hasJournalEntry,
+                        onDateSelected: onDateSelected,
+                        isDeadlineDate: isDeadlineDate
+                    )
+                }
+            }.padding()
+            .background(Color(.systemGray6))
+            .cornerRadius(10)
         }
         .onChange(of: showCalendar) { _, _ in
             lastTimeframeUpdate = Date()
@@ -46,5 +64,6 @@ struct CalendarSectionView: View {
         .onChange(of: calendarViewModel.timeframeChanged) { _, _ in
             lastTimeframeUpdate = Date()
         }
+        
     }
 }

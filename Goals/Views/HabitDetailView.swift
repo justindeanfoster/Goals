@@ -41,38 +41,28 @@ struct HabitDetailView: View {
                         isDeadlineDate: nil,
                         showCalendar: $showCalendar
                     )
-                    
-                    Divider()
-                    
-                    // Statistics Section
-                    VStack(alignment: .leading, spacing: 15) {
-                        NavigationLink(destination: StatisticsDetailView(item: .habit(habit))) {
-                            Text("Statistics")
-                                .font(.headline)
-                                .foregroundColor(.blue)
+                    .onChange(of: showCalendar) { oldValue, newValue in
+                        if (!newValue) {
+                            // Reset to current week when collapsing
+                            calendarViewModel.currentMonth = Date()
                         }
-                        
-                        StatisticsSectionView(statistics: [
-                            StatisticRow(label: "Days Worked:", value: "\(habit.daysWorked)")
-                        ])
                     }
                     
                     Divider()
-                    
-                    // Notes and Milestones
+
+                    // Notes Section
                     if !habit.notes.isEmpty {
-                        Text("Notes").font(.headline)
-                        Text(habit.notes).padding(.bottom, 10)
+                        CollapsibleSectionView(title: "Notes", content: habit.notes)
+                        Divider()
                     }
                     
-                    Text("Milestones").font(.headline)
-                    ForEach(habit.milestones, id: \.self) { milestone in
-                        Text("- \(milestone)")
+                    // Milestones Section
+                    if !habit.milestones.isEmpty {
+                        MilestoneListView(milestones: habit.milestones)
+                        Divider()
                     }
                     
-                    Divider()
-                    
-                    // Journal Entries
+                    // Journal Entries Section
                     Text("Journal Entries").font(.headline)
                     JournalEntriesListView(
                         entries: calendarViewModel.getEntriesForCurrentTimeframe(
@@ -93,6 +83,23 @@ struct HabitDetailView: View {
                         },
                         sourceLabel: nil
                     )
+                    Divider()
+                    
+                    // Statistics Section
+                    VStack(alignment: .leading, spacing: 15) {
+                        NavigationLink(destination: StatisticsDetailView(item: .habit(habit))) {
+                            Text("Statistics")
+                                .font(.headline)
+                                .foregroundColor(.blue)
+                        }
+                        
+                        StatisticsSectionView(statistics: [
+                            StatisticRow(label: "Days Worked:", value: "\(habit.daysWorked)")
+                        ])
+                    }
+                    .padding()
+                    .background(Color(.systemGray6))
+                    .cornerRadius(10)
                 }
                 .padding()
             }
@@ -101,6 +108,8 @@ struct HabitDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showingAddJournalEntryForm) {
             AddJournalEntryForm(goal: nil, habit: habit)
+                .presentationDetents([.medium])
+                .presentationDragIndicator(.visible)
         }
         .onChange(of: selectedDate) { oldValue, newValue in
             if let date = newValue {
