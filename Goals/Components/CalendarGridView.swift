@@ -72,6 +72,7 @@ struct CalendarGridView: View {
                                         .zIndex(3)
                                 )
                         }
+                        .frame(width: 35, height: 35)  // Fixed frame for the ZStack
                         .onTapGesture {
                             calendarViewModel.selectedDate = date
                             DispatchQueue.main.async {
@@ -79,6 +80,7 @@ struct CalendarGridView: View {
                             }
                         }
                     }
+                    .frame(height: 35)  // Fixed height for the VStack
                 }
             }
         }

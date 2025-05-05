@@ -51,11 +51,13 @@ struct WeekGridView: View {
                                     .zIndex(3)
                             )
                     }
+                    .frame(width: 35, height: 35)  // Fixed frame for the ZStack
                     .onTapGesture {
                         calendarViewModel.selectedDate = date
                         onDateSelected(date)
                     }
                 }
+                .frame(height: 35)  // Fixed height for the VStack
             }
         }
         }
