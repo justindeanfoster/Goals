@@ -149,8 +149,10 @@ struct StatisticsDetailView: View {
     
     private func getTotalEntries() -> Int {
         switch item {
-        case .goal(let goal): return goal.journalEntries.count
-        case .habit(let habit): return habit.journalEntries.count
+        case .goal(let goal): 
+            return goal.journalEntries.count + goal.relatedHabits.flatMap { $0.journalEntries }.count
+        case .habit(let habit): 
+            return habit.journalEntries.count
         }
     }
     

@@ -55,7 +55,7 @@ struct CalendarGridView: View {
                                     .frame(width: 35, height: 35)
                                     .zIndex(1)
                             }
-                            if isSelected {
+                            if isToday {
                                 RoundedRectangle(cornerRadius: 5)
                                     .fill(Color.blue.opacity(0.8))
                                     .frame(width: 35, height: 35)

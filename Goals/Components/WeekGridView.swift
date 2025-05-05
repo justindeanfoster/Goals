@@ -34,7 +34,7 @@ struct WeekGridView: View {
                                 .frame(width: 35, height: 35)
                                 .zIndex(1)
                         }
-                        if isSelected {
+                        if isToday {
                             RoundedRectangle(cornerRadius: 5)
                                 .fill(Color.blue.opacity(0.8))
                                 .frame(width: 35, height: 35)
@@ -59,5 +59,17 @@ struct WeekGridView: View {
             }
         }
         }
+        .gesture(
+            DragGesture()
+                .onEnded { value in
+                    if value.translation.width > 50 {
+                        // Swipe right - go back
+                        calendarViewModel.moveWeek(by: -1)
+                    } else if value.translation.width < -50 {
+                        // Swipe left - go forward
+                        calendarViewModel.moveWeek(by: 1)
+                    }
+                }
+        )
     }
 }
