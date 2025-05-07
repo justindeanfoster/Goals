@@ -194,19 +194,29 @@ struct StatisticsDetailView: View {
     
     private func getCurrentStreak() -> Int {
         let entries = getEntries()
-        let today = Calendar.current.startOfDay(for: Date())
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        let yesterday = calendar.date(byAdding: .day, value: -1, to: today)!
         
         // Sort entries by date and get unique dates
-        let uniqueDates = Set(entries.map { Calendar.current.startOfDay(for: $0) })
+        let uniqueDates = Set(entries.map { calendar.startOfDay(for: $0) })
             .sorted(by: >)  // Sort in descending order (most recent first)
         
-        var streak = 0
-        var currentDate = today
+        // If no entries exist, return 0
+        guard let mostRecentEntry = uniqueDates.first else { return 0 }
         
-        // Count consecutive days from today backwards
+        // If most recent entry is older than yesterday, streak is broken
+        if mostRecentEntry < yesterday {
+            return 0
+        }
+        
+        var streak = 0
+        var currentDate = mostRecentEntry
+        
+        // Count consecutive days going backwards
         while uniqueDates.contains(currentDate) {
             streak += 1
-            currentDate = Calendar.current.date(byAdding: .day, value: -1, to: currentDate)!
+            currentDate = calendar.date(byAdding: .day, value: -1, to: currentDate)!
         }
         
         return streak
