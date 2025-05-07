@@ -125,6 +125,8 @@ struct HabitDetailView: View {
         .sheet(isPresented: $showingEditJournalEntry) {
             if let entry = selectedEntry {
                 EditJournalEntryView(entry: entry)
+                    .presentationDetents([.medium])
+                    .presentationDragIndicator(.visible)
             }
         }
     }

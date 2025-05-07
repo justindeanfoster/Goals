@@ -157,6 +157,7 @@ struct CalendarView: View {
                                             Text(goal.title)
                                                 .font(.subheadline)
                                                 .bold()
+                                                .foregroundColor(.primary)  // Set text color to primary
                                         }
                                         .padding()
                                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -189,6 +190,7 @@ struct CalendarView: View {
                                             VStack(alignment: .leading, spacing: 8) {
                                                 Text(entry.text)
                                                     .font(.body)
+                                                    .foregroundColor(.primary)  // Set text color to primary
                                                 HStack {
                                                     Text(entry.sourceName)
                                                     Text("(\(entry.sourceType))")

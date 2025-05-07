@@ -172,6 +172,8 @@ struct GoalDetailView: View {
         .sheet(isPresented: $showingEditJournalEntry) {
             if let entry = selectedEntry {
                 EditJournalEntryView(entry: entry)
+                    .presentationDetents([.medium])
+                    .presentationDragIndicator(.visible)
             }
         }
         .onChange(of: showCalendar) { _, _ in

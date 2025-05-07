@@ -69,6 +69,8 @@ struct DayView: View {
                     dismiss()
                 }
             )
+            .presentationDetents([.medium])
+            .presentationDragIndicator(.visible)
         }
         .onAppear {
             entries = DayView.loadEntries(for: date, goals: goals, habits: habits)
