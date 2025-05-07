@@ -152,15 +152,17 @@ struct CalendarView: View {
                                 .font(.headline)
                                 .padding(.horizontal)
                                 ForEach(calendarViewModel.deadlinesForDate(calendarViewModel.selectedDate, goals: goals)) { goal in
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text(goal.title)
-                                            .font(.subheadline)
-                                            .bold()
+                                    NavigationLink(destination: GoalDetailView(goal: goal)) {
+                                        VStack(alignment: .leading, spacing: 4) {
+                                            Text(goal.title)
+                                                .font(.subheadline)
+                                                .bold()
+                                        }
+                                        .padding()
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .background(Color(.systemGray6))
+                                        .cornerRadius(10)
                                     }
-                                    .padding()
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .background(Color(.systemGray6))
-                                    .cornerRadius(10)
                                     .padding(.horizontal)
                                 }
                             }
@@ -183,20 +185,22 @@ struct CalendarView: View {
                                     .font(.headline)
                                     .padding(.horizontal)
                                     ForEach(calendarViewModel.journalEntries(for: calendarViewModel.selectedDate, goals: goals, habits: habits)) { entry in
-                                        VStack(alignment: .leading, spacing: 8) {
-                                            Text(entry.text)
-                                                .font(.body)
-                                            HStack {
-                                                Text(entry.sourceName)
-                                                Text("(\(entry.sourceType))")
+                                        NavigationLink(destination: getDestinationView(for: entry)) {
+                                            VStack(alignment: .leading, spacing: 8) {
+                                                Text(entry.text)
+                                                    .font(.body)
+                                                HStack {
+                                                    Text(entry.sourceName)
+                                                    Text("(\(entry.sourceType))")
+                                                }
+                                                .font(.caption)
+                                                .foregroundColor(.secondary)
                                             }
-                                            .font(.caption)
-                                            .foregroundColor(.secondary)
+                                            .padding()
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .background(Color(.systemGray6))
+                                            .cornerRadius(10)
                                         }
-                                        .padding()
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                        .background(Color(.systemGray6))
-                                        .cornerRadius(10)
                                         .padding(.horizontal)
                                     }
                                 }
@@ -247,5 +251,18 @@ struct CalendarView: View {
         let formatter = DateFormatter()
         formatter.dateStyle = .full
         return formatter
+    }
+    
+    @ViewBuilder
+    private func getDestinationView(for entry: JournalEntryWithSource) -> some View {
+        if entry.sourceType == "Goal" {
+            if let goal = goals.first(where: { $0.title == entry.sourceName }) {
+                GoalDetailView(goal: goal)
+            }
+        } else {
+            if let habit = habits.first(where: { $0.title == entry.sourceName }) {
+                HabitDetailView(habit: habit)
+            }
+        }
     }
 }
