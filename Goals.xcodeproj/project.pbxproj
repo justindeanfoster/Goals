@@ -15,7 +15,6 @@
 		0C9717C82DBC4FAA0072B569 /* WeekGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9717A72DBC4FAA0072B569 /* WeekGridView.swift */; };
 		0C9717C92DBC4FAA0072B569 /* FilterMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9717BB2DBC4FAA0072B569 /* FilterMenu.swift */; };
 		0C9717CA2DBC4FAA0072B569 /* Habit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9717B32DBC4FAA0072B569 /* Habit.swift */; };
-		0C9717CB2DBC4FAA0072B569 /* StatisticsDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9717B52DBC4FAA0072B569 /* StatisticsDetailView.swift */; };
 		0C9717CC2DBC4FAA0072B569 /* GoalDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9717BC2DBC4FAA0072B569 /* GoalDetailView.swift */; };
 		0C9717CD2DBC4FAA0072B569 /* JournalEntriesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9717A52DBC4FAA0072B569 /* JournalEntriesListView.swift */; };
 		0C9717CE2DBC4FAA0072B569 /* YearGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9717A82DBC4FAA0072B569 /* YearGridView.swift */; };
@@ -33,6 +32,15 @@
 		0C9717DB2DBC4FAA0072B569 /* Goal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9717B12DBC4FAA0072B569 /* Goal.swift */; };
 		0C9717DC2DBC4FAA0072B569 /* HabitsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9717C02DBC4FAA0072B569 /* HabitsListView.swift */; };
 		0C9717DD2DBC4FAA0072B569 /* StatisticsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9717C12DBC4FAA0072B569 /* StatisticsListView.swift */; };
+		0C9717DF2DC2F5EF0072B569 /* PieChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9717DE2DC2F5EF0072B569 /* PieChartView.swift */; };
+		0C9717E12DC2F62D0072B569 /* StatisticsDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9717E02DC2F62D0072B569 /* StatisticsDetailView.swift */; };
+		0C9717E62DC2FB8F0072B569 /* GoalsIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C9717E42DC2FB8F0072B569 /* GoalsIcon.png */; };
+		0CAD69772DC522C100014F93 /* HistogramView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAD69762DC522C100014F93 /* HistogramView.swift */; };
+		0CAD69792DC6FBE000014F93 /* MilestoneListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAD69782DC6FBE000014F93 /* MilestoneListView.swift */; };
+		0CAD697B2DC6FC5A00014F93 /* Milestone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAD697A2DC6FC5A00014F93 /* Milestone.swift */; };
+		0CAD697D2DC6FDA800014F93 /* WeekRangeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAD697C2DC6FDA800014F93 /* WeekRangeView.swift */; };
+		0CAD697F2DC706F800014F93 /* CollapsibleSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAD697E2DC706F800014F93 /* CollapsibleSectionView.swift */; };
+		0CAD69822DCAEBE200014F93 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		0CFFC8502D1B81F700C8F272 /* GoalsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CFFC84F2D1B81F700C8F272 /* GoalsApp.swift */; };
 		0CFFC8522D1B81F700C8F272 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CFFC8512D1B81F700C8F272 /* ContentView.swift */; };
 		0CFFC8562D1B81FB00C8F272 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0CFFC8552D1B81FB00C8F272 /* Assets.xcassets */; };
@@ -57,7 +65,6 @@
 		0C9717B22DBC4FAA0072B569 /* GoalHabitRelation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalHabitRelation.swift; sourceTree = "<group>"; };
 		0C9717B32DBC4FAA0072B569 /* Habit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Habit.swift; sourceTree = "<group>"; };
 		0C9717B42DBC4FAA0072B569 /* JournalEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalEntry.swift; sourceTree = "<group>"; };
-		0C9717B52DBC4FAA0072B569 /* StatisticsDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsDetailView.swift; sourceTree = "<group>"; };
 		0C9717B72DBC4FAA0072B569 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
 		0C9717B92DBC4FAA0072B569 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		0C9717BA2DBC4FAA0072B569 /* DayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayView.swift; sourceTree = "<group>"; };
@@ -67,6 +74,14 @@
 		0C9717BF2DBC4FAA0072B569 /* HabitDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitDetailView.swift; sourceTree = "<group>"; };
 		0C9717C02DBC4FAA0072B569 /* HabitsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsListView.swift; sourceTree = "<group>"; };
 		0C9717C12DBC4FAA0072B569 /* StatisticsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsListView.swift; sourceTree = "<group>"; };
+		0C9717DE2DC2F5EF0072B569 /* PieChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieChartView.swift; sourceTree = "<group>"; };
+		0C9717E02DC2F62D0072B569 /* StatisticsDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsDetailView.swift; sourceTree = "<group>"; };
+		0C9717E42DC2FB8F0072B569 /* GoalsIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GoalsIcon.png; sourceTree = "<group>"; };
+		0CAD69762DC522C100014F93 /* HistogramView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistogramView.swift; sourceTree = "<group>"; };
+		0CAD69782DC6FBE000014F93 /* MilestoneListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MilestoneListView.swift; sourceTree = "<group>"; };
+		0CAD697A2DC6FC5A00014F93 /* Milestone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Milestone.swift; sourceTree = "<group>"; };
+		0CAD697C2DC6FDA800014F93 /* WeekRangeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekRangeView.swift; sourceTree = "<group>"; };
+		0CAD697E2DC706F800014F93 /* CollapsibleSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleSectionView.swift; sourceTree = "<group>"; };
 		0CFFC84C2D1B81F700C8F272 /* Goals.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Goals.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0CFFC84F2D1B81F700C8F272 /* GoalsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsApp.swift; sourceTree = "<group>"; };
 		0CFFC8512D1B81F700C8F272 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -95,6 +110,11 @@
 		0C9717A92DBC4FAA0072B569 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				0CAD697E2DC706F800014F93 /* CollapsibleSectionView.swift */,
+				0CAD697C2DC6FDA800014F93 /* WeekRangeView.swift */,
+				0CAD69782DC6FBE000014F93 /* MilestoneListView.swift */,
+				0CAD69762DC522C100014F93 /* HistogramView.swift */,
+				0C9717DE2DC2F5EF0072B569 /* PieChartView.swift */,
 				0C9717A32DBC4FAA0072B569 /* CalendarGridView.swift */,
 				0C9717A42DBC4FAA0072B569 /* CalendarSectionView.swift */,
 				0C9717A52DBC4FAA0072B569 /* JournalEntriesListView.swift */,
@@ -121,11 +141,11 @@
 		0C9717B62DBC4FAA0072B569 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				0CAD697A2DC6FC5A00014F93 /* Milestone.swift */,
 				0C9717B12DBC4FAA0072B569 /* Goal.swift */,
 				0C9717B22DBC4FAA0072B569 /* GoalHabitRelation.swift */,
 				0C9717B32DBC4FAA0072B569 /* Habit.swift */,
 				0C9717B42DBC4FAA0072B569 /* JournalEntry.swift */,
-				0C9717B52DBC4FAA0072B569 /* StatisticsDetailView.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -141,6 +161,7 @@
 		0C9717C22DBC4FAA0072B569 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				0C9717E02DC2F62D0072B569 /* StatisticsDetailView.swift */,
 				0C9717B92DBC4FAA0072B569 /* CalendarView.swift */,
 				0C9717BA2DBC4FAA0072B569 /* DayView.swift */,
 				0C9717BB2DBC4FAA0072B569 /* FilterMenu.swift */,
@@ -151,6 +172,14 @@
 				0C9717C12DBC4FAA0072B569 /* StatisticsListView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		0C9717E52DC2FB8F0072B569 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				0C9717E42DC2FB8F0072B569 /* GoalsIcon.png */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		0CFFC8432D1B81F700C8F272 = {
@@ -173,6 +202,7 @@
 		0CFFC84E2D1B81F700C8F272 /* Goals */ = {
 			isa = PBXGroup;
 			children = (
+				0C9717E52DC2FB8F0072B569 /* Resources */,
 				0C9717A92DBC4FAA0072B569 /* Components */,
 				0C9717B62DBC4FAA0072B569 /* Models */,
 				0C9717B82DBC4FAA0072B569 /* ViewModels */,
@@ -281,6 +311,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0CFFC8592D1B81FB00C8F272 /* Preview Assets.xcassets in Resources */,
+				0C9717E62DC2FB8F0072B569 /* GoalsIcon.png in Resources */,
 				0CFFC8562D1B81FB00C8F272 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -309,11 +340,13 @@
 				0C9717C82DBC4FAA0072B569 /* WeekGridView.swift in Sources */,
 				0C9717C92DBC4FAA0072B569 /* FilterMenu.swift in Sources */,
 				0C9717CA2DBC4FAA0072B569 /* Habit.swift in Sources */,
-				0C9717CB2DBC4FAA0072B569 /* StatisticsDetailView.swift in Sources */,
 				0C9717CC2DBC4FAA0072B569 /* GoalDetailView.swift in Sources */,
 				0C9717CD2DBC4FAA0072B569 /* JournalEntriesListView.swift in Sources */,
 				0C9717CE2DBC4FAA0072B569 /* YearGridView.swift in Sources */,
+				0CAD69792DC6FBE000014F93 /* MilestoneListView.swift in Sources */,
 				0C9717CF2DBC4FAA0072B569 /* AddJournalEntry.swift in Sources */,
+				0C9717DF2DC2F5EF0072B569 /* PieChartView.swift in Sources */,
+				0C9717E12DC2F62D0072B569 /* StatisticsDetailView.swift in Sources */,
 				0C9717D02DBC4FAA0072B569 /* AddGoalForm.swift in Sources */,
 				0C9717D12DBC4FAA0072B569 /* CalendarSectionView.swift in Sources */,
 				0C9717D22DBC4FAA0072B569 /* EditJournalEntryView.swift in Sources */,
@@ -321,12 +354,17 @@
 				0C9717D42DBC4FAA0072B569 /* JournalEntry.swift in Sources */,
 				0C9717D52DBC4FAA0072B569 /* AddHabitForm.swift in Sources */,
 				0C9717D62DBC4FAA0072B569 /* HabitDetailView.swift in Sources */,
+				0CAD69822DCAEBE200014F93 /* (null) in Sources */,
 				0C9717D72DBC4FAA0072B569 /* CalendarGridView.swift in Sources */,
 				0C9717D82DBC4FAA0072B569 /* EditHabitForm.swift in Sources */,
+				0CAD697B2DC6FC5A00014F93 /* Milestone.swift in Sources */,
 				0C9717DA2DBC4FAA0072B569 /* GoalsListView.swift in Sources */,
+				0CAD697D2DC6FDA800014F93 /* WeekRangeView.swift in Sources */,
+				0CAD697F2DC706F800014F93 /* CollapsibleSectionView.swift in Sources */,
 				0C9717DB2DBC4FAA0072B569 /* Goal.swift in Sources */,
 				0C9717DC2DBC4FAA0072B569 /* HabitsListView.swift in Sources */,
 				0C9717DD2DBC4FAA0072B569 /* StatisticsListView.swift in Sources */,
+				0CAD69772DC522C100014F93 /* HistogramView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

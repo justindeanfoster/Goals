@@ -86,8 +86,8 @@ struct StatisticsDetailView: View {
                     }
                     HistogramView(
                         monthSections: isAllTimeStats ? 
-                            getMonthlyHistogramData(entries: getEntries()) : 
-                            getMonthlyHistogramData(entries: getEntriesForSelectedYear()),
+                            calendarViewModel.getWeeklyHistogramData(entries: getEntries()) : 
+                            calendarViewModel.getWeeklyHistogramData(entries: getEntriesForSelectedYear()),
                         maxCount: 50
                     )
                 }

@@ -50,7 +50,8 @@ struct HistogramView: View {
                         Text("\(i * effectiveMaxCount / horizontalLinesCount)")
                             .font(.caption)
                             .frame(width: yAxisWidth, alignment: .trailing)
-                            .frame(height: 200.0 / CGFloat(horizontalLinesCount + 1))
+                            .frame(height: 200.0 / CGFloat(horizontalLinesCount))
+                            .offset(y: -8) // Adjust text position to align with grid lines
                     }
                 }
                 .frame(width: yAxisWidth)
@@ -59,7 +60,7 @@ struct HistogramView: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     ZStack(alignment: .topLeading) {
                         // Grid lines
-                        VStack(spacing: 200.0 / CGFloat(horizontalLinesCount + 1)) {
+                        VStack(spacing: 200.0 / CGFloat(horizontalLinesCount)) {
                             ForEach((0...horizontalLinesCount).reversed(), id: \.self) { _ in
                                 Rectangle()
                                     .fill(Color.gray.opacity(0.2))
@@ -75,8 +76,8 @@ struct HistogramView: View {
                                 ForEach(filteredMonthSections, id: \.month) { section in
                                     ForEach(section.bins, id: \.weekNumber) { bin in
                                         Rectangle()
-                                            .fill(Color.green.opacity(0.7))
-                                            .frame(width: barWidth, height: bin.count == 0 ? 2 : CGFloat(bin.count) * 200 / CGFloat(effectiveMaxCount))
+                                            .fill(bin.count == 0 ? Color.red.opacity(0.7) : Color.green.opacity(0.7))
+                                            .frame(width: barWidth, height: bin.count == 0 ? 2 : (CGFloat(bin.count) * 200 / CGFloat(effectiveMaxCount)) - 1) // Subtract 1 to account for grid line height
                                     }
                                 }
                             }

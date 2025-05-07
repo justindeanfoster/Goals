@@ -220,6 +220,43 @@ class CalendarViewModel: ObservableObject {
         
         return totalSelected > 0 ? Double(completedCount) / Double(totalSelected) : 0
     }
+    
+    func getWeeklyHistogramData(entries: [Date]) -> [MonthSection] {
+        let calendar = Calendar.current
+        let (startDate, endDate) = getRecentMonthRange(months: 12)
+        var monthSections: [MonthSection] = []
+        var currentDate = startDate
+        
+        while currentDate <= endDate {
+            let monthStart = startOfMonth(for: currentDate)
+            let monthEnd = calendar.date(byAdding: DateComponents(month: 1, day: -1), to: monthStart)!
+            
+            // Get the first day of the first week
+            let firstWeekStart = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: monthStart))!
+            
+            var weekBins: [HistogramBin] = []
+            var weekStart = firstWeekStart
+            var weekNumber = 1
+            
+            while weekStart <= monthEnd {
+                let weekEnd = calendar.date(byAdding: .day, value: 6, to: weekStart)!
+                let weekEntries = entries.filter { entry in
+                    entry >= weekStart && entry <= weekEnd
+                }
+                
+                weekBins.append(HistogramBin(count: weekEntries.count, weekNumber: weekNumber))
+                weekStart = calendar.date(byAdding: .day, value: 7, to: weekStart)!
+                weekNumber += 1
+            }
+            
+            let monthName = calendar.shortMonthSymbols[calendar.component(.month, from: currentDate) - 1]
+            monthSections.append(MonthSection(month: monthName, bins: weekBins))
+            
+            currentDate = calendar.date(byAdding: .month, value: 1, to: currentDate)!
+        }
+        
+        return monthSections
+    }
 }
 
 struct JournalEntryWithSource: Identifiable {
