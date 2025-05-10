@@ -41,9 +41,17 @@ class CalendarViewModel: ObservableObject {
         return Calendar.current.shortWeekdaySymbols
     }
     
+    var startOfToday: Date {
+        Calendar.current.startOfDay(for: Date())
+    }
+    
     var selectedYearStartDate: Date {
         let components = DateComponents(year: selectedYear, month: 1, day: 1)
         return Calendar.current.date(from: components) ?? Date()
+    }
+    
+    func isDateToday(_ date: Date) -> Bool {
+        Calendar.current.isDate(date, inSameDayAs: startOfToday)
     }
     
     func goalsWorkedOn(for date: Date, goals: [Goal]) -> [Goal] {

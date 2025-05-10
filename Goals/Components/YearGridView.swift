@@ -11,7 +11,7 @@ struct YearGridView: View {
                 ForEach(0..<calendarViewModel.daysInYear(calendarViewModel.selectedYear), id: \.self) { dayOffset in
                     let date = Calendar.current.date(byAdding: .day, value: dayOffset, to: calendarViewModel.selectedYearStartDate) ?? calendarViewModel.selectedYearStartDate
                     let hasEntry = entries.contains { Calendar.current.isDate($0, inSameDayAs: date) }
-                    let isToday = Calendar.current.isDateInToday(date)
+                    let isToday = calendarViewModel.isDateToday(date)
                     
                     Rectangle()
                         .fill(hasEntry ? Color.green : Color.gray.opacity(0.3))
