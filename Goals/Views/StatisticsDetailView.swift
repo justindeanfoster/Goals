@@ -20,259 +20,243 @@ struct StatisticsDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                // Title and Link to Detail
-                NavigationLink(destination: destinationView) {
-                    Text(item.title)
-                        .font(.title2)
-                        .bold()
-                        .foregroundColor(.blue)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .padding(.vertical, 5)
-                
-                
-                // Year View
-                VStack(alignment: .leading) {
-                    HStack {
-                        Spacer()
-                        Button(action: { calendarViewModel.moveYear(by: -1) }) {
-                            Image(systemName: "chevron.left")
-                        }
-                        Text("\(String(calendarViewModel.selectedYear)) Year Overview")
-                            .font(.headline)
-                        Button(action: { calendarViewModel.moveYear(by: 1) }) {
-                            Image(systemName: "chevron.right")
-                        }
-                        Spacer()
-                    }
-                    YearGridView(
-                        entries: getEntriesForSelectedYear(),
-                        calendarViewModel: calendarViewModel
-                    )
-                }
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(10)
-                
-                // Statistics
-                VStack(alignment: .leading, spacing: 15) {
-                    HStack {
-                        Text("Statistics")
-                            .font(.headline)
-                        Spacer()
-                        Toggle("All Time", isOn: $isAllTimeStats)
-                            .toggleStyle(.button)
-                            .buttonStyle(.bordered)
-                    }
-                    
-                    Group {
-                        if isAllTimeStats {
-                            StatRow(label: "Days Active (All Time)", value: "\(getAllTimeDaysWorked())")
-                            StatRow(label: "Overall Consistency", value: "\(getAllTimeConsistencyRate())%")
-                        } else {
-                            StatRow(label: "Days Active This Year", value: "\(getDaysWorkedInYear())")
-                            StatRow(label: "Year Consistency Rate", value: "\(getYearConsistencyRate())%")
-                        }
-                        StatRow(label: "Current Streak", value: "\(getCurrentStreak()) days")
-                        StatRow(label: "Longest Streak", value: "\(getLongestStreak()) days")
-                        StatRow(label: "Total Entries", value: isAllTimeStats ? "\(getTotalEntries())" : "\(getEntriesForSelectedYear().count)")
-                        
-                        if case .goal(let goal) = item {
-                            StatRow(label: "Days Remaining", value: "\(goal.daysRemaining)")
-                        }
-                    }
-                }
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(10)
-                
-                // Monthly Activity Distribution (Histogram) moved here
-                VStack(alignment: .leading) {
-                    HStack(alignment: .center, spacing: 20) {
-                        Text("Monthly Activity Distribution")
-                            .font(.headline)
-                            .padding(.horizontal)
-                        Spacer()
-                    }
-                    HistogramView(
-                        monthSections: isAllTimeStats ? 
-                            calendarViewModel.getWeeklyHistogramData(entries: getEntries()) : 
-                            calendarViewModel.getWeeklyHistogramData(entries: getEntriesForSelectedYear()),
-                        maxCount: 50
-                    )
-                }
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(10)
-                
-                // Pie Charts Section
-                VStack(spacing: 20) {
-                    VStack(alignment: .leading) {
-                        HStack(alignment: .center, spacing: 20) {
-                            Text("Activity by Day of Week")
-                                .font(.headline)
-                                .padding(.horizontal)
-                            Spacer()
-                        }
-                        PieChartView(
-                            slices: isAllTimeStats ? getDayOfWeekBreakdown(entries: getEntries()) : getDayOfWeekBreakdown(entries: getEntriesForSelectedYear()),
-                            title: ""
-                        )
-                    }
-                    .padding()
-                    .background(Color(.systemGray6))
-                    .cornerRadius(10)
-                }
+                titleSection
+                yearGridSection
+                statisticsSection
+                histogramSection
+                pieChartsSection
             }
             .padding()
         }
         .navigationBarTitleDisplayMode(.inline)
     }
-    
+
+    // MARK: - Sections
+
+    private var titleSection: some View {
+        NavigationLink(destination: destinationView) {
+            Text(item.title)
+                .font(.title2)
+                .bold()
+                .foregroundColor(.blue)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(.vertical, 5)
+    }
+
+    private var yearGridSection: some View {
+        VStack(alignment: .leading) {
+            HStack {
+                Spacer()
+                Button(action: { calendarViewModel.moveYear(by: -1) }) {
+                    Image(systemName: "chevron.left")
+                }
+                Text("\(String(calendarViewModel.selectedYear)) Year Overview")
+                    .font(.headline)
+                Button(action: { calendarViewModel.moveYear(by: 1) }) {
+                    Image(systemName: "chevron.right")
+                }
+                Spacer()
+            }
+            YearGridView(
+                entries: getEntriesForSelectedYear(),
+                calendarViewModel: calendarViewModel
+            )
+        }
+        .padding()
+        .background(Color(.systemGray6))
+        .cornerRadius(10)
+    }
+
+    private var statisticsSection: some View {
+        VStack(alignment: .leading, spacing: 15) {
+            HStack {
+                Text("Statistics")
+                    .font(.headline)
+                Spacer()
+                Toggle("All Time", isOn: $isAllTimeStats)
+                    .toggleStyle(.button)
+                    .buttonStyle(.bordered)
+            }
+            .padding(.bottom, 5)
+            statisticsRows
+        }
+        .padding()
+        .background(Color(.systemGray6))
+        .cornerRadius(10)
+    }
+
+    private var statisticsRows: some View {
+        Group {
+            if isAllTimeStats {
+                StatRow(label: "Days Active (All Time)", value: "\(getAllTimeDaysWorked())")
+                StatRow(label: "Overall Consistency", value: "\(getAllTimeConsistencyRate())%")
+            } else {
+                StatRow(label: "Days Active This Year", value: "\(getDaysWorkedInYear())")
+                StatRow(label: "Year Consistency Rate", value: "\(getYearConsistencyRate())%")
+            }
+            StatRow(label: "Current Streak", value: "\(getCurrentStreak()) days")
+            StatRow(label: "Longest Streak", value: "\(getLongestStreak()) days")
+            StatRow(label: "Total Entries", value: isAllTimeStats ? "\(getTotalEntries())" : "\(getEntriesForSelectedYear().count)")
+            if case .goal(let goal) = item {
+                StatRow(label: "Days Remaining", value: "\(goal.daysRemaining)")
+            }
+        }
+    }
+
+    private var histogramSection: some View {
+        VStack(alignment: .leading) {
+            HStack(alignment: .center, spacing: 20) {
+                Text("Monthly Activity Distribution")
+                    .font(.headline)
+                    .padding(.horizontal)
+                Spacer()
+            }
+            HistogramView(
+                monthSections: isAllTimeStats ?
+                    calendarViewModel.getWeeklyHistogramData(entries: getEntries()) :
+                    calendarViewModel.getWeeklyHistogramData(entries: getEntriesForSelectedYear()),
+                maxCount: 50
+            )
+        }
+        .padding()
+        .background(Color(.systemGray6))
+        .cornerRadius(10)
+    }
+
+    private var pieChartsSection: some View {
+        VStack(spacing: 20) {
+            VStack(alignment: .leading) {
+                HStack(alignment: .center, spacing: 20) {
+                    Text("Activity by Day of Week")
+                        .font(.headline)
+                        .padding(.horizontal)
+                    Spacer()
+                }
+                PieChartView(
+                    slices: isAllTimeStats ? getDayOfWeekBreakdown(entries: getEntries()) : getDayOfWeekBreakdown(entries: getEntriesForSelectedYear()),
+                    title: ""
+                )
+            }
+            .padding()
+            .background(Color(.systemGray6))
+            .cornerRadius(10)
+        }
+    }
+
+    // MARK: - Helpers
+
     @ViewBuilder
     private var destinationView: some View {
         switch item {
-        case .goal(let goal):
-            GoalDetailView(goal: goal)
-        case .habit(let habit):
-            HabitDetailView(habit: habit)
+        case .goal(let goal): GoalDetailView(goal: goal)
+        case .habit(let habit): HabitDetailView(habit: habit)
         }
     }
-    
+
     private func getEntries() -> [Date] {
         switch item {
-        case .goal(let goal): 
+        case .goal(let goal):
             let goalEntries = goal.journalEntries.map { $0.timestamp }
             let habitEntries = goal.relatedHabits.flatMap { $0.journalEntries.map { $0.timestamp } }
             return goalEntries + habitEntries
-        case .habit(let habit): 
+        case .habit(let habit):
             return habit.journalEntries.map { $0.timestamp }
         }
     }
-    
+
     private func getDaysWorked() -> Int {
         switch item {
         case .goal(let goal): return goal.daysWorked
         case .habit(let habit): return habit.daysWorked
         }
     }
-    
+
     private func getTotalEntries() -> Int {
         switch item {
-        case .goal(let goal): 
+        case .goal(let goal):
             return goal.journalEntries.count + goal.relatedHabits.flatMap { $0.journalEntries }.count
-        case .habit(let habit): 
+        case .habit(let habit):
             return habit.journalEntries.count
         }
     }
-    
+
     private func getEntriesForSelectedYear() -> [Date] {
         let entries = getEntries()
         return entries.filter { entry in
             Calendar.current.component(.year, from: entry) == calendarViewModel.selectedYear
         }
     }
-    
+
     private func getDaysWorkedInYear() -> Int {
         let entries = getEntriesForSelectedYear()
-        // Use Set to ensure unique dates
         return Set(entries.map { Calendar.current.startOfDay(for: $0) }).count
     }
-    
+
     private func getYearConsistencyRate() -> Int {
         let daysInYear = Calendar.current.isDate(calendarViewModel.selectedYearStartDate, equalTo: Date(), toGranularity: .year) ?
             Calendar.current.ordinality(of: .day, in: .year, for: Date())! :
             Calendar.current.range(of: .day, in: .year, for: calendarViewModel.selectedYearStartDate)?.count ?? 365
-        
         return Int((Double(getDaysWorkedInYear()) / Double(daysInYear)) * 100)
     }
-    
+
     private func getAllTimeDaysWorked() -> Int {
         let entries = getEntries()
         return Set(entries.map { Calendar.current.startOfDay(for: $0) }).count
     }
-    
+
     private func getAllTimeConsistencyRate() -> Int {
         let entries = getEntries()
         guard let firstEntry = entries.min(by: { $0 < $1 }) else { return 0 }
-        
         let totalDays = Calendar.current.dateComponents([.day], from: firstEntry, to: Date()).day ?? 0
         guard totalDays > 0 else { return 0 }
-        
         return Int((Double(getAllTimeDaysWorked()) / Double(totalDays + 1)) * 100)
     }
-    
+
     private func getCurrentStreak() -> Int {
         let entries = getEntries()
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
         let yesterday = calendar.date(byAdding: .day, value: -1, to: today)!
-        
-        // Sort entries by date and get unique dates
-        let uniqueDates = Set(entries.map { calendar.startOfDay(for: $0) })
-            .sorted(by: >)  // Sort in descending order (most recent first)
-        
-        // If no entries exist, return 0
+        let uniqueDates = Set(entries.map { calendar.startOfDay(for: $0) }).sorted(by: >)
         guard let mostRecentEntry = uniqueDates.first else { return 0 }
-        
-        // If most recent entry is older than yesterday, streak is broken
-        if mostRecentEntry < yesterday {
-            return 0
-        }
-        
+        if mostRecentEntry < yesterday { return 0 }
         var streak = 0
         var currentDate = mostRecentEntry
-        
-        // Count consecutive days going backwards
         while uniqueDates.contains(currentDate) {
             streak += 1
             currentDate = calendar.date(byAdding: .day, value: -1, to: currentDate)!
         }
-        
         return streak
     }
-    
+
     private func getLongestStreak() -> Int {
         let entries = getEntries()
         guard !entries.isEmpty else { return 0 }
-        
-        // Sort entries by date and get unique dates
-        let uniqueDates = Set(entries.map { Calendar.current.startOfDay(for: $0) })
-            .sorted()  // Sort in ascending order
-        
+        let uniqueDates = Set(entries.map { Calendar.current.startOfDay(for: $0) }).sorted()
         var longestStreak = 0
         var currentStreak = 1
-        
-        // Compare consecutive dates
         for i in 1..<uniqueDates.count {
             let previousDate = uniqueDates[i - 1]
             let currentDate = uniqueDates[i]
-            
             let daysBetween = Calendar.current.dateComponents([.day], from: previousDate, to: currentDate).day ?? 0
-            
             if daysBetween == 1 {
-                // Consecutive days
                 currentStreak += 1
                 longestStreak = max(longestStreak, currentStreak)
             } else {
-                // Break in streak
                 currentStreak = 1
             }
         }
-        
-        // Handle case where current streak might be the longest
         return max(longestStreak, currentStreak)
     }
-    
+
     private func getDayOfWeekBreakdown(entries: [Date]) -> [PieSlice] {
         var dayCount: [Int: Int] = [:]
         let days = Calendar.current.shortWeekdaySymbols
-        
         entries.forEach { date in
             let weekday = Calendar.current.component(.weekday, from: date)
             dayCount[weekday, default: 0] += 1
         }
-        
         return dayCount.sorted { $0.key < $1.key }.map { weekday, count in
             PieSlice(
                 value: Double(count),
@@ -281,67 +265,21 @@ struct StatisticsDetailView: View {
             )
         }
     }
-    
-    private func getMonthlyBreakdown(entries: [Date]) -> [PieSlice] {
-        var monthCount: [Int: Int] = [:]
-        let months = Calendar.current.shortMonthSymbols
-        
-        entries.forEach { date in
-            let month = Calendar.current.component(.month, from: date)
-            monthCount[month, default: 0] += 1
-        }
-        
-        return monthCount.sorted { $0.key < $1.key }.map { month, count in
-            PieSlice(
-                value: Double(count),
-                color: Color.green.opacity(Double(month) / 12.0),
-                label: months[month - 1]
-            )
-        }
-    }
-    
-    private func getMonthlyHistogramData(entries: [Date]) -> [MonthSection] {
-        let calendar = Calendar.current
-        let currentDate = Date()
-        let (startDate, endDate) = calendarViewModel.getRecentMonthRange(months: 12)
-        
-        // Get months between start and end date
-        var monthSections: [MonthSection] = []
-        var date = startDate
-        
-        while date <= endDate {
-            let monthEntries = entries.filter { 
-                calendar.isDate($0, equalTo: date, toGranularity: .month)
-            }
-            var weekBins: [HistogramBin] = []
-            
-            let weeksInMonth = calendar.range(of: .weekOfMonth, in: .month, for: date)?.count ?? 0
-            
-            for week in 1...weeksInMonth {
-                let count = monthEntries.filter { calendar.component(.weekOfMonth, from: $0) == week }.count
-                weekBins.append(HistogramBin(count: count, weekNumber: week))
-            }
-            
-            let monthName = calendar.shortMonthSymbols[calendar.component(.month, from: date) - 1]
-            monthSections.append(MonthSection(month: monthName, bins: weekBins))
-            
-            date = calendar.date(byAdding: .month, value: 1, to: date)!
-        }
-        
-        return monthSections
-    }
 }
 
 struct StatRow: View {
     let label: String
     let value: String
-    
+
     var body: some View {
         HStack {
             Text(label)
+                .font(.subheadline)
             Spacer()
             Text(value)
+                .font(.subheadline)
                 .bold()
         }
+        .padding(.vertical, 2)
     }
 }

@@ -9,66 +9,63 @@ struct StatisticsListView: View {
     var body: some View {
         NavigationView {
             List {
-                Section("Goals") {
-                    ForEach(goals) { goal in
-                        NavigationLink {
-                            StatisticsDetailView(item: .goal(goal))
-                        } label: {
-                            VStack(alignment: .leading, spacing: 4) {
-                                HStack {
-                                    Text(goal.title)
-                                        .font(.headline)
-                                    Spacer()
-                                    VStack(alignment: .trailing) {
-                                        Text("\(Int((Double(goal.daysWorked) / 365.0) * 100))%")
-                                            .bold()
-                                        Text("\(goal.daysWorked) days")
-                                            .font(.caption)
-                                    }
-                                }
-                                YearGridView(
-                                    entries: Array(Set(
-                                        goal.journalEntries.map { $0.timestamp } +
-                                        goal.relatedHabits.flatMap { $0.journalEntries.map { $0.timestamp } }
-                                    )),
-                                    calendarViewModel: calendarViewModel
-                                )
-                                .allowsHitTesting(false) // Prevent YearGridView from intercepting taps
-                            }
-                            .contentShape(Rectangle()) // Make entire area tappable
-                        }
-                    }
-                }
-                
-                Section("Habits") {
-                    ForEach(habits) { habit in
-                        NavigationLink {
-                            StatisticsDetailView(item: .habit(habit))
-                        } label: {
-                            VStack(alignment: .leading, spacing: 4) {
-                                HStack {
-                                    Text(habit.title)
-                                        .font(.headline)
-                                    Spacer()
-                                    VStack(alignment: .trailing) {
-                                        Text("\(Int((Double(habit.daysWorked) / 365.0) * 100))%")
-                                            .bold()
-                                        Text("\(habit.daysWorked) days")
-                                            .font(.caption)
-                                    }
-                                }
-                                YearGridView(
-                                    entries: habit.journalEntries.map { $0.timestamp },
-                                    calendarViewModel: calendarViewModel
-                                )
-                                .allowsHitTesting(false) // Prevent YearGridView from intercepting taps
-                            }
-                            .contentShape(Rectangle()) // Make entire area tappable
-                        }
-                    }
-                }
+                goalsSection
+                habitsSection
             }
             .navigationTitle("Statistics")
+        }
+    }
+
+    // MARK: - Sections
+
+    private var goalsSection: some View {
+        Section("Goals") {
+            ForEach(goals) { goal in
+                statisticsRow(
+                    title: goal.title,
+                    percent: Int((Double(goal.daysWorked) / 365.0) * 100),
+                    days: goal.daysWorked,
+                    gridEntries: Array(Set(goal.journalEntries.map { $0.timestamp } + goal.relatedHabits.flatMap { $0.journalEntries.map { $0.timestamp } })),
+                    destination: StatisticsDetailView(item: .goal(goal))
+                )
+            }
+        }
+    }
+
+    private var habitsSection: some View {
+        Section("Habits") {
+            ForEach(habits) { habit in
+                statisticsRow(
+                    title: habit.title,
+                    percent: Int((Double(habit.daysWorked) / 365.0) * 100),
+                    days: habit.daysWorked,
+                    gridEntries: habit.journalEntries.map { $0.timestamp },
+                    destination: StatisticsDetailView(item: .habit(habit))
+                )
+            }
+        }
+    }
+
+    // MARK: - Row
+
+    private func statisticsRow(title: String, percent: Int, days: Int, gridEntries: [Date], destination: some View) -> some View {
+        NavigationLink(destination: destination) {
+            VStack(alignment: .leading, spacing: 4) {
+                HStack {
+                    Text(title).font(.headline)
+                    Spacer()
+                    VStack(alignment: .trailing) {
+                        Text("\(percent)%").bold()
+                        Text("\(days) days").font(.caption)
+                    }
+                }
+                YearGridView(
+                    entries: gridEntries,
+                    calendarViewModel: calendarViewModel
+                )
+                .allowsHitTesting(false)
+            }
+            .contentShape(Rectangle())
         }
     }
 }
