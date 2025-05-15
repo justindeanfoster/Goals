@@ -1,7 +1,9 @@
 import SwiftUI
+import SwiftData
 
 struct MilestoneListView: View {
-    let milestones: [String]
+    @Environment(\.modelContext) private var modelContext
+    let milestones: [Milestone]
     @State private var isExpanded = false
     
     var body: some View {
@@ -16,15 +18,29 @@ struct MilestoneListView: View {
             }
             
             if isExpanded {
-                ForEach(milestones.indices, id: \.self) { index in
-                    HStack(alignment: .top, spacing: 12) {
-                        Image(systemName: "checkmark.circle")
-                            .foregroundColor(.blue)
-                            .font(.system(size: 20))
-                        
-                        Text(milestones[index])
-                            .font(.subheadline)
+                ForEach(milestones) { milestone in
+                    Button(action: {
+                        milestone.isCompleted.toggle()
+                        milestone.dateCompleted = milestone.isCompleted ? Date() : nil
+                        try? modelContext.save()
+                    }) {
+                        HStack(alignment: .top, spacing: 12) {
+                            Image(systemName: milestone.isCompleted ? "checkmark.circle.fill" : "circle")
+                                .foregroundColor(milestone.isCompleted ? .green : .blue)
+                                .font(.system(size: 20))
+                            
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(milestone.text)
+                                    .font(.subheadline)
+                                if let completed = milestone.dateCompleted {
+                                    Text("Completed \(completed.formatted(date: .abbreviated, time: .omitted))")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                        }
                     }
+                    .buttonStyle(PlainButtonStyle())
                     .padding(.vertical, 8)
                     .padding(.horizontal, 12)
                     .background(Color(.systemGray6))

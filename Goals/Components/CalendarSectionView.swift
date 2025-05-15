@@ -2,32 +2,32 @@ import SwiftUI
 
 struct CalendarSectionView: View {
     @ObservedObject var calendarViewModel: CalendarViewModel
-    let hasJournalEntry: (Date) -> Bool
     let onDateSelected: (Date) -> Void
     let isDeadlineDate: ((Date) -> Bool)?
+    let milestoneCompletions: ((Date) -> Bool)?
+    let getDateColor: (Date) -> Color
     @Binding var showCalendar: Bool
     @State private var lastTimeframeUpdate = Date()
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             VStack(spacing: 5) {
-                if !showCalendar {
-                    WeekRangeView(calendarViewModel: calendarViewModel)
-                }
                 
                 if showCalendar {
-                    CalendarGridView(
+                    MonthGridView(
                         calendarViewModel: calendarViewModel,
-                        hasJournalEntry: hasJournalEntry,
                         onDateSelected: onDateSelected,
-                        isDeadlineDate: isDeadlineDate
+                        isDeadlineDate: isDeadlineDate,
+                        milestoneCompletions: milestoneCompletions,
+                        getDateColor: getDateColor
                     )
                 } else {
                     WeekGridView(
                         calendarViewModel: calendarViewModel,
-                        hasJournalEntry: hasJournalEntry,
                         onDateSelected: onDateSelected,
-                        isDeadlineDate: isDeadlineDate
+                        isDeadlineDate: isDeadlineDate,
+                        milestoneCompletions: milestoneCompletions,
+                        getDateColor: getDateColor
                     )
                 }
             }

@@ -6,8 +6,10 @@ final class Goal {
     @Attribute(.unique) var id: UUID = UUID()
     var title: String
     var deadline: Date
-    var milestones: [String] = []
     var notes: String = ""
+    
+    @Relationship(deleteRule: .cascade) 
+    var milestones: [Milestone] = []
     
     @Relationship(deleteRule: .cascade) 
     var journalEntries: [JournalEntry] = []
@@ -37,10 +39,9 @@ final class Goal {
         self.id = id
         self.title = title
         self.deadline = deadline
-        self.milestones = milestones
         self.notes = notes
         self.journalEntries = []
-        // Create relations for each habit
+        self.milestones = milestones.map { Milestone(text: $0) }
         self.habitRelations = relatedHabits.map { habit in
             GoalHabitRelation(goal: self, habit: habit)
         }

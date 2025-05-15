@@ -1,25 +1,39 @@
 import SwiftUI
 
-struct CalendarGridView: View {
+struct MonthGridView: View {
     @ObservedObject var calendarViewModel: CalendarViewModel
-    let hasJournalEntry: (Date) -> Bool
     let onDateSelected: (Date) -> Void
     let isDeadlineDate: ((Date) -> Bool)?
+    let milestoneCompletions: ((Date) -> Bool)?
+    let getDateColor: (Date) -> Color
     
     var body: some View {
         VStack {
             HStack {
+                Spacer()
+                Spacer()
+                Spacer()
+
                 Button(action: { calendarViewModel.moveMonth(by: -1) }) {
                     Image(systemName: "chevron.left")
                 }
-                
                 Text(calendarViewModel.startOfMonth, formatter: monthFormatter)
                     .font(.headline)
                     .padding()
-                
                 Button(action: { calendarViewModel.moveMonth(by: 1) }) {
                     Image(systemName: "chevron.right")
                 }
+                
+                Spacer()
+                
+                Button(action: {
+                    calendarViewModel.selectedDate = Date()
+                    calendarViewModel.currentMonth = Date()
+                }) {
+                    Image(systemName: "arrow.counterclockwise")
+                        .font(.title3)
+                }
+                Spacer()
             }
             Divider()
 
@@ -44,43 +58,22 @@ struct CalendarGridView: View {
                 ForEach(0..<calendarViewModel.daysInMonth, id: \.self) { offset in
                     let date = Calendar.current.date(byAdding: .day, value: offset, to: calendarViewModel.startOfMonth)!
                     let isToday = Calendar.current.isDateInToday(date)
-                    let isDeadline = isDeadlineDate?(date) ?? false
                     let isSelected = Calendar.current.isDate(date, inSameDayAs: calendarViewModel.selectedDate)
+                    let isDeadline = isDeadlineDate?(date) ?? false
                     
-                    VStack {
-                        ZStack {
-                            if isDeadline {
-                                RoundedRectangle(cornerRadius: 5)
-                                    .fill(Color.red.opacity(0.8))
-                                    .frame(width: 35, height: 35)
-                                    .zIndex(1)
-                            }
-                            if isToday {
-                                RoundedRectangle(cornerRadius: 5)
-                                    .fill(Color.blue.opacity(0.8))
-                                    .frame(width: 35, height: 35)
-                                    .zIndex(1)
-                            }
-                            Circle()
-                                .fill(hasJournalEntry(date) ? Color.green : Color.gray)
-                                .frame(width: 30, height: 30)
-                                .zIndex(2)
-                                .overlay(
-                                    Text(Calendar.current.component(.day, from: date).description)
-                                        .font(.caption)
-                                        .foregroundColor(.white)
-                                        .zIndex(3)
-                                )
-                        }
-                        .frame(width: 35, height: 35)  // Fixed frame for the ZStack
-                        .onTapGesture {
+                    CalendarDayCell(
+                        date: date,
+                        isSelected: isSelected,
+                        hasDeadline: isDeadline,
+                        hasMilestone: milestoneCompletions?(date) ?? false,
+                        cellColor: getDateColor(date),
+                        onTap: {
                             calendarViewModel.selectedDate = date
                             DispatchQueue.main.async {
                                 onDateSelected(date)
                             }
                         }
-                    }
-                    .frame(height: 35)  // Fixed height for the VStack
+                    )
                 }
             }
         }

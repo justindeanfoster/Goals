@@ -82,13 +82,21 @@ struct GoalDetailView: View {
     private var calendarSection: some View {
         CalendarSectionView(
             calendarViewModel: calendarViewModel,
-            hasJournalEntry: hasJournalEntryForDate,
             onDateSelected: { date in
                 selectedDate = date
                 showingDayView = true
             },
             isDeadlineDate: { date in
                 Calendar.current.isDate(date, inSameDayAs: goal.deadline)
+            },
+            milestoneCompletions: { date in
+                goal.milestones.contains { milestone in
+                    guard let completedDate = milestone.dateCompleted else { return false }
+                    return Calendar.current.isDate(completedDate, inSameDayAs: date)
+                }
+            },
+            getDateColor: { date in
+                hasJournalEntryForDate(date) ? .green : .gray
             },
             showCalendar: $showCalendar
         )

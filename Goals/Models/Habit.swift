@@ -5,8 +5,10 @@ import SwiftData
 final class Habit {
     @Attribute(.unique) var id: UUID = UUID()
     var title: String
-    var milestones: [String] = []
     var notes: String = ""
+    
+    @Relationship(deleteRule: .cascade) 
+    var milestones: [Milestone] = []
     
     @Relationship(deleteRule: .cascade) 
     var journalEntries: [JournalEntry] = []
@@ -25,8 +27,8 @@ final class Habit {
 
     init(title: String, milestones: [String] = [], notes: String = "") {
         self.title = title
-        self.milestones = milestones
         self.notes = notes
+        self.milestones = milestones.map { Milestone(text: $0) }
     }
 }
 

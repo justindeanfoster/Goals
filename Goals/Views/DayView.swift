@@ -20,7 +20,7 @@ struct DayView: View {
     var body: some View {
         NavigationView {
             Group {
-                if entries.isEmpty {
+                if entries.isEmpty && getMilestonesForDate(date).isEmpty {
                     VStack {
                         Spacer()
                         Text("You ain't do nothing today!")
@@ -32,6 +32,22 @@ struct DayView: View {
                     }
                 } else {
                     List {
+                        if !getMilestonesForDate(date).isEmpty {
+                            Section(header: Text("Milestones Completed")) {
+                                ForEach(getMilestonesForDate(date), id: \.id) { milestone in
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(milestone.text)
+                                            .font(.subheadline)
+                                        if let source = getMilestoneSource(milestone) {
+                                            Text(source)
+                                                .font(.caption)
+                                                .foregroundColor(.secondary)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        
                         ForEach(entries, id: \.0) { item, entries in
                             Section(header: Text(item)) {
                                 ForEach(entries) { entry in
@@ -102,5 +118,39 @@ struct DayView: View {
         }
 
         return result
+    }
+
+    private func getMilestonesForDate(_ date: Date) -> [Milestone] {
+        var milestones: [Milestone] = []
+        
+        for goal in goals {
+            milestones.append(contentsOf: goal.milestones.filter { milestone in
+                guard let completedDate = milestone.dateCompleted else { return false }
+                return Calendar.current.isDate(completedDate, inSameDayAs: date)
+            })
+        }
+        
+        for habit in habits {
+            milestones.append(contentsOf: habit.milestones.filter { milestone in
+                guard let completedDate = milestone.dateCompleted else { return false }
+                return Calendar.current.isDate(completedDate, inSameDayAs: date)
+            })
+        }
+        
+        return milestones
+    }
+    
+    private func getMilestoneSource(_ milestone: Milestone) -> String? {
+        for goal in goals {
+            if goal.milestones.contains(where: { $0.id == milestone.id }) {
+                return "Goal: \(goal.title)"
+            }
+        }
+        for habit in habits {
+            if habit.milestones.contains(where: { $0.id == milestone.id }) {
+                return "Habit: \(habit.title)"
+            }
+        }
+        return nil
     }
 }
