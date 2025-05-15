@@ -120,7 +120,10 @@ struct GoalDetailView: View {
     private var milestonesSection: some View {
         Group {
             if !goal.milestones.isEmpty {
-                MilestoneListView(milestones: goal.milestones)
+                MilestoneListView(
+                    milestones: goal.milestones,
+                    selectedDate: calendarViewModel.selectedDate
+                )
                 Divider()
             }
         }

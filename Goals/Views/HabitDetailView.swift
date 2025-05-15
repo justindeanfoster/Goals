@@ -96,7 +96,10 @@ struct HabitDetailView: View {
     private var milestonesSection: some View {
         Group {
             if !habit.milestones.isEmpty {
-                MilestoneListView(milestones: habit.milestones)
+                MilestoneListView(
+                    milestones: habit.milestones,
+                    selectedDate: calendarViewModel.selectedDate
+                )
                 Divider()
             }
         }

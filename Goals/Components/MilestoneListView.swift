@@ -4,6 +4,7 @@ import SwiftData
 struct MilestoneListView: View {
     @Environment(\.modelContext) private var modelContext
     let milestones: [Milestone]
+    let selectedDate: Date
     @State private var isExpanded = false
     
     var body: some View {
@@ -21,7 +22,7 @@ struct MilestoneListView: View {
                 ForEach(milestones) { milestone in
                     Button(action: {
                         milestone.isCompleted.toggle()
-                        milestone.dateCompleted = milestone.isCompleted ? Date() : nil
+                        milestone.dateCompleted = milestone.isCompleted ? selectedDate : nil
                         try? modelContext.save()
                     }) {
                         HStack(alignment: .top, spacing: 12) {

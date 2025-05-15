@@ -38,11 +38,10 @@ struct DayView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text(milestone.text)
                                             .font(.subheadline)
-                                        if let source = getMilestoneSource(milestone) {
-                                            Text(source)
-                                                .font(.caption)
-                                                .foregroundColor(.secondary)
-                                        }
+                                            .bold()
+                                        Text(getMilestoneSource(milestone) ?? "Unknown Source")
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
                                     }
                                 }
                             }
@@ -141,15 +140,11 @@ struct DayView: View {
     }
     
     private func getMilestoneSource(_ milestone: Milestone) -> String? {
-        for goal in goals {
-            if goal.milestones.contains(where: { $0.id == milestone.id }) {
-                return "Goal: \(goal.title)"
-            }
+        if let goal = goals.first(where: { $0.milestones.contains(where: { $0.id == milestone.id }) }) {
+            return "\(goal.title) (Goal)"
         }
-        for habit in habits {
-            if habit.milestones.contains(where: { $0.id == milestone.id }) {
-                return "Habit: \(habit.title)"
-            }
+        if let habit = habits.first(where: { $0.milestones.contains(where: { $0.id == milestone.id }) }) {
+            return "\(habit.title) (Habit)"
         }
         return nil
     }
