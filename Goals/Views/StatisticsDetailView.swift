@@ -13,21 +13,21 @@ enum StatisticsItem {
 }
 
 enum TimeRange {
-    case year
+    case allTime
     case lastWeek
     case lastMonth
     case last3Months
     case last6Months
-    case allTime
+    case year  // Moved to end
     
     var description: String {
         switch self {
-        case .year: return "Selected Year"
+        case .allTime: return "All Time"
         case .lastWeek: return "Last Week"
         case .lastMonth: return "Last Month"
         case .last3Months: return "Last 3 Months"
         case .last6Months: return "Last 6 Months"
-        case .allTime: return "All Time"
+        case .year: return "Selected Year"
         }
     }
 }
@@ -35,7 +35,7 @@ enum TimeRange {
 struct StatisticsDetailView: View {
     let item: StatisticsItem
     @StateObject private var calendarViewModel = CalendarViewModel()
-    @State private var selectedTimeRange: TimeRange = .year
+    @State private var selectedTimeRange: TimeRange = .allTime  // Changed from .year to .allTime
     
     var body: some View {
         ScrollView {
@@ -96,12 +96,12 @@ struct StatisticsDetailView: View {
                 Spacer()
                 Menu {
                     Picker("Time Range", selection: $selectedTimeRange) {
-                        Text("Selected Year").tag(TimeRange.year)
+                        Text("All Time").tag(TimeRange.allTime)
                         Text("Last Week").tag(TimeRange.lastWeek)
                         Text("Last Month").tag(TimeRange.lastMonth)
                         Text("Last 3 Months").tag(TimeRange.last3Months)
                         Text("Last 6 Months").tag(TimeRange.last6Months)
-                        Text("All Time").tag(TimeRange.allTime)
+                        Text("Selected Year").tag(TimeRange.year)
                     }
                 } label: {
                     HStack {
