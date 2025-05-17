@@ -53,7 +53,7 @@ struct HistogramView: View {
             
             VStack(spacing: 0) {  // Remove default spacing
                 HStack(spacing: 0) {
-                    // Y-axis labels with fixed heights
+                    // Y-axis labels with better alignment
                     VStack(alignment: .trailing, spacing: 0) {
                         ForEach(yAxisLabels, id: \.self) { value in
                             Text("\(value)")
