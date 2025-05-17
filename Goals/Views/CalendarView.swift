@@ -114,7 +114,7 @@ struct CalendarView: View {
     private func calendarDayCell(date: Date, isSelected: Bool, hasDeadline: Bool) -> some View {
         let progress = calendarViewModel.getDailyProgress(for: date, goals: goals, habits: habits)
         let cellColor = progress > 0 ? 
-            Color.blue.opacity(0.3 + (progress * 0.7)) : 
+            Color.blue.opacity(0.1 + (progress * 0.8)) : 
             Color.gray
             
         return CalendarDayCell(

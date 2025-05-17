@@ -17,17 +17,17 @@ struct CalendarDayCell: View {
                         .frame(width: 35, height: 35)
                         .zIndex(1)
                 }
-                if isSelected {
-                    RoundedRectangle(cornerRadius: 5)
-                        .fill(Color.blue.opacity(0.8))
-                        .frame(width: 35, height: 35)
-                        .zIndex(1)
-                }
                 if hasMilestone {
                     RoundedRectangle(cornerRadius: 5)
-                        .fill(Color.green.opacity(0.8))
+                        .fill(.indigo.opacity(0.8))
                         .frame(width: 35, height: 35)
                         .zIndex(0)
+                }
+                if isSelected {
+                    Circle()
+                        .stroke(Color.blue, lineWidth: 2)
+                        .frame(width: 32, height: 32)
+                        .zIndex(3)
                 }
                 Circle()
                     .fill(cellColor)

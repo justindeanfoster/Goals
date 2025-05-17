@@ -42,6 +42,7 @@
 		0CAD69822DCAEBE200014F93 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		0CAD698B2DD58C4100014F93 /* CalendarDayCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAD698A2DD58C4100014F93 /* CalendarDayCell.swift */; };
 		0CAD698D2DD5969C00014F93 /* MonthGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAD698C2DD5969C00014F93 /* MonthGridView.swift */; };
+		0CAD698F2DD8194C00014F93 /* EditMilestoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAD698E2DD8194C00014F93 /* EditMilestoneView.swift */; };
 		0CFFC8502D1B81F700C8F272 /* GoalsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CFFC84F2D1B81F700C8F272 /* GoalsApp.swift */; };
 		0CFFC8522D1B81F700C8F272 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CFFC8512D1B81F700C8F272 /* ContentView.swift */; };
 		0CFFC8562D1B81FB00C8F272 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0CFFC8552D1B81FB00C8F272 /* Assets.xcassets */; };
@@ -84,6 +85,7 @@
 		0CAD697E2DC706F800014F93 /* CollapsibleSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleSectionView.swift; sourceTree = "<group>"; };
 		0CAD698A2DD58C4100014F93 /* CalendarDayCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarDayCell.swift; sourceTree = "<group>"; };
 		0CAD698C2DD5969C00014F93 /* MonthGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthGridView.swift; sourceTree = "<group>"; };
+		0CAD698E2DD8194C00014F93 /* EditMilestoneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditMilestoneView.swift; sourceTree = "<group>"; };
 		0CFFC84C2D1B81F700C8F272 /* Goals.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Goals.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0CFFC84F2D1B81F700C8F272 /* GoalsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsApp.swift; sourceTree = "<group>"; };
 		0CFFC8512D1B81F700C8F272 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 		0C9717B02DBC4FAA0072B569 /* Forms */ = {
 			isa = PBXGroup;
 			children = (
+				0CAD698E2DD8194C00014F93 /* EditMilestoneView.swift */,
 				0C9717AA2DBC4FAA0072B569 /* AddGoalForm.swift */,
 				0C9717AB2DBC4FAA0072B569 /* AddHabitForm.swift */,
 				0C9717AC2DBC4FAA0072B569 /* AddJournalEntry.swift */,
@@ -362,6 +365,7 @@
 				0C9717D82DBC4FAA0072B569 /* EditHabitForm.swift in Sources */,
 				0CAD697B2DC6FC5A00014F93 /* Milestone.swift in Sources */,
 				0C9717DA2DBC4FAA0072B569 /* GoalsListView.swift in Sources */,
+				0CAD698F2DD8194C00014F93 /* EditMilestoneView.swift in Sources */,
 				0CAD697D2DC6FDA800014F93 /* WeekRangeView.swift in Sources */,
 				0CAD697F2DC706F800014F93 /* CollapsibleSectionView.swift in Sources */,
 				0C9717DB2DBC4FAA0072B569 /* Goal.swift in Sources */,
