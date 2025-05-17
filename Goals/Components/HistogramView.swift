@@ -17,15 +17,19 @@ struct HistogramView: View {
     
     private let yAxisWidth: CGFloat = 35  // Increased from 30 to accommodate labels
     private let minBarWidth: CGFloat = 15
-    private let horizontalLinesCount = 5
     private let sectionHeight: CGFloat = 200  // Reduced from 220
     private let graphHeight: CGFloat = 160    // Keep this the same
     private let verticalPadding: CGFloat = 4  // Reduced from 8
+    private let labelHeight: CGFloat = 40  // Added fixed height for labels
     
     private var effectiveMaxCount: Int {
-        // Use actual maximum count from data
-        let actualMax = monthSections.flatMap { $0.bins }.map { $0.count }.max() ?? 0
-        return max(actualMax, 1) // Ensure we have at least 1 line
+        monthSections.flatMap { $0.bins }.map { $0.count }.max() ?? 1
+    }
+    
+    private var yAxisLabels: [Int] {
+        let max = effectiveMaxCount
+        let steps = stride(from: max, through: 0, by: -(max > 5 ? max / 5 : 1))
+        return Array(steps)
     }
     
     // Calculate dynamic spacing and width
@@ -47,47 +51,35 @@ struct HistogramView: View {
         GeometryReader { geometry in
             let metrics = calculateBarMetrics(availableWidth: geometry.size.width - yAxisWidth)
             
-            VStack {  // Added VStack for vertical centering
-                Spacer()
+            VStack(spacing: 0) {  // Remove default spacing
                 HStack(spacing: 0) {
-                    // Y-axis labels
+                    // Y-axis labels with fixed heights
                     VStack(alignment: .trailing, spacing: 0) {
-                        Text("\(effectiveMaxCount)")
-                            .font(.caption)
-                            .frame(width: yAxisWidth, alignment: .trailing)
-                            .frame(height: graphHeight / CGFloat(horizontalLinesCount))
-                        
-                        ForEach(1..<horizontalLinesCount, id: \.self) { i in
-                            Text("\(effectiveMaxCount - (i * effectiveMaxCount / horizontalLinesCount))")
+                        ForEach(yAxisLabels, id: \.self) { value in
+                            Text("\(value)")
                                 .font(.caption)
                                 .frame(width: yAxisWidth, alignment: .trailing)
-                                .frame(height: graphHeight / CGFloat(horizontalLinesCount))
+                                .frame(height: graphHeight / CGFloat(max(1, yAxisLabels.count - 1)))
                         }
-                        
-                        Text("0")
-                            .font(.caption)
-                            .frame(width: yAxisWidth, alignment: .trailing)
-                            .frame(height: graphHeight / CGFloat(horizontalLinesCount))
                     }
-                    .frame(width: yAxisWidth)
+                    .frame(width: yAxisWidth, height: graphHeight)
                     
-                    // Scrollable data section with adjusted alignment
+                    // Scrollable data section
                     ScrollViewReader { proxy in
                         ScrollView(.horizontal, showsIndicators: false) {
                             ZStack(alignment: .topLeading) {
-                                // Grid lines aligned with y-axis labels
-                                VStack(spacing: graphHeight / CGFloat(horizontalLinesCount)) {
-                                    ForEach((0...horizontalLinesCount).reversed(), id: \.self) { _ in
+                                // Grid lines with fixed spacing
+                                VStack(spacing: graphHeight / CGFloat(max(1, yAxisLabels.count - 1))) {
+                                    ForEach(yAxisLabels, id: \.self) { _ in
                                         Rectangle()
                                             .fill(Color.gray.opacity(0.2))
                                             .frame(height: 1)
-                                            .offset(y: -0.5) // Adjust line position to align with labels
                                     }
                                 }
                                 .frame(height: graphHeight)
                                 
-                                // Bars aligned with grid
-                                VStack(alignment: .leading, spacing: 2) { // Reduced spacing from 4
+                                // Bars and labels
+                                VStack(alignment: .leading, spacing: 0) {
                                     HStack(alignment: .bottom, spacing: metrics.spacing) {
                                         ForEach(monthSections, id: \.month) { section in
                                             ForEach(section.bins, id: \.weekNumber) { bin in
@@ -100,19 +92,20 @@ struct HistogramView: View {
                                     }
                                     .frame(height: graphHeight, alignment: .bottom)
                                     
-                                    // Month labels with less spacing
-                                    HStack(alignment: .bottom, spacing: metrics.spacing) {
+                                    // Month labels with fixed height
+                                    HStack(alignment: .top, spacing: metrics.spacing) {
                                         ForEach(monthSections, id: \.month) { section in
                                             Text(section.month)
                                                 .font(.caption)
                                                 .rotationEffect(.degrees(-45))
                                                 .frame(width: CGFloat(section.bins.count) * (metrics.barWidth + metrics.spacing) - metrics.spacing)
+                                                .frame(height: labelHeight)
                                         }
                                     }
                                     .padding(.leading, metrics.barWidth/2)
                                 }
                             }
-                            .padding(.vertical, verticalPadding)  // Use smaller vertical padding
+                            .padding(.vertical, verticalPadding)
                             .frame(minWidth: geometry.size.width - yAxisWidth)
                         }
                         .onChange(of: timeRange) { _, _ in
@@ -125,9 +118,8 @@ struct HistogramView: View {
                         }
                     }
                 }
-                Spacer()
             }
         }
-        .frame(height: sectionHeight)  // Fixed overall height
+        .frame(height: sectionHeight)
     }
 }
