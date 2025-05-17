@@ -12,10 +12,30 @@ enum StatisticsItem {
     }
 }
 
+enum TimeRange {
+    case year
+    case lastWeek
+    case lastMonth
+    case last3Months
+    case last6Months
+    case allTime
+    
+    var description: String {
+        switch self {
+        case .year: return "Selected Year"
+        case .lastWeek: return "Last Week"
+        case .lastMonth: return "Last Month"
+        case .last3Months: return "Last 3 Months"
+        case .last6Months: return "Last 6 Months"
+        case .allTime: return "All Time"
+        }
+    }
+}
+
 struct StatisticsDetailView: View {
     let item: StatisticsItem
     @StateObject private var calendarViewModel = CalendarViewModel()
-    @State private var isAllTimeStats = false
+    @State private var selectedTimeRange: TimeRange = .year
     
     var body: some View {
         ScrollView {
@@ -74,9 +94,27 @@ struct StatisticsDetailView: View {
                 Text("Statistics")
                     .font(.headline)
                 Spacer()
-                Toggle("All Time", isOn: $isAllTimeStats)
-                    .toggleStyle(.button)
-                    .buttonStyle(.bordered)
+                Menu {
+                    Picker("Time Range", selection: $selectedTimeRange) {
+                        Text("Selected Year").tag(TimeRange.year)
+                        Text("Last Week").tag(TimeRange.lastWeek)
+                        Text("Last Month").tag(TimeRange.lastMonth)
+                        Text("Last 3 Months").tag(TimeRange.last3Months)
+                        Text("Last 6 Months").tag(TimeRange.last6Months)
+                        Text("All Time").tag(TimeRange.allTime)
+                    }
+                } label: {
+                    HStack {
+                        Text(selectedTimeRange.description)
+                            .frame(width: 120, alignment: .leading) // Changed from .trailing to .leading
+                        Image(systemName: "chevron.down")
+                            .font(.caption)
+                    }
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 5)
+                    .background(Color.blue.opacity(0.1))
+                    .cornerRadius(8)
+                }
             }
             .padding(.bottom, 5)
             statisticsRows
@@ -88,16 +126,20 @@ struct StatisticsDetailView: View {
 
     private var statisticsRows: some View {
         Group {
-            if isAllTimeStats {
-                StatRow(label: "Days Active (All Time)", value: "\(getAllTimeDaysWorked())")
-                StatRow(label: "Overall Consistency", value: "\(getAllTimeConsistencyRate())%")
-            } else {
+            switch selectedTimeRange {
+            case .year:
                 StatRow(label: "Days Active This Year", value: "\(getDaysWorkedInYear())")
                 StatRow(label: "Year Consistency Rate", value: "\(getYearConsistencyRate())%")
+            case .allTime:
+                StatRow(label: "Days Active (All Time)", value: "\(getAllTimeDaysWorked())")
+                StatRow(label: "Overall Consistency", value: "\(getAllTimeConsistencyRate())%")
+            default:
+                StatRow(label: "Days Active", value: "\(getDaysWorked(for: selectedTimeRange))")
+                StatRow(label: "Consistency Rate", value: "\(getConsistencyRate(for: selectedTimeRange))%")
             }
             StatRow(label: "Current Streak", value: "\(getCurrentStreak()) days")
             StatRow(label: "Longest Streak", value: "\(getLongestStreak()) days")
-            StatRow(label: "Total Entries", value: isAllTimeStats ? "\(getTotalEntries())" : "\(getEntriesForSelectedYear().count)")
+            StatRow(label: "Total Entries", value: "\(getEntriesCount(for: selectedTimeRange))")
             if case .goal(let goal) = item {
                 StatRow(label: "Days Remaining", value: "\(goal.daysRemaining)")
             }
@@ -113,10 +155,11 @@ struct StatisticsDetailView: View {
                 Spacer()
             }
             HistogramView(
-                monthSections: isAllTimeStats ?
-                    calendarViewModel.getWeeklyHistogramData(entries: getEntries()) :
-                    calendarViewModel.getWeeklyHistogramData(entries: getEntriesForSelectedYear()),
-                maxCount: 50
+                monthSections: calendarViewModel.getWeeklyHistogramData(
+                    entries: getFilteredEntries(for: selectedTimeRange),
+                    timeRange: selectedTimeRange),  // Pass timeRange to CalendarViewModel
+                maxCount: 50,
+                timeRange: selectedTimeRange
             )
         }
         .padding()
@@ -126,6 +169,25 @@ struct StatisticsDetailView: View {
 
     private var pieChartsSection: some View {
         VStack(spacing: 20) {
+            if case .goal(let goal) = item {
+                VStack(alignment: .leading) {
+                    HStack(alignment: .center, spacing: 20) {
+                        Text("Journal Entry Sources")
+                            .font(.headline)
+                            .padding(.horizontal)
+                        Spacer()
+                    }
+                    PieChartView(
+                        slices: getJournalEntrySourceBreakdown(goal: goal),
+                        title: ""
+                    )
+                }
+                .padding()
+                .background(Color(.systemGray6))
+                .cornerRadius(10)
+            }
+            
+            // Original day of week pie chart
             VStack(alignment: .leading) {
                 HStack(alignment: .center, spacing: 20) {
                     Text("Activity by Day of Week")
@@ -134,7 +196,9 @@ struct StatisticsDetailView: View {
                     Spacer()
                 }
                 PieChartView(
-                    slices: isAllTimeStats ? getDayOfWeekBreakdown(entries: getEntries()) : getDayOfWeekBreakdown(entries: getEntriesForSelectedYear()),
+                    slices: selectedTimeRange == .allTime ? 
+                        getDayOfWeekBreakdown(entries: getEntries()) : 
+                        getDayOfWeekBreakdown(entries: getEntriesForSelectedYear()),
                     title: ""
                 )
             }
@@ -250,6 +314,12 @@ struct StatisticsDetailView: View {
         return max(longestStreak, currentStreak)
     }
 
+    private func getPieChartColors(_ count: Int) -> [Color] {
+        return (0..<count).map { index in
+            Color.blue.opacity(0.3 + (Double(index) / Double(count)) * 0.6)
+        }
+    }
+
     private func getDayOfWeekBreakdown(entries: [Date]) -> [PieSlice] {
         var dayCount: [Int: Int] = [:]
         let days = Calendar.current.shortWeekdaySymbols
@@ -257,12 +327,104 @@ struct StatisticsDetailView: View {
             let weekday = Calendar.current.component(.weekday, from: date)
             dayCount[weekday, default: 0] += 1
         }
-        return dayCount.sorted { $0.key < $1.key }.map { weekday, count in
+        
+        let sortedData = dayCount.sorted { $0.key < $1.key }
+        let colors = getPieChartColors(7)  // 7 days in a week
+        
+        return sortedData.enumerated().map { index, item in
             PieSlice(
-                value: Double(count),
-                color: Color.blue.opacity(Double(weekday) / 7.0),
-                label: days[weekday - 1]
+                value: Double(item.value),
+                color: colors[item.key - 1],
+                label: days[item.key - 1]
             )
+        }
+    }
+
+    private func getJournalEntrySourceBreakdown(goal: Goal) -> [PieSlice] {
+        var sources: [(String, Int)] = []
+        
+        // Count goal's direct entries and habits
+        let goalEntries = goal.journalEntries.count
+        if goalEntries > 0 {
+            sources.append((goal.title, goalEntries))
+        }
+        
+        for habit in goal.relatedHabits {
+            let habitEntries = habit.journalEntries.count
+            if habitEntries > 0 {
+                sources.append((habit.title, habitEntries))
+            }
+        }
+        
+        let colors = getPieChartColors(sources.count)
+        
+        return sources.enumerated().map { index, source in
+            PieSlice(
+                value: Double(source.1),
+                color: colors[index],
+                label: source.0
+            )
+        }
+    }
+
+    private func getDaysWorked(for timeRange: TimeRange) -> Int {
+        let entries = getFilteredEntries(for: timeRange)
+        return Set(entries.map { Calendar.current.startOfDay(for: $0) }).count
+    }
+    
+    private func getConsistencyRate(for timeRange: TimeRange) -> Int {
+        let entries = getFilteredEntries(for: timeRange)
+        let days = getDaysInPeriod(for: timeRange)
+        return Int((Double(Set(entries.map { Calendar.current.startOfDay(for: $0) }).count) / Double(days)) * 100)
+    }
+    
+    private func getEntriesCount(for timeRange: TimeRange) -> Int {
+        getFilteredEntries(for: timeRange).count
+    }
+    
+    private func getFilteredEntries(for timeRange: TimeRange) -> [Date] {
+        let allEntries = getEntries()
+        let calendar = Calendar.current
+        let now = Date()
+        
+        switch timeRange {
+        case .year:
+            return getEntriesForSelectedYear()
+        case .lastWeek:
+            let startDate = calendar.date(byAdding: .day, value: -7, to: now)!
+            return allEntries.filter { $0 >= startDate }
+        case .lastMonth:
+            let startDate = calendar.date(byAdding: .month, value: -1, to: now)!
+            return allEntries.filter { $0 >= startDate }
+        case .last3Months:
+            let startDate = calendar.date(byAdding: .month, value: -3, to: now)!
+            return allEntries.filter { $0 >= startDate }
+        case .last6Months:
+            let startDate = calendar.date(byAdding: .month, value: -6, to: now)!
+            return allEntries.filter { $0 >= startDate }
+        case .allTime:
+            return allEntries
+        }
+    }
+    
+    private func getDaysInPeriod(for timeRange: TimeRange) -> Int {
+        let calendar = Calendar.current
+        let now = Date()
+        
+        switch timeRange {
+        case .year:
+            return calendar.range(of: .day, in: .year, for: calendarViewModel.selectedYearStartDate)?.count ?? 365
+        case .lastWeek:
+            return 7
+        case .lastMonth:
+            return 30
+        case .last3Months:
+            return 90
+        case .last6Months:
+            return 180
+        case .allTime:
+            guard let firstEntry = getEntries().min() else { return 0 }
+            return calendar.dateComponents([.day], from: firstEntry, to: now).day ?? 0
         }
     }
 }

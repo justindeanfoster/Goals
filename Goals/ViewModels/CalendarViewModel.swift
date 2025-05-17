@@ -265,6 +265,75 @@ class CalendarViewModel: ObservableObject {
         
         return monthSections
     }
+
+    func getWeeklyHistogramData(entries: [Date], timeRange: TimeRange) -> [MonthSection] {
+        let calendar = Calendar.current
+        let now = Date()
+        
+        // Special handling for last week - use daily bins
+        if timeRange == .lastWeek {
+            let startDate = calendar.date(byAdding: .day, value: -7, to: now)!
+            let monthStart = startOfMonth(for: startDate)
+            var bins: [HistogramBin] = []
+            
+            // Create daily bins for the last 7 days
+            for dayOffset in 0..<7 {
+                let dayStart = calendar.date(byAdding: .day, value: dayOffset, to: startDate)!
+                let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart)!
+                let dayEntries = entries.filter { $0 >= dayStart && $0 < dayEnd }
+                bins.append(HistogramBin(count: dayEntries.count, weekNumber: dayOffset + 1))
+            }
+            
+            let monthName = calendar.shortMonthSymbols[calendar.component(.month, from: monthStart) - 1]
+            return [MonthSection(month: monthName, bins: bins)]
+        }
+        
+        // Regular weekly binning for other time ranges
+        let startDate: Date
+        switch timeRange {
+        case .lastWeek:
+            startDate = calendar.date(byAdding: .day, value: -7, to: now)!
+        case .lastMonth:
+            startDate = calendar.date(byAdding: .month, value: -1, to: now)!
+        case .last3Months:
+            startDate = calendar.date(byAdding: .month, value: -3, to: now)!
+        case .last6Months:
+            startDate = calendar.date(byAdding: .month, value: -6, to: now)!
+        case .year:
+            startDate = selectedYearStartDate
+        case .allTime:
+            startDate = entries.min() ?? now
+        }
+        
+        var monthSections: [MonthSection] = []
+        var currentDate = startOfMonth(for: startDate)
+        let endDate = timeRange == .year ? 
+            calendar.date(byAdding: .year, value: 1, to: startDate)! : 
+            calendar.startOfDay(for: now)
+        
+        while currentDate <= endDate {
+            let monthEnd = calendar.date(byAdding: .month, value: 1, to: currentDate)!
+            let firstWeekStart = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: currentDate))!
+            
+            var weekBins: [HistogramBin] = []
+            var weekStart = firstWeekStart
+            var weekNumber = 1
+            
+            while weekStart < monthEnd {
+                let weekEnd = calendar.date(byAdding: .day, value: 6, to: weekStart)!
+                let weekEntries = entries.filter { $0 >= weekStart && $0 <= weekEnd }
+                weekBins.append(HistogramBin(count: weekEntries.count, weekNumber: weekNumber))
+                weekStart = calendar.date(byAdding: .day, value: 7, to: weekStart)!
+                weekNumber += 1
+            }
+            
+            let monthName = calendar.shortMonthSymbols[calendar.component(.month, from: currentDate) - 1]
+            monthSections.append(MonthSection(month: monthName, bins: weekBins))
+            currentDate = monthEnd
+        }
+        
+        return monthSections
+    }
 }
 
 struct JournalEntryWithSource: Identifiable {
