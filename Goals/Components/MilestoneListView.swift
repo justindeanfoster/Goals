@@ -28,7 +28,7 @@ struct MilestoneListView: View {
                     }) {
                         HStack(alignment: .top, spacing: 12) {
                             Image(systemName: milestone.isCompleted ? "checkmark.circle.fill" : "circle")
-                                .foregroundColor(milestone.isCompleted ? .green : .blue)
+                                .foregroundColor(milestone.isCompleted ? .indigo : .blue)
                                 .font(.system(size: 20))
                             
                             VStack(alignment: .leading, spacing: 4) {
