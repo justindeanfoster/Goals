@@ -92,12 +92,11 @@ struct HistogramView: View {
                                     }
                                     .frame(height: graphHeight, alignment: .bottom)
                                     
-                                    // Month labels with fixed height
+                                    // Month labels with flat orientation
                                     HStack(alignment: .top, spacing: metrics.spacing) {
                                         ForEach(monthSections, id: \.month) { section in
                                             Text(section.month)
                                                 .font(.caption)
-                                                .rotationEffect(.degrees(-45))
                                                 .frame(width: CGFloat(section.bins.count) * (metrics.barWidth + metrics.spacing) - metrics.spacing)
                                                 .frame(height: labelHeight)
                                         }
