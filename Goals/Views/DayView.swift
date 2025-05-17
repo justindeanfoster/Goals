@@ -20,7 +20,7 @@ struct DayView: View {
     var body: some View {
         NavigationView {
             Group {
-                if entries.isEmpty && getMilestonesForDate(date).isEmpty {
+                if entries.isEmpty && getMilestonesForDate(date).isEmpty && !hasDeadlinesForDate(date) {
                     VStack {
                         Spacer()
                         Text("You ain't do nothing today!")
@@ -30,8 +30,26 @@ struct DayView: View {
                             .padding()
                         Spacer()
                     }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color(UIColor.systemBackground))
                 } else {
                     List {
+                        if hasDeadlinesForDate(date) {
+                            Section(header: Text("Deadlines")) {
+                                ForEach(getDeadlinesForDate(date)) { goal in
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(goal.title)
+                                            .font(.subheadline)
+                                            .bold()
+                                        Text("Goal Deadline")
+                                            .font(.caption)
+                                            .foregroundColor(.red)
+                                    }
+                                }
+                            }
+                        }
+                        
+                        // Show milestones if any exist
                         if !getMilestonesForDate(date).isEmpty {
                             Section(header: Text("Milestones Completed")) {
                                 ForEach(getMilestonesForDate(date), id: \.id) { milestone in
@@ -59,6 +77,7 @@ struct DayView: View {
                             }
                         }
                         
+                        // Show entries if any exist
                         ForEach(entries, id: \.0) { item, entries in
                             Section(header: Text(item)) {
                                 ForEach(entries) { entry in
@@ -174,5 +193,13 @@ struct DayView: View {
                 return
             }
         }
+    }
+    
+    private func hasDeadlinesForDate(_ date: Date) -> Bool {
+        goals.contains { Calendar.current.isDate($0.deadline, inSameDayAs: date) }
+    }
+    
+    private func getDeadlinesForDate(_ date: Date) -> [Goal] {
+        goals.filter { Calendar.current.isDate($0.deadline, inSameDayAs: date) }
     }
 }
