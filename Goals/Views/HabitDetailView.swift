@@ -97,7 +97,10 @@ struct HabitDetailView: View {
         Group {
             if !habit.milestones.isEmpty {
                 MilestoneListView(
-                    milestones: habit.milestones,
+                    milestones: .init( // Create binding
+                        get: { habit.milestones },
+                        set: { habit.milestones = $0 }
+                    ),
                     selectedDate: calendarViewModel.selectedDate
                 )
                 Divider()
@@ -106,24 +109,21 @@ struct HabitDetailView: View {
     }
 
     private var journalEntriesSection: some View {
-        VStack(alignment: .leading) {
-            Text("Journal Entries").font(.headline)
-            JournalEntriesListView(
-                entries: currentTimeframeEntries,
-                onEntryTapped: { entry in
-                    selectedDate = entry.timestamp
-                    showingDayView = true
-                },
-                canEdit: { _ in true },
-                onEditEntry: { entry in
-                    selectedEntry = entry
-                },
-                onDeleteEntry: { entry in
-                    habit.journalEntries.removeAll { $0.id == entry.id }
-                },
-                sourceLabel: nil
-            )
-        }
+        CollapsibleJournalEntriesView(
+            entries: currentTimeframeEntries,
+            onEntryTapped: { entry in
+                selectedDate = entry.timestamp
+                showingDayView = true
+            },
+            canEdit: { _ in true },
+            onEditEntry: { entry in
+                selectedEntry = entry
+            },
+            onDeleteEntry: { entry in
+                habit.journalEntries.removeAll { $0.id == entry.id }
+            },
+            sourceLabel: nil
+        )
     }
 
     private var statisticsSection: some View {
