@@ -43,6 +43,18 @@ struct DayView: View {
                                             .font(.caption)
                                             .foregroundColor(.secondary)
                                     }
+                                    .contextMenu {
+                                        Button(role: .destructive) {
+                                            deleteMilestone(milestone)
+                                        } label: {
+                                            Label("Delete", systemImage: "trash")
+                                        }
+                                        Button {
+                                            milestone.text = milestone.text // Trigger edit sheet here
+                                        } label: {
+                                            Label("Edit", systemImage: "pencil")
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -147,5 +159,20 @@ struct DayView: View {
             return "\(habit.title) (Habit)"
         }
         return nil
+    }
+    
+    private func deleteMilestone(_ milestone: Milestone) {
+        for goal in goals {
+            if let index = goal.milestones.firstIndex(where: { $0.id == milestone.id }) {
+                goal.milestones.remove(at: index)
+                return
+            }
+        }
+        for habit in habits {
+            if let index = habit.milestones.firstIndex(where: { $0.id == milestone.id }) {
+                habit.milestones.remove(at: index)
+                return
+            }
+        }
     }
 }

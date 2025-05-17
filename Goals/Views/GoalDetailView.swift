@@ -121,7 +121,10 @@ struct GoalDetailView: View {
         Group {
             if !goal.milestones.isEmpty {
                 MilestoneListView(
-                    milestones: goal.milestones,
+                    milestones: .init( // Create binding
+                        get: { goal.milestones },
+                        set: { goal.milestones = $0 }
+                    ),
                     selectedDate: calendarViewModel.selectedDate
                 )
                 Divider()
@@ -130,24 +133,21 @@ struct GoalDetailView: View {
     }
 
     private var journalEntriesSection: some View {
-        VStack(alignment: .leading) {
-            Text("Journal Entries").font(.headline)
-            JournalEntriesListView(
-                entries: currentTimeframeEntries,
-                onEntryTapped: { entry in
-                    selectedDate = entry.timestamp
-                    showingDayView = true
-                },
-                canEdit: entryBelongsToGoalOrHabits,
-                onEditEntry: { entry in
-                    selectedEntry = entry
-                    showingEditJournalEntry = true
-                },
-                onDeleteEntry: deleteEntry,
-                sourceLabel: getSourceLabel
-            )
-            .id(timeframeUpdateTrigger)
-        }
+        CollapsibleJournalEntriesView(
+            entries: currentTimeframeEntries,
+            onEntryTapped: { entry in
+                selectedDate = entry.timestamp
+                showingDayView = true
+            },
+            canEdit: entryBelongsToGoalOrHabits,
+            onEditEntry: { entry in
+                selectedEntry = entry
+                showingEditJournalEntry = true
+            },
+            onDeleteEntry: deleteEntry,
+            sourceLabel: getSourceLabel
+        )
+        .id(timeframeUpdateTrigger)
     }
 
     private var statisticsSection: some View {

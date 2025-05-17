@@ -3,9 +3,10 @@ import SwiftData
 
 struct MilestoneListView: View {
     @Environment(\.modelContext) private var modelContext
-    let milestones: [Milestone]
+    @Binding var milestones: [Milestone]  // Changed to @Binding
     let selectedDate: Date
     @State private var isExpanded = false
+    @State private var selectedMilestone: Milestone?
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -46,8 +47,26 @@ struct MilestoneListView: View {
                     .padding(.horizontal, 12)
                     .background(Color(.systemGray6))
                     .cornerRadius(8)
+                    .contextMenu {
+                        Button {
+                            selectedMilestone = milestone
+                        } label: {
+                            Label("Edit", systemImage: "pencil")
+                        }
+                        Button(role: .destructive) {
+                            if let index = milestones.firstIndex(of: milestone) {
+                                milestones.remove(at: index)
+                                try? modelContext.save()
+                            }
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                    }
                 }
             }
+        }
+        .sheet(item: $selectedMilestone) { milestone in
+            EditMilestoneView(milestone: milestone)
         }
     }
 }

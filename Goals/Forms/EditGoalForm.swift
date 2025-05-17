@@ -36,7 +36,18 @@ struct EditGoalForm: View {
 
                 Section(header: Text("Milestones")) {
                     ForEach(formData.milestones) { milestone in
-                        Text(milestone.text)
+                        HStack {
+                            Text(milestone.text)
+                            Spacer()
+                            Button(action: {
+                                if let index = formData.milestones.firstIndex(of: milestone) {
+                                    formData.milestones.remove(at: index)
+                                }
+                            }) {
+                                Image(systemName: "minus.circle.fill")
+                                    .foregroundColor(.red)
+                            }
+                        }
                     }
                     HStack {
                         TextField("New Milestone", text: $formData.newMilestone)

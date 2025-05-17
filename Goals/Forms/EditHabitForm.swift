@@ -33,7 +33,18 @@ struct EditHabitForm: View {
 
                 Section(header: Text("Milestones")) {
                     ForEach(milestones) { milestone in
-                        Text(milestone.text)  // Changed from milestone to milestone.text
+                        HStack {
+                            Text(milestone.text)
+                            Spacer()
+                            Button(action: {
+                                if let index = milestones.firstIndex(of: milestone) {
+                                    milestones.remove(at: index)
+                                }
+                            }) {
+                                Image(systemName: "minus.circle.fill")
+                                    .foregroundColor(.red)
+                            }
+                        }
                     }
                     HStack {
                         TextField("New Milestone", text: $newMilestone)

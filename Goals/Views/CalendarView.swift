@@ -211,20 +211,46 @@ struct CalendarView: View {
                 .font(.headline)
                 .padding(.horizontal)
             ForEach(getMilestonesCompletedOn(calendarViewModel.selectedDate), id: \.id) { milestone in
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(milestone.text)
-                        .font(.subheadline)
-                        .bold()
-                        .foregroundColor(.primary)
-                    Text(getMilestoneSource(milestone) ?? "Unknown Source")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                NavigationLink(destination: getMilestoneSourceView(milestone)) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(milestone.text)
+                            .font(.subheadline)
+                            .bold()
+                            .foregroundColor(.primary)
+                        Text(getMilestoneSource(milestone) ?? "Unknown Source")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color(.systemGray6))
+                    .cornerRadius(10)
+                    .padding(.horizontal)
                 }
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color(.systemGray6))
-                .cornerRadius(10)
-                .padding(.horizontal)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func getMilestoneSourceView(_ milestone: Milestone) -> some View {
+        if let goal = goals.first(where: { $0.milestones.contains(where: { $0.id == milestone.id }) }) {
+            GoalDetailView(goal: goal)
+        } else if let habit = habits.first(where: { $0.milestones.contains(where: { $0.id == milestone.id }) }) {
+            HabitDetailView(habit: habit)
+        }
+    }
+
+    private func deleteMilestone(_ milestone: Milestone) {
+        for goal in goals {
+            if let index = goal.milestones.firstIndex(where: { $0.id == milestone.id }) {
+                goal.milestones.remove(at: index)
+                return
+            }
+        }
+        for habit in habits {
+            if let index = habit.milestones.firstIndex(where: { $0.id == milestone.id }) {
+                habit.milestones.remove(at: index)
+                return
             }
         }
     }
