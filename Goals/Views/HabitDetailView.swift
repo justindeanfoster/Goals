@@ -109,21 +109,27 @@ struct HabitDetailView: View {
     }
 
     private var journalEntriesSection: some View {
-        CollapsibleJournalEntriesView(
-            entries: currentTimeframeEntries,
-            onEntryTapped: { entry in
-                selectedDate = entry.timestamp
-                showingDayView = true
-            },
-            canEdit: { _ in true },
-            onEditEntry: { entry in
-                selectedEntry = entry
-            },
-            onDeleteEntry: { entry in
-                habit.journalEntries.removeAll { $0.id == entry.id }
-            },
-            sourceLabel: nil
-        )
+        Group {
+            if !currentTimeframeEntries.isEmpty {
+                JournalEntriesListView(
+                    entries: currentTimeframeEntries,
+                    onEntryTapped: { entry in
+                        selectedDate = entry.timestamp
+                        showingDayView = true
+                    },
+                    canEdit: { _ in true },
+                    onEditEntry: { entry in
+                        selectedEntry = entry
+                    },
+                    onDeleteEntry: { entry in
+                        habit.journalEntries.removeAll { $0.id == entry.id }
+                    },
+                    sourceLabel: nil
+                )
+            } else {
+                EmptyView()
+            }
+        }
     }
 
     private var statisticsSection: some View {
