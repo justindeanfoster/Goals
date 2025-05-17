@@ -74,7 +74,7 @@ struct JournalEntriesListView: View {
                 ))
             }
         }
-        .animation(.spring(response: 0.4, dampingFraction: 0.8), value: isExpanded)
+        .animation(.spring(response: isExpanded ? 0.4 : 0.2, dampingFraction: 0.8), value: isExpanded)
         .transition(.asymmetric(
             insertion: .move(edge: .top).combined(with: .opacity),
             removal: .move(edge: .bottom).combined(with: .opacity)
