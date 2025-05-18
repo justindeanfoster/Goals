@@ -122,8 +122,12 @@ struct CombinedTrackerView: View {
                 HStack(spacing: 2) {
                     ForEach(0..<7, id: \.self) { dayOffset in
                         let date = Calendar.current.date(byAdding: .day, value: dayOffset, to: currentWeekStart)!
+                        let hasDirectEntry = goal.journalEntries.contains(where: { Calendar.current.isDate($0.timestamp, inSameDayAs: date) })
+                        let hasHabitEntry = goal.relatedHabits.contains(where: { habit in
+                            habit.journalEntries.contains(where: { Calendar.current.isDate($0.timestamp, inSameDayAs: date) })
+                        })
                         RoundedRectangle(cornerRadius: 2)
-                            .fill(goal.journalEntries.contains(where: { Calendar.current.isDate($0.timestamp, inSameDayAs: date) }) ? Color.green : Color.gray)
+                            .fill(hasDirectEntry || hasHabitEntry ? Color.green : Color.gray)
                             .frame(width: 10, height: 10)
                     }
                 }
