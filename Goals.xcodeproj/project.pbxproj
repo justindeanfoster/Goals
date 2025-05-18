@@ -43,6 +43,7 @@
 		0CAD698B2DD58C4100014F93 /* CalendarDayCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAD698A2DD58C4100014F93 /* CalendarDayCell.swift */; };
 		0CAD698D2DD5969C00014F93 /* MonthGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAD698C2DD5969C00014F93 /* MonthGridView.swift */; };
 		0CAD698F2DD8194C00014F93 /* EditMilestoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAD698E2DD8194C00014F93 /* EditMilestoneView.swift */; };
+		0CAD69962DDA631000014F93 /* CombinedTrackerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAD69952DDA631000014F93 /* CombinedTrackerView.swift */; };
 		0CFFC8502D1B81F700C8F272 /* GoalsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CFFC84F2D1B81F700C8F272 /* GoalsApp.swift */; };
 		0CFFC8522D1B81F700C8F272 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CFFC8512D1B81F700C8F272 /* ContentView.swift */; };
 		0CFFC8562D1B81FB00C8F272 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0CFFC8552D1B81FB00C8F272 /* Assets.xcassets */; };
@@ -86,6 +87,7 @@
 		0CAD698A2DD58C4100014F93 /* CalendarDayCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarDayCell.swift; sourceTree = "<group>"; };
 		0CAD698C2DD5969C00014F93 /* MonthGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthGridView.swift; sourceTree = "<group>"; };
 		0CAD698E2DD8194C00014F93 /* EditMilestoneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditMilestoneView.swift; sourceTree = "<group>"; };
+		0CAD69952DDA631000014F93 /* CombinedTrackerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombinedTrackerView.swift; sourceTree = "<group>"; };
 		0CFFC84C2D1B81F700C8F272 /* Goals.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Goals.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0CFFC84F2D1B81F700C8F272 /* GoalsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsApp.swift; sourceTree = "<group>"; };
 		0CFFC8512D1B81F700C8F272 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -167,6 +169,7 @@
 		0C9717C22DBC4FAA0072B569 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				0CAD69952DDA631000014F93 /* CombinedTrackerView.swift */,
 				0C9717E02DC2F62D0072B569 /* StatisticsDetailView.swift */,
 				0C9717B92DBC4FAA0072B569 /* CalendarView.swift */,
 				0C9717BA2DBC4FAA0072B569 /* DayView.swift */,
@@ -336,6 +339,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0CAD69962DDA631000014F93 /* CombinedTrackerView.swift in Sources */,
 				0CFFC8522D1B81F700C8F272 /* ContentView.swift in Sources */,
 				0CFFC8502D1B81F700C8F272 /* GoalsApp.swift in Sources */,
 				0C9717C32DBC4FAA0072B569 /* EditGoalForm.swift in Sources */,

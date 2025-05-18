@@ -7,14 +7,9 @@ struct ContentView: View {
 
     var body: some View {
         TabView {
-            GoalsListView()
+            CombinedTrackerView()
                 .tabItem {
-                    Label("Goals", systemImage: "list.bullet")
-                }
-
-            HabitsListView()
-                .tabItem {
-                    Label("Habits", systemImage: "checkmark.circle")
+                    Label("HOG", systemImage: "list.bullet")
                 }
 
             CalendarView()

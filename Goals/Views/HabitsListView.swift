@@ -8,30 +8,41 @@ struct HabitsListView: View {
     @State private var selectedHabit: Habit?
     @State private var showEditHabitForm = false
     @State private var habitToDelete: Habit? // Add this state
+    var isEmbedded: Bool = false
 
     var body: some View {
-        NavigationView {
-            List {
-                ForEach(habits) { habit in
-                    habitRow(habit)
+        Group {
+            if isEmbedded {
+                habitsList
+            } else {
+                NavigationView {
+                    habitsList
+                        .navigationTitle("Habits")
+                        .toolbar { addButton }
                 }
             }
-            .navigationTitle("Habits")
-            .toolbar { addButton }
-            .sheet(isPresented: $showingAddHabitForm) { AddHabitForm() }
-            .sheet(item: $selectedHabit) { habit in EditHabitForm(habit: habit) }
-            .alert("Delete Habit", isPresented: .constant(habitToDelete != nil), actions: {
-                Button("Cancel", role: .cancel) {
-                    habitToDelete = nil
+        }
+        .sheet(isPresented: $showingAddHabitForm) { AddHabitForm() }
+        .sheet(item: $selectedHabit) { habit in EditHabitForm(habit: habit) }
+        .alert("Delete Habit", isPresented: .constant(habitToDelete != nil), actions: {
+            Button("Cancel", role: .cancel) {
+                habitToDelete = nil
+            }
+            Button("Delete", role: .destructive) {
+                if let habit = habitToDelete {
+                    safelyDeleteHabit(habit)
                 }
-                Button("Delete", role: .destructive) {
-                    if let habit = habitToDelete {
-                        safelyDeleteHabit(habit)
-                    }
-                    habitToDelete = nil
-                }
-            })
-            .background(Color(UIColor.systemBackground))
+                habitToDelete = nil
+            }
+        })
+        .background(Color(UIColor.systemBackground))
+    }
+
+    private var habitsList: some View {
+        List {
+            ForEach(habits) { habit in
+                habitRow(habit)
+            }
         }
     }
 
