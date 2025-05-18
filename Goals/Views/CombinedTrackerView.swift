@@ -89,6 +89,17 @@ struct CombinedTrackerView: View {
                 }
                 .font(.caption)
                 .foregroundColor(.gray)
+                // Updated weekly progress visualization using current week
+                let currentWeekStart = Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: Date()))!
+                HStack(spacing: 2) {
+                    ForEach(0..<7, id: \.self) { dayOffset in
+                        let date = Calendar.current.date(byAdding: .day, value: dayOffset, to: currentWeekStart)!
+                        RoundedRectangle(cornerRadius: 2)
+                            .fill(goal.journalEntries.contains(where: { Calendar.current.isDate($0.timestamp, inSameDayAs: date) }) ? Color.green : Color.gray)
+                            .frame(width: 10, height: 10)
+                    }
+                }
+                .padding(.top, 4)
             }
             .padding(.vertical, 5)
         }
@@ -118,6 +129,17 @@ struct CombinedTrackerView: View {
                 }
                 .font(.caption)
                 .foregroundColor(.gray)
+                // Updated weekly progress visualization using current week
+                let currentWeekStart = Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: Date()))!
+                HStack(spacing: 2) {
+                    ForEach(0..<7, id: \.self) { dayOffset in
+                        let date = Calendar.current.date(byAdding: .day, value: dayOffset, to: currentWeekStart)!
+                        RoundedRectangle(cornerRadius: 2)
+                            .fill(habit.journalEntries.contains(where: { Calendar.current.isDate($0.timestamp, inSameDayAs: date) }) ? Color.green : Color.gray)
+                            .frame(width: 10, height: 10)
+                    }
+                }
+                .padding(.top, 4)
             }
             .padding(.vertical, 5)
             .cornerRadius(10)
