@@ -100,6 +100,9 @@ struct GoalDetailView: View {
             },
             showCalendar: $showCalendar
         )
+        .background(Color(.systemBackground))
+        .cornerRadius(10)
+        .shadow(radius: 2, x: 0, y: 2)
         .onChange(of: showCalendar) { oldValue, newValue in
             if (!newValue) {
                 // Reset to current week when collapsing
@@ -112,6 +115,8 @@ struct GoalDetailView: View {
         Group {
             if (!goal.notes.isEmpty) {
                 CollapsibleSectionView(title: "Notes", content: goal.notes)
+                    .background(Color(.systemBackground))
+                    .cornerRadius(10)
                 Divider()
             }
         }
@@ -127,6 +132,8 @@ struct GoalDetailView: View {
                     ),
                     selectedDate: calendarViewModel.selectedDate
                 )
+                .background(Color(.systemBackground))
+                .cornerRadius(10)
                 Divider()
             }
         }
@@ -150,6 +157,8 @@ struct GoalDetailView: View {
                     sourceLabel: getSourceLabel
                 )
                 .id(timeframeUpdateTrigger)
+                .background(Color(.systemBackground))
+                .cornerRadius(10)
             } else {
                 EmptyView()
             }
@@ -172,6 +181,7 @@ struct GoalDetailView: View {
         .padding()
         .background(Color(.systemGray6))
         .cornerRadius(10)
+        .shadow(radius: 2, x: 0, y: 2)
     }
 
     private var relatedHabitsSection: some View {

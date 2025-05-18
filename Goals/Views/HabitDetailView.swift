@@ -79,6 +79,9 @@ struct HabitDetailView: View {
             },
             showCalendar: $showCalendar
         )
+        .background(Color(.systemBackground))
+        .cornerRadius(10)
+        .shadow(radius: 2, x: 0, y: 2)
         .onChange(of: showCalendar) { oldValue, newValue in
             if (!newValue) { calendarViewModel.currentMonth = Date() }
         }
@@ -88,6 +91,8 @@ struct HabitDetailView: View {
         Group {
             if !habit.notes.isEmpty {
                 CollapsibleSectionView(title: "Notes", content: habit.notes)
+                    .background(Color(.systemBackground))
+                    .cornerRadius(10)
                 Divider()
             }
         }
@@ -103,6 +108,8 @@ struct HabitDetailView: View {
                     ),
                     selectedDate: calendarViewModel.selectedDate
                 )
+                .background(Color(.systemBackground))
+                .cornerRadius(10)
                 Divider()
             }
         }
@@ -126,6 +133,8 @@ struct HabitDetailView: View {
                     },
                     sourceLabel: nil
                 )
+                .background(Color(.systemBackground))
+                .cornerRadius(10)
             } else {
                 EmptyView()
             }
@@ -146,6 +155,7 @@ struct HabitDetailView: View {
         .padding()
         .background(Color(.systemGray6))
         .cornerRadius(10)
+        .shadow(radius: 2, x: 0, y: 2)
     }
 
     // MARK: - Sheets

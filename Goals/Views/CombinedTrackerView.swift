@@ -23,17 +23,38 @@ struct CombinedTrackerView: View {
     
     var body: some View {
         NavigationView {
-            List {
-                Section(header: header("Goals", action: { showingAddGoalForm = true })) {
+            ScrollView {
+                VStack(spacing: 16) {
+                    HStack {
+                        Text("Goals").font(.title2).bold()
+                        Spacer()
+                        Button(action: { showingAddGoalForm = true }) {
+                            Image(systemName: "plus.circle.fill")
+                        }
+                    }
+                    .padding(.horizontal)
+                    
                     ForEach(goals) { goal in
                         goalRow(goal)
+                            .padding(.horizontal)
                     }
-                }
-                Section(header: header("Habits", action: { showingAddHabitForm = true })) {
+                    
+                    HStack {
+                        Text("Habits").font(.title2).bold()
+                        Spacer()
+                        Button(action: { showingAddHabitForm = true }) {
+                            Image(systemName: "plus.circle.fill")
+                        }
+                    }
+                    .padding(.horizontal)
+                    .padding(.top)
+                    
                     ForEach(habits) { habit in
                         habitRow(habit)
+                            .padding(.horizontal)
                     }
                 }
+                .padding(.vertical)
             }
             .navigationTitle("Habits Over Goals")
             .sheet(isPresented: $showingAddGoalForm) { AddGoalForm() }
@@ -87,7 +108,9 @@ struct CombinedTrackerView: View {
     private func goalRow(_ goal: Goal) -> some View {
         NavigationLink(destination: GoalDetailView(goal: goal)) {
             VStack(alignment: .leading) {
-                Text(goal.title).font(.headline)
+                Text(goal.title)
+                    .font(.headline)
+                    .foregroundColor(.primary)
                 HStack {
                     Text("Days Worked: \(goal.daysWorked)")
                     Spacer()
@@ -106,7 +129,11 @@ struct CombinedTrackerView: View {
                 }
                 .padding(.top, 4)
             }
-            .padding(.vertical, 5)
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color(.systemGray6))
+            .cornerRadius(10)
+            .shadow(radius: 2, x: 0, y: 2)
         }
         .contextMenu {
             Button(action: {
@@ -127,7 +154,9 @@ struct CombinedTrackerView: View {
     private func habitRow(_ habit: Habit) -> some View {
         NavigationLink(destination: HabitDetailView(habit: habit)) {
             VStack(alignment: .leading) {
-                Text(habit.title).font(.headline)
+                Text(habit.title)
+                    .font(.headline)
+                    .foregroundColor(.primary)
                 HStack {
                     Text("Days Worked: \(habit.daysWorked)")
                 }
@@ -144,8 +173,11 @@ struct CombinedTrackerView: View {
                 }
                 .padding(.top, 4)
             }
-            .padding(.vertical, 5)
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color(.systemGray6))
             .cornerRadius(10)
+            .shadow(radius: 2, x: 0, y: 2)
         }
         .contextMenu {
             Button(action: {

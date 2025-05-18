@@ -7,14 +7,14 @@ struct ContentView: View {
 
     var body: some View {
         TabView {
-            CombinedTrackerView()
-                .tabItem {
-                    Label("HOG", systemImage: "list.bullet")
-                }
-
             CalendarView()
                 .tabItem {
                     Label("Calendar", systemImage: "calendar")
+                }
+                
+            CombinedTrackerView()
+                .tabItem {
+                    Label("HOG", systemImage: "list.bullet")
                 }
 
             StatisticsListView()

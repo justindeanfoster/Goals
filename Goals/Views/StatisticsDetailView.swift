@@ -86,6 +86,7 @@ struct StatisticsDetailView: View {
         .padding()
         .background(Color(.systemGray6))
         .cornerRadius(10)
+        .shadow(radius: 2, x: 0, y: 2)
     }
 
     private var statisticsSection: some View {
@@ -122,6 +123,7 @@ struct StatisticsDetailView: View {
         .padding()
         .background(Color(.systemGray6))
         .cornerRadius(10)
+        .shadow(radius: 2, x: 0, y: 2)
     }
 
     private var statisticsRows: some View {
@@ -165,6 +167,7 @@ struct StatisticsDetailView: View {
         .padding()
         .background(Color(.systemGray6))
         .cornerRadius(10)
+        .shadow(radius: 2, x: 0, y: 2)
     }
 
     private var pieChartsSection: some View {
@@ -186,6 +189,7 @@ struct StatisticsDetailView: View {
                 .padding()
                 .background(Color(.systemGray6))
                 .cornerRadius(10)
+                .shadow(radius: 2, x: 0, y: 2)
             }
             
             VStack(alignment: .leading) {
@@ -206,6 +210,7 @@ struct StatisticsDetailView: View {
             .padding()
             .background(Color(.systemGray6))
             .cornerRadius(10)
+            .shadow(radius: 2, x: 0, y: 2)
         }
     }
 
