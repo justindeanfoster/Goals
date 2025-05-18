@@ -19,9 +19,7 @@ struct CombinedTrackerView: View {
     @State private var habitToDelete: Habit?
     
     // Journal Entry states
-    @State private var showingJournalEntryForm = false
-    @State private var selectedGoalForJournal: Goal?
-    @State private var selectedHabitForJournal: Habit?
+    @State private var journalEntryTarget: JournalEntryTarget?
     
     var body: some View {
         NavigationView {
@@ -31,7 +29,6 @@ struct CombinedTrackerView: View {
                         goalRow(goal)
                     }
                 }
-                
                 Section(header: header("Habits", action: { showingAddHabitForm = true })) {
                     ForEach(habits) { habit in
                         habitRow(habit)
@@ -43,12 +40,10 @@ struct CombinedTrackerView: View {
             .sheet(isPresented: $showingAddHabitForm) { AddHabitForm() }
             .sheet(item: $selectedGoal) { goal in EditGoalForm(goal: goal) }
             .sheet(item: $selectedHabit) { habit in EditHabitForm(habit: habit) }
-            .sheet(isPresented: $showingJournalEntryForm) {
-                if let goal = selectedGoalForJournal {
-                    AddJournalEntryForm(goal: goal, habit: nil)
-                } else if let habit = selectedHabitForJournal {
-                    AddJournalEntryForm(goal: nil, habit: habit)
-                }
+            .sheet(item: $journalEntryTarget) { target in
+                journalEntrySheet(target: target)
+                    .presentationDetents([.medium])
+                    .presentationDragIndicator(.visible)
             }
             .alert("Delete Goal", isPresented: .constant(goalToDelete != nil), actions: {
                 Button("Cancel", role: .cancel) { goalToDelete = nil }
@@ -77,6 +72,17 @@ struct CombinedTrackerView: View {
         }
     }
     
+    // MARK: - Generalized Journal Entry Sheet
+    @ViewBuilder
+    private func journalEntrySheet(target: JournalEntryTarget) -> some View {
+        switch target {
+        case .goal(let goal):
+            AddJournalEntryForm(goal: goal, habit: nil)
+        case .habit(let habit):
+            AddJournalEntryForm(goal: nil, habit: habit)
+        }
+    }
+    
     // MARK: - Goal Row
     private func goalRow(_ goal: Goal) -> some View {
         NavigationLink(destination: GoalDetailView(goal: goal)) {
@@ -89,7 +95,6 @@ struct CombinedTrackerView: View {
                 }
                 .font(.caption)
                 .foregroundColor(.gray)
-                // Updated weekly progress visualization using current week
                 let currentWeekStart = Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: Date()))!
                 HStack(spacing: 2) {
                     ForEach(0..<7, id: \.self) { dayOffset in
@@ -105,8 +110,7 @@ struct CombinedTrackerView: View {
         }
         .contextMenu {
             Button(action: {
-                selectedGoalForJournal = goal
-                showingJournalEntryForm = true
+                journalEntryTarget = .goal(goal)
             }) {
                 Label("Add Journal Entry", systemImage: "square.and.pencil")
             }
@@ -129,7 +133,6 @@ struct CombinedTrackerView: View {
                 }
                 .font(.caption)
                 .foregroundColor(.gray)
-                // Updated weekly progress visualization using current week
                 let currentWeekStart = Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: Date()))!
                 HStack(spacing: 2) {
                     ForEach(0..<7, id: \.self) { dayOffset in
@@ -146,8 +149,7 @@ struct CombinedTrackerView: View {
         }
         .contextMenu {
             Button(action: {
-                selectedHabitForJournal = habit
-                showingJournalEntryForm = true
+                journalEntryTarget = .habit(habit)
             }) {
                 Label("Add Journal Entry", systemImage: "square.and.pencil")
             }
@@ -161,6 +163,7 @@ struct CombinedTrackerView: View {
     }
     
     // MARK: - Helpers
+
     private func safelyDeleteGoal(_ goal: Goal) {
         let relations = goal.habitRelations
         goal.habitRelations.removeAll()
@@ -179,5 +182,19 @@ struct CombinedTrackerView: View {
         habit.journalEntries.removeAll()
         habit.goalRelations.removeAll()
         modelContext.delete(habit)
+    }
+}
+
+// MARK: - JournalEntryTarget Enum
+
+private enum JournalEntryTarget: Identifiable {
+    case goal(Goal)
+    case habit(Habit)
+
+    var id: String {
+        switch self {
+        case .goal(let goal): return "goal-\(goal.id.uuidString)"
+        case .habit(let habit): return "habit-\(habit.id.uuidString)"
+        }
     }
 }
