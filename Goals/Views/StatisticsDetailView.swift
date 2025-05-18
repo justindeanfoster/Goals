@@ -179,7 +179,8 @@ struct StatisticsDetailView: View {
                     }
                     PieChartView(
                         slices: getJournalEntrySourceBreakdown(goal: goal),
-                        title: ""
+                        title: "",
+                        alignment: .left
                     )
                 }
                 .padding()
@@ -187,7 +188,6 @@ struct StatisticsDetailView: View {
                 .cornerRadius(10)
             }
             
-            // Original day of week pie chart
             VStack(alignment: .leading) {
                 HStack(alignment: .center, spacing: 20) {
                     Text("Activity by Day of Week")
@@ -199,7 +199,8 @@ struct StatisticsDetailView: View {
                     slices: selectedTimeRange == .allTime ? 
                         getDayOfWeekBreakdown(entries: getEntries()) : 
                         getDayOfWeekBreakdown(entries: getEntriesForSelectedYear()),
-                    title: ""
+                    title: "",
+                    alignment: .right
                 )
             }
             .padding()

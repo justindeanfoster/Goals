@@ -18,6 +18,11 @@ struct CombinedTrackerView: View {
     @State private var showEditHabitForm = false
     @State private var habitToDelete: Habit?
     
+    // Journal Entry states
+    @State private var showingJournalEntryForm = false
+    @State private var selectedGoalForJournal: Goal?
+    @State private var selectedHabitForJournal: Habit?
+    
     var body: some View {
         NavigationView {
             List {
@@ -38,6 +43,13 @@ struct CombinedTrackerView: View {
             .sheet(isPresented: $showingAddHabitForm) { AddHabitForm() }
             .sheet(item: $selectedGoal) { goal in EditGoalForm(goal: goal) }
             .sheet(item: $selectedHabit) { habit in EditHabitForm(habit: habit) }
+            .sheet(isPresented: $showingJournalEntryForm) {
+                if let goal = selectedGoalForJournal {
+                    AddJournalEntryForm(goal: goal, habit: nil)
+                } else if let habit = selectedHabitForJournal {
+                    AddJournalEntryForm(goal: nil, habit: habit)
+                }
+            }
             .alert("Delete Goal", isPresented: .constant(goalToDelete != nil), actions: {
                 Button("Cancel", role: .cancel) { goalToDelete = nil }
                 Button("Delete", role: .destructive) {
@@ -81,6 +93,12 @@ struct CombinedTrackerView: View {
             .padding(.vertical, 5)
         }
         .contextMenu {
+            Button(action: {
+                selectedGoalForJournal = goal
+                showingJournalEntryForm = true
+            }) {
+                Label("Add Journal Entry", systemImage: "square.and.pencil")
+            }
             Button(action: { selectedGoal = goal }) {
                 Label("Edit Goal", systemImage: "pencil")
             }
@@ -102,8 +120,15 @@ struct CombinedTrackerView: View {
                 .foregroundColor(.gray)
             }
             .padding(.vertical, 5)
+            .cornerRadius(10)
         }
         .contextMenu {
+            Button(action: {
+                selectedHabitForJournal = habit
+                showingJournalEntryForm = true
+            }) {
+                Label("Add Journal Entry", systemImage: "square.and.pencil")
+            }
             Button(action: { selectedHabit = habit }) {
                 Label("Edit Habit", systemImage: "pencil")
             }

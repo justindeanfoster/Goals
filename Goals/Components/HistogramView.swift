@@ -10,6 +10,24 @@ struct MonthSection {
     let bins: [HistogramBin]
 }
 
+// New view for an individual histogram bar without hover label
+struct HistogramBarView: View {
+    let bin: HistogramBin
+    let barWidth: CGFloat
+    let graphHeight: CGFloat
+    let effectiveMaxCount: Int
+
+    var barHeight: CGFloat {
+        max(bin.count == 0 ? 2 : (CGFloat(bin.count) * graphHeight / CGFloat(effectiveMaxCount)), 0)
+    }
+
+    var body: some View {
+        Rectangle()
+            .fill(bin.count == 0 ? Color.red.opacity(0.7) : Color.green.opacity(0.7))
+            .frame(width: barWidth, height: barHeight)
+    }
+}
+
 struct HistogramView: View {
     let monthSections: [MonthSection]
     let maxCount: Int  // This parameter is no longer needed but kept for compatibility
@@ -46,7 +64,7 @@ struct HistogramView: View {
             return (barWidth: minBarWidth, spacing: 4)
         }
     }
-    
+
     var body: some View {
         GeometryReader { geometry in
             let metrics = calculateBarMetrics(availableWidth: geometry.size.width - yAxisWidth)
@@ -83,10 +101,12 @@ struct HistogramView: View {
                                     HStack(alignment: .bottom, spacing: metrics.spacing) {
                                         ForEach(monthSections, id: \.month) { section in
                                             ForEach(section.bins, id: \.weekNumber) { bin in
-                                                Rectangle()
-                                                    .fill(bin.count == 0 ? Color.red.opacity(0.7) : Color.green.opacity(0.7))
-                                                    .frame(width: metrics.barWidth, 
-                                                          height: max(bin.count == 0 ? 2 : (CGFloat(bin.count) * graphHeight / CGFloat(effectiveMaxCount)), 0))
+                                                HistogramBarView(
+                                                    bin: bin,
+                                                    barWidth: metrics.barWidth,
+                                                    graphHeight: graphHeight,
+                                                    effectiveMaxCount: effectiveMaxCount
+                                                )
                                             }
                                         }
                                     }
@@ -107,6 +127,8 @@ struct HistogramView: View {
                             .padding(.vertical, verticalPadding)
                             .frame(minWidth: geometry.size.width - yAxisWidth)
                         }
+                        // Added simultaneousGesture to let scroll gestures work alongside hover detection
+                        .simultaneousGesture(DragGesture())
                         .onChange(of: timeRange) { _, _ in
                             withAnimation {
                                 // Scroll to most recent data for shorter time ranges
