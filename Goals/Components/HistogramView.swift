@@ -40,14 +40,30 @@ struct HistogramView: View {
     private let verticalPadding: CGFloat = 4  // Reduced from 8
     private let labelHeight: CGFloat = 40  // Added fixed height for labels
     
-    private var effectiveMaxCount: Int {
-        monthSections.flatMap { $0.bins }.map { $0.count }.max() ?? 1
+    private func calculateYAxisScale(maxValue: Int) -> (increment: Int, maxScale: Int) {
+        let baseIncrements = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000]
+        let targetSteps = 5
+        
+        // Find the appropriate increment
+        let increment = baseIncrements.first { inc in
+            let steps = (maxValue + inc) / inc
+            return steps <= targetSteps
+        } ?? 1
+        
+        // Calculate the max scale, ensuring we go one increment over unless maxValue is already on an increment
+        let maxScale = maxValue % increment == 0 ? maxValue : ((maxValue / increment) + 1) * increment
+        
+        return (increment, maxScale)
     }
     
     private var yAxisLabels: [Int] {
-        let max = effectiveMaxCount
-        let steps = stride(from: max, through: 0, by: -(max > 5 ? max / 5 : 1))
-        return Array(steps)
+        let maxCount = monthSections.flatMap { $0.bins }.map { $0.count }.max() ?? 0
+        let (increment, maxScale) = calculateYAxisScale(maxValue: maxCount)
+        return stride(from: 0, through: maxScale, by: increment).reversed()
+    }
+    
+    private var effectiveMaxCount: Int {
+        yAxisLabels.max() ?? 1
     }
     
     // Calculate dynamic spacing and width
@@ -69,20 +85,9 @@ struct HistogramView: View {
         GeometryReader { geometry in
             let metrics = calculateBarMetrics(availableWidth: geometry.size.width - yAxisWidth)
             
-            VStack(spacing: 0) {  // Remove default spacing
+            VStack(spacing: 0) {
                 HStack(spacing: 0) {
-                    // Y-axis labels with better alignment
-                    VStack(alignment: .trailing, spacing: 0) {
-                        ForEach(yAxisLabels, id: \.self) { value in
-                            Text("\(value)")
-                                .font(.caption)
-                                .frame(width: yAxisWidth, alignment: .trailing)
-                                .frame(height: graphHeight / CGFloat(max(1, yAxisLabels.count - 1)))
-                        }
-                    }
-                    .frame(width: yAxisWidth, height: graphHeight)
-                    
-                    // Scrollable data section
+                    // Scrollable data section first (switched order)
                     ScrollViewReader { proxy in
                         ScrollView(.horizontal, showsIndicators: false) {
                             ZStack(alignment: .topLeading) {
@@ -138,6 +143,17 @@ struct HistogramView: View {
                             }
                         }
                     }
+                    
+                    // Y-axis labels now on the right
+                    VStack(alignment: .leading, spacing: 0) {
+                        ForEach(yAxisLabels, id: \.self) { value in
+                            Text("\(value)")
+                                .font(.caption)
+                                .frame(width: yAxisWidth, alignment: .leading)
+                                .frame(height: graphHeight / CGFloat(yAxisLabels.count - 1))
+                        }
+                    }
+                    .frame(width: yAxisWidth, height: graphHeight)
                 }
             }
         }

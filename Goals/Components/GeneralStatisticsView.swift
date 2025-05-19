@@ -72,6 +72,7 @@ struct GeneralStatisticsView: View {
                 // Time Range Picker
                 HStack {
                     Spacer()
+
                     Menu {
                         Picker("Time Range", selection: $selectedTimeRange) {
                             Text("All Time").tag(TimeRange.allTime)
