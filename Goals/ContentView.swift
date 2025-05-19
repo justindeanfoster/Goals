@@ -2,17 +2,6 @@
 import SwiftUI
 import SwiftData
 
-
-struct DayProgress: Identifiable {
-    let id = UUID()
-    let date: Date
-    let goalsWorkedOn: Int
-    let totalGoals: Int
-    var progress: Double {
-        return totalGoals > 0 ? Double(goalsWorkedOn) / Double(totalGoals) : 0
-    }
-}
-
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
 

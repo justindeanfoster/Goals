@@ -2,12 +2,37 @@ import SwiftUI
 
 struct WeekGridView: View {
     @ObservedObject var calendarViewModel: CalendarViewModel
-    let hasJournalEntry: (Date) -> Bool
     let onDateSelected: (Date) -> Void
     let isDeadlineDate: ((Date) -> Bool)?
+    let milestoneCompletions: ((Date) -> Bool)?
+    let getDateColor: (Date) -> Color
     
     var body: some View {
         VStack {
+            HStack {
+                Spacer()
+                Spacer()
+                Spacer()
+
+                Button(action: { calendarViewModel.moveWeek(by: -1) }) {
+                    Image(systemName: "chevron.left")
+                }
+                Text(weekRange)
+                    .font(.headline)
+                    .padding()
+                Button(action: { calendarViewModel.moveWeek(by: 1) }) {
+                    Image(systemName: "chevron.right")
+                }
+                Spacer()
+                Button(action: {
+                    calendarViewModel.selectedDate = Date()
+                    calendarViewModel.currentMonth = Date()
+                }) {
+                    Image(systemName: "arrow.counterclockwise")
+                        .font(.title3)
+                }
+                Spacer()
+            }
             Divider()
             // Days of the week header
             HStack {
@@ -23,41 +48,20 @@ struct WeekGridView: View {
             ForEach(0..<7) { offset in
                 let date = Calendar.current.date(byAdding: .day, value: offset, to: calendarViewModel.startOfWeek)!
                 let isToday = Calendar.current.isDateInToday(date)
-                let isDeadline = isDeadlineDate?(date) ?? false
                 let isSelected = Calendar.current.isDate(date, inSameDayAs: calendarViewModel.selectedDate)
+                let isDeadline = isDeadlineDate?(date) ?? false
                 
-                VStack {
-                    ZStack {
-                        if isDeadline {
-                            RoundedRectangle(cornerRadius: 5)
-                                .fill(Color.red.opacity(0.8))
-                                .frame(width: 35, height: 35)
-                                .zIndex(1)
-                        }
-                        if isToday {
-                            RoundedRectangle(cornerRadius: 5)
-                                .fill(Color.blue.opacity(0.8))
-                                .frame(width: 35, height: 35)
-                                .zIndex(1)
-                        }
-                        Circle()
-                            .fill(hasJournalEntry(date) ? Color.green : Color.gray)
-                            .frame(width: 30, height: 30)
-                            .zIndex(2)
-                            .overlay(
-                                Text(Calendar.current.component(.day, from: date).description)
-                                    .font(.caption)
-                                    .foregroundColor(.white)
-                                    .zIndex(3)
-                            )
-                    }
-                    .frame(width: 35, height: 35)  // Fixed frame for the ZStack
-                    .onTapGesture {
+                CalendarDayCell(
+                    date: date,
+                    isSelected: isSelected,
+                    hasDeadline: isDeadline,
+                    hasMilestone: milestoneCompletions?(date) ?? false,
+                    cellColor: getDateColor(date),
+                    onTap: {
                         calendarViewModel.selectedDate = date
                         onDateSelected(date)
                     }
-                }
-                .frame(height: 35)  // Fixed height for the VStack
+                )
             }
         }
         }
@@ -73,5 +77,12 @@ struct WeekGridView: View {
                     }
                 }
         )
+    }
+    
+    private var weekRange: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM d"
+        let endOfWeek = Calendar.current.date(byAdding: .day, value: 6, to: calendarViewModel.startOfWeek)!
+        return "\(formatter.string(from: calendarViewModel.startOfWeek)) - \(formatter.string(from: endOfWeek))"
     }
 }

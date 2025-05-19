@@ -7,6 +7,7 @@ struct HabitsListView: View {
     @State private var showingAddHabitForm = false
     @State private var selectedHabit: Habit?
     @State private var showEditHabitForm = false
+    @State private var habitToDelete: Habit? // Add this state
 
     var body: some View {
         NavigationView {
@@ -17,9 +18,20 @@ struct HabitsListView: View {
             }
             .navigationTitle("Habits")
             .toolbar { addButton }
-            .background(Color(UIColor.systemBackground))
             .sheet(isPresented: $showingAddHabitForm) { AddHabitForm() }
             .sheet(item: $selectedHabit) { habit in EditHabitForm(habit: habit) }
+            .alert("Delete Habit", isPresented: .constant(habitToDelete != nil), actions: {
+                Button("Cancel", role: .cancel) {
+                    habitToDelete = nil
+                }
+                Button("Delete", role: .destructive) {
+                    if let habit = habitToDelete {
+                        safelyDeleteHabit(habit)
+                    }
+                    habitToDelete = nil
+                }
+            })
+            .background(Color(UIColor.systemBackground))
         }
     }
 
@@ -50,7 +62,7 @@ struct HabitsListView: View {
             }) {
                 Label("Edit Habit", systemImage: "pencil")
             }
-            Button(action: { safelyDeleteHabit(habit) }) {
+            Button(action: { habitToDelete = habit }) {  // Update this line
                 Label("Delete Habit", systemImage: "trash")
             }
         }

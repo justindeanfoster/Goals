@@ -8,7 +8,7 @@ struct EditHabitForm: View {
     let habit: Habit
     
     @State private var title: String
-    @State private var milestones: [String]
+    @State private var milestones: [Milestone]  // Changed from [String]
     @State private var newMilestone: String = ""
     @State private var notes: String
 
@@ -32,14 +32,26 @@ struct EditHabitForm: View {
                 }
 
                 Section(header: Text("Milestones")) {
-                    ForEach(milestones, id: \.self) { milestone in
-                        Text(milestone)
+                    ForEach(milestones) { milestone in
+                        HStack {
+                            Text(milestone.text)
+                            Spacer()
+                            Button(action: {
+                                if let index = milestones.firstIndex(of: milestone) {
+                                    milestones.remove(at: index)
+                                }
+                            }) {
+                                Image(systemName: "minus.circle.fill")
+                                    .foregroundColor(.red)
+                            }
+                        }
                     }
                     HStack {
                         TextField("New Milestone", text: $newMilestone)
                         Button(action: {
                             if !newMilestone.isEmpty {
-                                milestones.append(newMilestone)
+                                let milestone = Milestone(text: newMilestone)  // Create new Milestone object
+                                milestones.append(milestone)
                                 newMilestone = ""
                             }
                         }) {
@@ -58,14 +70,18 @@ struct EditHabitForm: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
-                        habit.title = title
-                        habit.milestones = milestones
-                        habit.notes = notes
-                        try? modelContext.save()
-                        presentationMode.wrappedValue.dismiss()
+                        updateHabit()
                     }
                 }
             }
         }
+    }
+    
+    private func updateHabit() {
+        habit.title = title
+        habit.milestones = milestones  // Direct assignment since types match
+        habit.notes = notes
+        try? modelContext.save()
+        presentationMode.wrappedValue.dismiss()
     }
 }

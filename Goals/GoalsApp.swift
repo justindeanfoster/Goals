@@ -13,7 +13,7 @@ struct GoalsApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .modelContainer(for :[Goal.self, Habit.self, JournalEntry.self])
+                .modelContainer(for: [Goal.self, Habit.self, JournalEntry.self, Milestone.self])
         }
     }
 }

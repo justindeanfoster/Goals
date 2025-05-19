@@ -35,14 +35,26 @@ struct EditGoalForm: View {
                 }
 
                 Section(header: Text("Milestones")) {
-                    ForEach(formData.milestones, id: \.self) { milestone in
-                        Text(milestone)
+                    ForEach(formData.milestones) { milestone in
+                        HStack {
+                            Text(milestone.text)
+                            Spacer()
+                            Button(action: {
+                                if let index = formData.milestones.firstIndex(of: milestone) {
+                                    formData.milestones.remove(at: index)
+                                }
+                            }) {
+                                Image(systemName: "minus.circle.fill")
+                                    .foregroundColor(.red)
+                            }
+                        }
                     }
                     HStack {
                         TextField("New Milestone", text: $formData.newMilestone)
                         Button(action: {
                             if !formData.newMilestone.isEmpty {
-                                formData.milestones.append(formData.newMilestone)
+                                let newMilestone = Milestone(text: formData.newMilestone)
+                                formData.milestones.append(newMilestone)
                                 formData.newMilestone = ""
                             }
                         }) {
@@ -116,7 +128,7 @@ struct EditGoalForm: View {
 private struct GoalFormData {
     var title: String
     var deadline: Date
-    var milestones: [String]
+    var milestones: [Milestone]
     var notes: String
     var selectedHabits: [Habit]
     var newMilestone: String = ""

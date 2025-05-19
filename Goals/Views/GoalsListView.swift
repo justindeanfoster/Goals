@@ -8,6 +8,7 @@ struct GoalsListView: View {
     @State private var showAddGoalForm = false
     @State private var selectedGoal: Goal?
     @State private var showEditGoalForm = false
+    @State private var goalToDelete: Goal? // Add this state
 
     var body: some View {
         NavigationView {
@@ -20,6 +21,17 @@ struct GoalsListView: View {
             .toolbar { addButton }
             .sheet(isPresented: $showAddGoalForm) { AddGoalForm() }
             .sheet(item: $selectedGoal) { goal in EditGoalForm(goal: goal) }
+            .alert("Delete Goal", isPresented: .constant(goalToDelete != nil), actions: {
+                Button("Cancel", role: .cancel) {
+                    goalToDelete = nil
+                }
+                Button("Delete", role: .destructive) {
+                    if let goal = goalToDelete {
+                        safelyDeleteGoal(goal)
+                    }
+                    goalToDelete = nil
+                }
+            })
             .background(Color(UIColor.systemBackground))
         }
     }
@@ -53,7 +65,7 @@ struct GoalsListView: View {
             }) {
                 Label("Edit Goal", systemImage: "pencil")
             }
-            Button(action: { safelyDeleteGoal(goal) }) {
+            Button(action: { goalToDelete = goal }) {  // Update this line
                 Label("Delete Goal", systemImage: "trash")
             }
         }

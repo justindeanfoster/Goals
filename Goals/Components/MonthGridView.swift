@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct CalendarGridView: View {
+struct MonthGridView: View {
     @ObservedObject var calendarViewModel: CalendarViewModel
     let onDateSelected: (Date) -> Void
     let isDeadlineDate: ((Date) -> Bool)?

@@ -26,7 +26,6 @@
 		0C9717D42DBC4FAA0072B569 /* JournalEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9717B42DBC4FAA0072B569 /* JournalEntry.swift */; };
 		0C9717D52DBC4FAA0072B569 /* AddHabitForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9717AB2DBC4FAA0072B569 /* AddHabitForm.swift */; };
 		0C9717D62DBC4FAA0072B569 /* HabitDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9717BF2DBC4FAA0072B569 /* HabitDetailView.swift */; };
-		0C9717D72DBC4FAA0072B569 /* CalendarGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9717A32DBC4FAA0072B569 /* CalendarGridView.swift */; };
 		0C9717D82DBC4FAA0072B569 /* EditHabitForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9717AE2DBC4FAA0072B569 /* EditHabitForm.swift */; };
 		0C9717DA2DBC4FAA0072B569 /* GoalsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9717BE2DBC4FAA0072B569 /* GoalsListView.swift */; };
 		0C9717DB2DBC4FAA0072B569 /* Goal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9717B12DBC4FAA0072B569 /* Goal.swift */; };
@@ -41,6 +40,9 @@
 		0CAD697D2DC6FDA800014F93 /* WeekRangeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAD697C2DC6FDA800014F93 /* WeekRangeView.swift */; };
 		0CAD697F2DC706F800014F93 /* CollapsibleSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAD697E2DC706F800014F93 /* CollapsibleSectionView.swift */; };
 		0CAD69822DCAEBE200014F93 /* (null) in Sources */ = {isa = PBXBuildFile; };
+		0CAD698B2DD58C4100014F93 /* CalendarDayCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAD698A2DD58C4100014F93 /* CalendarDayCell.swift */; };
+		0CAD698D2DD5969C00014F93 /* MonthGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAD698C2DD5969C00014F93 /* MonthGridView.swift */; };
+		0CAD698F2DD8194C00014F93 /* EditMilestoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAD698E2DD8194C00014F93 /* EditMilestoneView.swift */; };
 		0CFFC8502D1B81F700C8F272 /* GoalsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CFFC84F2D1B81F700C8F272 /* GoalsApp.swift */; };
 		0CFFC8522D1B81F700C8F272 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CFFC8512D1B81F700C8F272 /* ContentView.swift */; };
 		0CFFC8562D1B81FB00C8F272 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0CFFC8552D1B81FB00C8F272 /* Assets.xcassets */; };
@@ -49,7 +51,6 @@
 
 /* Begin PBXFileReference section */
 		0C5792C62D48414F00DB774D /* GoalsApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GoalsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		0C9717A32DBC4FAA0072B569 /* CalendarGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarGridView.swift; sourceTree = "<group>"; };
 		0C9717A42DBC4FAA0072B569 /* CalendarSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarSectionView.swift; sourceTree = "<group>"; };
 		0C9717A52DBC4FAA0072B569 /* JournalEntriesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalEntriesListView.swift; sourceTree = "<group>"; };
 		0C9717A62DBC4FAA0072B569 /* StatisticsSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsSectionView.swift; sourceTree = "<group>"; };
@@ -82,6 +83,9 @@
 		0CAD697A2DC6FC5A00014F93 /* Milestone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Milestone.swift; sourceTree = "<group>"; };
 		0CAD697C2DC6FDA800014F93 /* WeekRangeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekRangeView.swift; sourceTree = "<group>"; };
 		0CAD697E2DC706F800014F93 /* CollapsibleSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleSectionView.swift; sourceTree = "<group>"; };
+		0CAD698A2DD58C4100014F93 /* CalendarDayCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarDayCell.swift; sourceTree = "<group>"; };
+		0CAD698C2DD5969C00014F93 /* MonthGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthGridView.swift; sourceTree = "<group>"; };
+		0CAD698E2DD8194C00014F93 /* EditMilestoneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditMilestoneView.swift; sourceTree = "<group>"; };
 		0CFFC84C2D1B81F700C8F272 /* Goals.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Goals.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0CFFC84F2D1B81F700C8F272 /* GoalsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsApp.swift; sourceTree = "<group>"; };
 		0CFFC8512D1B81F700C8F272 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -110,12 +114,13 @@
 		0C9717A92DBC4FAA0072B569 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				0CAD698C2DD5969C00014F93 /* MonthGridView.swift */,
+				0CAD698A2DD58C4100014F93 /* CalendarDayCell.swift */,
 				0CAD697E2DC706F800014F93 /* CollapsibleSectionView.swift */,
 				0CAD697C2DC6FDA800014F93 /* WeekRangeView.swift */,
 				0CAD69782DC6FBE000014F93 /* MilestoneListView.swift */,
 				0CAD69762DC522C100014F93 /* HistogramView.swift */,
 				0C9717DE2DC2F5EF0072B569 /* PieChartView.swift */,
-				0C9717A32DBC4FAA0072B569 /* CalendarGridView.swift */,
 				0C9717A42DBC4FAA0072B569 /* CalendarSectionView.swift */,
 				0C9717A52DBC4FAA0072B569 /* JournalEntriesListView.swift */,
 				0C9717A62DBC4FAA0072B569 /* StatisticsSectionView.swift */,
@@ -128,6 +133,7 @@
 		0C9717B02DBC4FAA0072B569 /* Forms */ = {
 			isa = PBXGroup;
 			children = (
+				0CAD698E2DD8194C00014F93 /* EditMilestoneView.swift */,
 				0C9717AA2DBC4FAA0072B569 /* AddGoalForm.swift */,
 				0C9717AB2DBC4FAA0072B569 /* AddHabitForm.swift */,
 				0C9717AC2DBC4FAA0072B569 /* AddJournalEntry.swift */,
@@ -343,6 +349,7 @@
 				0C9717CC2DBC4FAA0072B569 /* GoalDetailView.swift in Sources */,
 				0C9717CD2DBC4FAA0072B569 /* JournalEntriesListView.swift in Sources */,
 				0C9717CE2DBC4FAA0072B569 /* YearGridView.swift in Sources */,
+				0CAD698D2DD5969C00014F93 /* MonthGridView.swift in Sources */,
 				0CAD69792DC6FBE000014F93 /* MilestoneListView.swift in Sources */,
 				0C9717CF2DBC4FAA0072B569 /* AddJournalEntry.swift in Sources */,
 				0C9717DF2DC2F5EF0072B569 /* PieChartView.swift in Sources */,
@@ -355,13 +362,14 @@
 				0C9717D52DBC4FAA0072B569 /* AddHabitForm.swift in Sources */,
 				0C9717D62DBC4FAA0072B569 /* HabitDetailView.swift in Sources */,
 				0CAD69822DCAEBE200014F93 /* (null) in Sources */,
-				0C9717D72DBC4FAA0072B569 /* CalendarGridView.swift in Sources */,
 				0C9717D82DBC4FAA0072B569 /* EditHabitForm.swift in Sources */,
 				0CAD697B2DC6FC5A00014F93 /* Milestone.swift in Sources */,
 				0C9717DA2DBC4FAA0072B569 /* GoalsListView.swift in Sources */,
+				0CAD698F2DD8194C00014F93 /* EditMilestoneView.swift in Sources */,
 				0CAD697D2DC6FDA800014F93 /* WeekRangeView.swift in Sources */,
 				0CAD697F2DC706F800014F93 /* CollapsibleSectionView.swift in Sources */,
 				0C9717DB2DBC4FAA0072B569 /* Goal.swift in Sources */,
+				0CAD698B2DD58C4100014F93 /* CalendarDayCell.swift in Sources */,
 				0C9717DC2DBC4FAA0072B569 /* HabitsListView.swift in Sources */,
 				0C9717DD2DBC4FAA0072B569 /* StatisticsListView.swift in Sources */,
 				0CAD69772DC522C100014F93 /* HistogramView.swift in Sources */,

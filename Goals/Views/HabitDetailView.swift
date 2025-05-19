@@ -63,18 +63,24 @@ struct HabitDetailView: View {
     private var calendarSection: some View {
         CalendarSectionView(
             calendarViewModel: calendarViewModel,
-            hasJournalEntry: { date in
-                habit.journalEntries.contains { Calendar.current.isDate($0.timestamp, inSameDayAs: date) }
-            },
             onDateSelected: { date in
                 selectedDate = date
                 showingDayView = true
             },
             isDeadlineDate: nil,
+            milestoneCompletions: { date in
+                habit.milestones.contains { milestone in
+                    guard let completedDate = milestone.dateCompleted else { return false }
+                    return Calendar.current.isDate(completedDate, inSameDayAs: date)
+                }
+            },
+            getDateColor: { date in
+                habit.journalEntries.contains { Calendar.current.isDate($0.timestamp, inSameDayAs: date) } ? .green : .gray
+            },
             showCalendar: $showCalendar
         )
         .onChange(of: showCalendar) { oldValue, newValue in
-            if !newValue { calendarViewModel.currentMonth = Date() }
+            if (!newValue) { calendarViewModel.currentMonth = Date() }
         }
     }
 
@@ -90,30 +96,39 @@ struct HabitDetailView: View {
     private var milestonesSection: some View {
         Group {
             if !habit.milestones.isEmpty {
-                MilestoneListView(milestones: habit.milestones)
+                MilestoneListView(
+                    milestones: .init( // Create binding
+                        get: { habit.milestones },
+                        set: { habit.milestones = $0 }
+                    ),
+                    selectedDate: calendarViewModel.selectedDate
+                )
                 Divider()
             }
         }
     }
 
     private var journalEntriesSection: some View {
-        VStack(alignment: .leading) {
-            Text("Journal Entries").font(.headline)
-            JournalEntriesListView(
-                entries: currentTimeframeEntries,
-                onEntryTapped: { entry in
-                    selectedDate = entry.timestamp
-                    showingDayView = true
-                },
-                canEdit: { _ in true },
-                onEditEntry: { entry in
-                    selectedEntry = entry
-                },
-                onDeleteEntry: { entry in
-                    habit.journalEntries.removeAll { $0.id == entry.id }
-                },
-                sourceLabel: nil
-            )
+        Group {
+            if !currentTimeframeEntries.isEmpty {
+                JournalEntriesListView(
+                    entries: currentTimeframeEntries,
+                    onEntryTapped: { entry in
+                        selectedDate = entry.timestamp
+                        showingDayView = true
+                    },
+                    canEdit: { _ in true },
+                    onEditEntry: { entry in
+                        selectedEntry = entry
+                    },
+                    onDeleteEntry: { entry in
+                        habit.journalEntries.removeAll { $0.id == entry.id }
+                    },
+                    sourceLabel: nil
+                )
+            } else {
+                EmptyView()
+            }
         }
     }
 
