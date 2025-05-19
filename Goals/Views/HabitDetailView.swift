@@ -26,11 +26,9 @@ struct HabitDetailView: View {
             ScrollView {
                 VStack(alignment: .leading) {
                     calendarSection
-                    Divider()
                     notesSection
                     milestonesSection
                     journalEntriesSection
-                    Divider()
                     statisticsSection
                 }
                 .padding()
@@ -90,10 +88,10 @@ struct HabitDetailView: View {
     private var notesSection: some View {
         Group {
             if !habit.notes.isEmpty {
+                Divider()
                 CollapsibleSectionView(title: "Notes", content: habit.notes)
                     .background(Color(.systemBackground))
                     .cornerRadius(10)
-                Divider()
             }
         }
     }
@@ -101,6 +99,7 @@ struct HabitDetailView: View {
     private var milestonesSection: some View {
         Group {
             if !habit.milestones.isEmpty {
+                Divider()
                 MilestoneListView(
                     milestones: .init( // Create binding
                         get: { habit.milestones },
@@ -118,6 +117,7 @@ struct HabitDetailView: View {
     private var journalEntriesSection: some View {
         Group {
             if !currentTimeframeEntries.isEmpty {
+                Divider()
                 JournalEntriesListView(
                     entries: currentTimeframeEntries,
                     onEntryTapped: { entry in
@@ -142,20 +142,23 @@ struct HabitDetailView: View {
     }
 
     private var statisticsSection: some View {
-        VStack(alignment: .leading, spacing: 15) {
-            NavigationLink(destination: StatisticsDetailView(item: .habit(habit))) {
-                Text("Statistics")
-                    .font(.headline)
-                    .foregroundColor(.blue)
+        Group{
+            Divider()
+            VStack(alignment: .leading, spacing: 15) {
+                NavigationLink(destination: StatisticsDetailView(item: .habit(habit))) {
+                    Text("Statistics")
+                        .font(.headline)
+                        .foregroundColor(.blue)
+                }
+                StatisticsSectionView(statistics: [
+                    StatisticRow(label: "Days Worked:", value: "\(habit.daysWorked)")
+                ])
             }
-            StatisticsSectionView(statistics: [
-                StatisticRow(label: "Days Worked:", value: "\(habit.daysWorked)")
-            ])
+            .padding()
+            .background(Color(.systemGray6))
+            .cornerRadius(10)
+            .shadow(radius: 2, x: 0, y: 2)
         }
-        .padding()
-        .background(Color(.systemGray6))
-        .cornerRadius(10)
-        .shadow(radius: 2, x: 0, y: 2)
     }
 
     // MARK: - Sheets

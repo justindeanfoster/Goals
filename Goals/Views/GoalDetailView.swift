@@ -41,13 +41,10 @@ struct GoalDetailView: View {
             ScrollView {
                 VStack(alignment: .leading) {
                     calendarSection
-                    Divider()
                     notesSection
                     milestonesSection
                     journalEntriesSection
-                    Divider()
                     statisticsSection
-                    Divider()
                     relatedHabitsSection
                 }
                 .padding()
@@ -113,11 +110,12 @@ struct GoalDetailView: View {
 
     private var notesSection: some View {
         Group {
+            
             if (!goal.notes.isEmpty) {
+                Divider()
                 CollapsibleSectionView(title: "Notes", content: goal.notes)
                     .background(Color(.systemBackground))
                     .cornerRadius(10)
-                Divider()
             }
         }
     }
@@ -125,6 +123,7 @@ struct GoalDetailView: View {
     private var milestonesSection: some View {
         Group {
             if !goal.milestones.isEmpty {
+                Divider()
                 MilestoneListView(
                     milestones: .init( // Create binding
                         get: { goal.milestones },
@@ -141,52 +140,53 @@ struct GoalDetailView: View {
 
     private var journalEntriesSection: some View {
         Group {
-            if !currentTimeframeEntries.isEmpty {
-                JournalEntriesListView(
-                    entries: currentTimeframeEntries,
-                    onEntryTapped: { entry in
-                        selectedDate = entry.timestamp
-                        showingDayView = true
-                    },
-                    canEdit: entryBelongsToGoalOrHabits,
-                    onEditEntry: { entry in
-                        selectedEntry = entry
-                        showingEditJournalEntry = true
-                    },
-                    onDeleteEntry: deleteEntry,
-                    sourceLabel: getSourceLabel
-                )
-                .id(timeframeUpdateTrigger)
-                .background(Color(.systemBackground))
-                .cornerRadius(10)
-            } else {
-                EmptyView()
-            }
+            JournalEntriesListView(
+                entries: currentTimeframeEntries,
+                onEntryTapped: { entry in
+                    selectedDate = entry.timestamp
+                    showingDayView = true
+                },
+                canEdit: entryBelongsToGoalOrHabits,
+                onEditEntry: { entry in
+                    selectedEntry = entry
+                    showingEditJournalEntry = true
+                },
+                onDeleteEntry: deleteEntry,
+                sourceLabel: getSourceLabel
+            )
+            .id(timeframeUpdateTrigger)
+            .background(Color(.systemBackground))
+            .cornerRadius(10)
+        
         }
     }
 
     private var statisticsSection: some View {
-        VStack(alignment: .leading, spacing: 15) {
-            NavigationLink(destination: StatisticsDetailView(item: .goal(goal))) {
-                Text("Statistics")
-                    .font(.headline)
-                    .foregroundColor(.blue)
+        Group {
+            Divider()
+            VStack(alignment: .leading, spacing: 15) {
+                NavigationLink(destination: StatisticsDetailView(item: .goal(goal))) {
+                    Text("Statistics")
+                        .font(.headline)
+                        .foregroundColor(.blue)
+                }
+                StatisticsSectionView(statistics: [
+                    StatisticRow(label: "Days Worked:", value: "\(goal.daysWorked)"),
+                    StatisticRow(label: "Days Remaining:", value: "\(goal.daysRemaining)"),
+                    StatisticRow(label: "Total Journal Entries:", value: "\(allJournalEntries.count)")
+                ])
             }
-            StatisticsSectionView(statistics: [
-                StatisticRow(label: "Days Worked:", value: "\(goal.daysWorked)"),
-                StatisticRow(label: "Days Remaining:", value: "\(goal.daysRemaining)"),
-                StatisticRow(label: "Total Journal Entries:", value: "\(allJournalEntries.count)")
-            ])
+            .padding()
+            .background(Color(.systemGray6))
+            .cornerRadius(10)
+            .shadow(radius: 2, x: 0, y: 2)
         }
-        .padding()
-        .background(Color(.systemGray6))
-        .cornerRadius(10)
-        .shadow(radius: 2, x: 0, y: 2)
     }
 
     private var relatedHabitsSection: some View {
         Group {
             if (!goal.relatedHabits.isEmpty) {
+                Divider()
                 Text("Related Habits")
                     .font(.headline)
                 ScrollView(.horizontal, showsIndicators: false) {

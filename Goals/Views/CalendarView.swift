@@ -69,8 +69,8 @@ struct CalendarView: View {
                 }) {
                     Text("Today").font(.headline)
                 }
-            }
-            
+            }.padding(.top)
+            Divider()
             // Calendar Grid
             VStack {
                 HStack {

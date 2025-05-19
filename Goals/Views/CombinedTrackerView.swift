@@ -49,10 +49,15 @@ struct CombinedTrackerView: View {
                     .padding(.horizontal)
                     .padding(.top)
                     
-                    ForEach(habits) { habit in
-                        habitRow(habit)
-                            .padding(.horizontal)
+                    LazyVGrid(columns: [
+                        GridItem(.flexible()),
+                        GridItem(.flexible())
+                    ], spacing: 16) {
+                        ForEach(habits) { habit in
+                            habitCell(habit)
+                        }
                     }
+                    .padding(.horizontal)
                 }
                 .padding(.vertical)
             }
@@ -154,25 +159,24 @@ struct CombinedTrackerView: View {
         }
     }
     
-    // MARK: - Habit Row
-    private func habitRow(_ habit: Habit) -> some View {
+    // MARK: - Habit Cell
+    private func habitCell(_ habit: Habit) -> some View {
         NavigationLink(destination: HabitDetailView(habit: habit)) {
             VStack(alignment: .leading) {
                 Text(habit.title)
                     .font(.headline)
                     .foregroundColor(.primary)
-                HStack {
-                    Text("Days Worked: \(habit.daysWorked)")
-                }
-                .font(.caption)
-                .foregroundColor(.gray)
+                    .lineLimit(1)
+                Text("Days: \(habit.daysWorked)")
+                    .font(.caption)
+                    .foregroundColor(.gray)
                 let currentWeekStart = Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: Date()))!
                 HStack(spacing: 2) {
                     ForEach(0..<7, id: \.self) { dayOffset in
                         let date = Calendar.current.date(byAdding: .day, value: dayOffset, to: currentWeekStart)!
                         RoundedRectangle(cornerRadius: 2)
                             .fill(habit.journalEntries.contains(where: { Calendar.current.isDate($0.timestamp, inSameDayAs: date) }) ? Color.green : Color.gray)
-                            .frame(width: 10, height: 10)
+                            .frame(width: 6, height: 6)
                     }
                 }
                 .padding(.top, 4)

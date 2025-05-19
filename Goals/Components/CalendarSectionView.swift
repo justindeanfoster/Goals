@@ -12,24 +12,30 @@ struct CalendarSectionView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             VStack(spacing: 5) {
-                
-                if showCalendar {
-                    MonthGridView(
-                        calendarViewModel: calendarViewModel,
-                        onDateSelected: onDateSelected,
-                        isDeadlineDate: isDeadlineDate,
-                        milestoneCompletions: milestoneCompletions,
-                        getDateColor: getDateColor
-                    )
-                } else {
-                    WeekGridView(
-                        calendarViewModel: calendarViewModel,
-                        onDateSelected: onDateSelected,
-                        isDeadlineDate: isDeadlineDate,
-                        milestoneCompletions: milestoneCompletions,
-                        getDateColor: getDateColor
-                    )
+                Group {
+                    if showCalendar {
+                        MonthGridView(
+                            calendarViewModel: calendarViewModel,
+                            onDateSelected: onDateSelected,
+                            isDeadlineDate: isDeadlineDate,
+                            milestoneCompletions: milestoneCompletions,
+                            getDateColor: getDateColor,
+                            showCalendar: $showCalendar
+                        )
+                        .transition(.opacity)
+                    } else {
+                        WeekGridView(
+                            calendarViewModel: calendarViewModel,
+                            onDateSelected: onDateSelected,
+                            isDeadlineDate: isDeadlineDate,
+                            milestoneCompletions: milestoneCompletions,
+                            getDateColor: getDateColor,
+                            showCalendar: $showCalendar
+                        )
+                        .transition(.opacity)
+                    }
                 }
+                .animation(.easeInOut(duration: 0.2), value: showCalendar)
             }
             .padding()
             .background(Color(.systemGray6))

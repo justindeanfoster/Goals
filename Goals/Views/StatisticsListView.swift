@@ -10,6 +10,9 @@ struct StatisticsListView: View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 16) {
+                    GeneralStatisticsView(goals: goals, habits: habits)
+                        .padding(.horizontal)
+                    
                     HStack {
                         Text("Goals").font(.title2).bold()
                         Spacer()
