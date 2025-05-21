@@ -50,16 +50,17 @@ struct CalendarView: View {
                 Spacer()
                 
                 // Month Navigation
-                HStack {
-                    Button(action: { calendarViewModel.moveMonth(by: -1) }) {
-                        Image(systemName: "chevron.left")
-                    }
-                    Text(calendarViewModel.startOfMonth, formatter: monthYearFormatter)
-                        .font(.headline)
-                    Button(action: { calendarViewModel.moveMonth(by: 1) }) {
-                        Image(systemName: "chevron.right")
-                    }
+                Button(action: { calendarViewModel.moveMonth(by: -1) }) {
+                    Image(systemName: "chevron.left")
                 }
+                Spacer()
+                Text(calendarViewModel.startOfMonth, formatter: monthYearFormatter)
+                    .font(.headline)
+                Spacer()
+                Button(action: { calendarViewModel.moveMonth(by: 1) }) {
+                    Image(systemName: "chevron.right")
+                }
+            
                 
                 Spacer()
                 

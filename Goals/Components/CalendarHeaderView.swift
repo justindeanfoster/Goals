@@ -30,6 +30,6 @@ struct CalendarHeaderView: View {
                     .font(.title3)
             }
         }
-        .padding(.horizontal)
+        .padding()
     }
 }

@@ -164,22 +164,24 @@ struct GoalDetailView: View {
     private var statisticsSection: some View {
         Group {
             Divider()
-            VStack(alignment: .leading, spacing: 15) {
-                NavigationLink(destination: StatisticsDetailView(item: .goal(goal))) {
+            NavigationLink(destination: StatisticsDetailView(item: .goal(goal))) {
+                VStack(alignment: .leading, spacing: 15) {
                     Text("Statistics")
                         .font(.headline)
-                        .foregroundColor(.blue)
+                        .foregroundColor(.primary)
+                    StatisticsSectionView(statistics: [
+                        StatisticRow(label: "Days Worked:", value: "\(goal.daysWorked)"),
+                        StatisticRow(label: "Days Remaining:", value: "\(goal.daysRemaining)"),
+                        StatisticRow(label: "Total Journal Entries:", value: "\(allJournalEntries.count)")
+                    ])
                 }
-                StatisticsSectionView(statistics: [
-                    StatisticRow(label: "Days Worked:", value: "\(goal.daysWorked)"),
-                    StatisticRow(label: "Days Remaining:", value: "\(goal.daysRemaining)"),
-                    StatisticRow(label: "Total Journal Entries:", value: "\(allJournalEntries.count)")
-                ])
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color(.systemGray6))
+                .cornerRadius(10)
+                .shadow(radius: 2, x: 0, y: 2)
             }
-            .padding()
-            .background(Color(.systemGray6))
-            .cornerRadius(10)
-            .shadow(radius: 2, x: 0, y: 2)
+            .buttonStyle(PlainButtonStyle())
         }
     }
 

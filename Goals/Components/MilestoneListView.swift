@@ -5,7 +5,7 @@ struct MilestoneListView: View {
     @Environment(\.modelContext) private var modelContext
     @Binding var milestones: [Milestone]  // Changed to @Binding
     let selectedDate: Date
-    @State private var isExpanded = false
+    @State private var isExpanded = true // Changed from false to true
     @State private var selectedMilestone: Milestone?
     
     var body: some View {

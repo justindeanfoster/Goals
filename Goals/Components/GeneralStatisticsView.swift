@@ -38,70 +38,73 @@ struct GeneralStatisticsView: View {
     }
     
     var body: some View {
-        VStack(spacing: 24) {
-            // Statistics Cards
-            HStack(spacing: 20) {
-                statisticCard(
-                    title: "Total Active Days",
-                    value: "\(totalDaysWorked)",
-                    subtitle: "Days with entries"
-                )
-                statisticCard(
-                    title: "Current Streak",
-                    value: "\(currentStreak)",
-                    subtitle: "Days in a row"
-                )
-            }
-            
-            // Histogram and Time Range Picker Section
-            VStack(alignment: .leading, spacing: 20) {
-                // Histogram Section
-                VStack(alignment: .leading, spacing: 12) {
-                    Spacer().padding(.bottom,8)
-                    HistogramView(
-                        monthSections: calendarViewModel.getWeeklyHistogramData(
-                            entries: allEntries,
-                            timeRange: selectedTimeRange
-                        ),
-                        maxCount: 50,
-                        timeRange: selectedTimeRange
+        NavigationLink(destination: StatisticsDetailView(item: .all(goals: goals, habits: habits))) {
+            VStack(spacing: 24) {
+                // Statistics Cards
+                HStack(spacing: 20) {
+                    statisticCard(
+                        title: "Total Active Days",
+                        value: "\(totalDaysWorked)",
+                        subtitle: "Days with entries"
                     )
-                    .frame(height: 120)
+                    statisticCard(
+                        title: "Current Streak",
+                        value: "\(currentStreak)",
+                        subtitle: "Days in a row"
+                    )
                 }
-                Spacer()
-                // Time Range Picker
-                HStack {
+                
+                // Histogram and Time Range Picker Section
+                VStack(alignment: .leading, spacing: 20) {
+                    // Histogram Section
+                    VStack(alignment: .leading, spacing: 12) {
+                        Spacer().padding(.bottom,8)
+                        HistogramView(
+                            monthSections: calendarViewModel.getWeeklyHistogramData(
+                                entries: allEntries,
+                                timeRange: selectedTimeRange
+                            ),
+                            maxCount: 50,
+                            timeRange: selectedTimeRange
+                        )
+                        .frame(height: 120)
+                    }
                     Spacer()
+                    // Time Range Picker
+                    HStack {
+                        Spacer()
 
-                    Menu {
-                        Picker("Time Range", selection: $selectedTimeRange) {
-                            Text("All Time").tag(TimeRange.allTime)
-                            Text("Last Week").tag(TimeRange.lastWeek)
-                            Text("Last Month").tag(TimeRange.lastMonth)
-                            Text("Last 3 Months").tag(TimeRange.last3Months)
-                            Text("Last 6 Months").tag(TimeRange.last6Months)
-                            Text("Selected Year").tag(TimeRange.year)
+                        Menu {
+                            Picker("Time Range", selection: $selectedTimeRange) {
+                                Text("All Time").tag(TimeRange.allTime)
+                                Text("Last Week").tag(TimeRange.lastWeek)
+                                Text("Last Month").tag(TimeRange.lastMonth)
+                                Text("Last 3 Months").tag(TimeRange.last3Months)
+                                Text("Last 6 Months").tag(TimeRange.last6Months)
+                                Text("Selected Year").tag(TimeRange.year)
+                            }
+                        } label: {
+                            HStack {
+                                Text(selectedTimeRange.description)
+                                    .frame(width: 120, alignment: .leading)
+                                Image(systemName: "chevron.down")
+                                    .font(.caption)
+                            }
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 5)
+                            .background(Color.blue.opacity(0.1))
+                            .cornerRadius(8)
                         }
-                    } label: {
-                        HStack {
-                            Text(selectedTimeRange.description)
-                                .frame(width: 120, alignment: .leading)
-                            Image(systemName: "chevron.down")
-                                .font(.caption)
-                        }
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 5)
-                        .background(Color.blue.opacity(0.1))
-                        .cornerRadius(8)
                     }
                 }
+                .padding(.horizontal, 8)
             }
-            .padding(.horizontal, 8)
+            .padding()
+            .background(Color(.systemGray6))
+            .cornerRadius(10)
+            .shadow(radius: 2, x: 0, y: 2)
         }
-        .padding()
-        .background(Color(.systemGray6))
-        .cornerRadius(10)
-        .shadow(radius: 2, x: 0, y: 2)
+        .buttonStyle(PlainButtonStyle())
     }
     
     private func statisticCard(title: String, value: String, subtitle: String) -> some View {

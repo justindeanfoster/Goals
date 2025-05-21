@@ -142,22 +142,24 @@ struct HabitDetailView: View {
     }
 
     private var statisticsSection: some View {
-        Group{
+        Group {
             Divider()
-            VStack(alignment: .leading, spacing: 15) {
-                NavigationLink(destination: StatisticsDetailView(item: .habit(habit))) {
+            NavigationLink(destination: StatisticsDetailView(item: .habit(habit))) {
+                VStack(alignment: .leading, spacing: 15) {
                     Text("Statistics")
                         .font(.headline)
-                        .foregroundColor(.blue)
+                        .foregroundColor(.primary)
+                    StatisticsSectionView(statistics: [
+                        StatisticRow(label: "Days Worked:", value: "\(habit.daysWorked)")
+                    ])
                 }
-                StatisticsSectionView(statistics: [
-                    StatisticRow(label: "Days Worked:", value: "\(habit.daysWorked)")
-                ])
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color(.systemGray6))
+                .cornerRadius(10)
+                .shadow(radius: 2, x: 0, y: 2)
             }
-            .padding()
-            .background(Color(.systemGray6))
-            .cornerRadius(10)
-            .shadow(radius: 2, x: 0, y: 2)
+            .buttonStyle(PlainButtonStyle())
         }
     }
 

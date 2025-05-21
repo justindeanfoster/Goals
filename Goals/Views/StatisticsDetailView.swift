@@ -3,11 +3,13 @@ import SwiftUI
 enum StatisticsItem {
     case goal(Goal)
     case habit(Habit)
+    case all(goals: [Goal], habits: [Habit])
     
     var title: String {
         switch self {
         case .goal(let goal): return goal.title
         case .habit(let habit): return habit.title
+        case .all: return "Overall Statistics"
         }
     }
 }
@@ -54,14 +56,29 @@ struct StatisticsDetailView: View {
     // MARK: - Sections
 
     private var titleSection: some View {
-        NavigationLink(destination: destinationView) {
-            Text(item.title)
-                .font(.title2)
-                .bold()
-                .foregroundColor(.blue)
-                .frame(maxWidth: .infinity, alignment: .leading)
+        Group {
+            switch item {
+            case .goal(let goal):
+                NavigationLink(destination: GoalDetailView(goal: goal)) {
+                    titleContent
+                }
+            case .habit(let habit):
+                NavigationLink(destination: HabitDetailView(habit: habit)) {
+                    titleContent
+                }
+            case .all:
+                titleContent
+            }
         }
         .padding(.vertical, 5)
+    }
+    
+    private var titleContent: some View {
+        Text(item.title)
+            .font(.title2)
+            .bold()
+            .foregroundColor(item.isNavigable ? .blue : .primary)
+            .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private var yearGridSection: some View {
@@ -192,6 +209,30 @@ struct StatisticsDetailView: View {
                 .shadow(radius: 2, x: 0, y: 2)
             }
             
+            if case .all(let goals, let habits) = item {
+                VStack(alignment: .leading) {
+                    HStack(alignment: .center, spacing: 20) {
+                        Text("Journal Entry Distribution")
+                            .font(.headline)
+                            .padding(.horizontal)
+                        Spacer()
+                    }
+                    PieChartView(
+                        slices: getOverallJournalEntryBreakdown(
+                            goals: goals,
+                            habits: habits,
+                            timeRange: selectedTimeRange
+                        ),
+                        title: "",
+                        alignment: .left
+                    )
+                }
+                .padding()
+                .background(Color(.systemGray6))
+                .cornerRadius(10)
+                .shadow(radius: 2, x: 0, y: 2)
+            }
+            
             VStack(alignment: .leading) {
                 HStack(alignment: .center, spacing: 20) {
                     Text("Activity by Day of Week")
@@ -200,9 +241,7 @@ struct StatisticsDetailView: View {
                     Spacer()
                 }
                 PieChartView(
-                    slices: selectedTimeRange == .allTime ? 
-                        getDayOfWeekBreakdown(entries: getEntries()) : 
-                        getDayOfWeekBreakdown(entries: getEntriesForSelectedYear()),
+                    slices: getDayOfWeekBreakdown(entries: getFilteredEntries(for: selectedTimeRange)),
                     title: "",
                     alignment: .right
                 )
@@ -216,14 +255,6 @@ struct StatisticsDetailView: View {
 
     // MARK: - Helpers
 
-    @ViewBuilder
-    private var destinationView: some View {
-        switch item {
-        case .goal(let goal): GoalDetailView(goal: goal)
-        case .habit(let habit): HabitDetailView(habit: habit)
-        }
-    }
-
     private func getEntries() -> [Date] {
         switch item {
         case .goal(let goal):
@@ -232,6 +263,13 @@ struct StatisticsDetailView: View {
             return goalEntries + habitEntries
         case .habit(let habit):
             return habit.journalEntries.map { $0.timestamp }
+        case .all(let goals, let habits):
+            let goalEntries = goals.flatMap { goal in
+                goal.journalEntries.map { $0.timestamp } +
+                goal.relatedHabits.flatMap { $0.journalEntries.map { $0.timestamp } }
+            }
+            let habitEntries = habits.flatMap { $0.journalEntries.map { $0.timestamp } }
+            return Array(Set(goalEntries + habitEntries))
         }
     }
 
@@ -239,6 +277,9 @@ struct StatisticsDetailView: View {
         switch item {
         case .goal(let goal): return goal.daysWorked
         case .habit(let habit): return habit.daysWorked
+        case .all(_, _):
+            let allEntries = getEntries()
+            return Set(allEntries.map { Calendar.current.startOfDay(for: $0) }).count
         }
     }
 
@@ -248,6 +289,12 @@ struct StatisticsDetailView: View {
             return goal.journalEntries.count + goal.relatedHabits.flatMap { $0.journalEntries }.count
         case .habit(let habit):
             return habit.journalEntries.count
+        case .all(let goals, let habits):
+            let goalEntries = goals.flatMap { goal in
+                goal.journalEntries.count + goal.relatedHabits.flatMap { $0.journalEntries }.count
+            }.reduce(0, +)
+            let habitEntries = habits.flatMap { $0.journalEntries }.count
+            return goalEntries + habitEntries
         }
     }
 
@@ -431,6 +478,80 @@ struct StatisticsDetailView: View {
         case .allTime:
             guard let firstEntry = getEntries().min() else { return 0 }
             return calendar.dateComponents([.day], from: firstEntry, to: now).day ?? 0
+        }
+    }
+
+    private func getOverallJournalEntryBreakdown(goals: [Goal], habits: [Habit], timeRange: TimeRange) -> [PieSlice] {
+        var sources: [(String, Int)] = []
+        
+        // Add goals and their entries
+        for goal in goals {
+            let entries = goal.journalEntries
+                .filter { entry in
+                    isEntry(entry.timestamp, inTimeRange: timeRange)
+                }
+                .count
+            if entries > 0 {
+                sources.append((goal.title, entries))
+            }
+        }
+        
+        // Add habits and their entries
+        for habit in habits {
+            let entries = habit.journalEntries
+                .filter { entry in
+                    isEntry(entry.timestamp, inTimeRange: timeRange)
+                }
+                .count
+            if entries > 0 {
+                sources.append((habit.title, entries))
+            }
+        }
+        
+        // Sort by entry count to show most active items first
+        sources.sort { $0.1 > $1.1 }
+        
+        let colors = getPieChartColors(sources.count)
+        
+        return sources.enumerated().map { index, source in
+            PieSlice(
+                value: Double(source.1),
+                color: colors[index],
+                label: source.0
+            )
+        }
+    }
+
+    private func isEntry(_ date: Date, inTimeRange timeRange: TimeRange) -> Bool {
+        let calendar = Calendar.current
+        let now = Date()
+        
+        switch timeRange {
+        case .year:
+            return calendar.component(.year, from: date) == calendarViewModel.selectedYear
+        case .lastWeek:
+            let startDate = calendar.date(byAdding: .day, value: -7, to: now)!
+            return date >= startDate
+        case .lastMonth:
+            let startDate = calendar.date(byAdding: .month, value: -1, to: now)!
+            return date >= startDate
+        case .last3Months:
+            let startDate = calendar.date(byAdding: .month, value: -3, to: now)!
+            return date >= startDate
+        case .last6Months:
+            let startDate = calendar.date(byAdding: .month, value: -6, to: now)!
+            return date >= startDate
+        case .allTime:
+            return true
+        }
+    }
+}
+
+extension StatisticsItem {
+    var isNavigable: Bool {
+        switch self {
+        case .goal, .habit: return true
+        case .all: return false
         }
     }
 }

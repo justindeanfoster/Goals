@@ -8,7 +8,7 @@ struct JournalEntriesListView: View {
     let onEditEntry: (JournalEntry) -> Void
     let onDeleteEntry: (JournalEntry) -> Void
     let sourceLabel: ((JournalEntry) -> String)?
-    @AppStorage("journalEntriesExpanded") private var isExpanded = false
+    @State private var isExpanded = true
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
