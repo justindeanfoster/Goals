@@ -23,6 +23,7 @@ struct GoalDetailView: View {
     @State private var entries: [JournalEntry] = []
 
     @State private var showingDayView = false
+    @State private var isExpanded = false
 
     // MARK: - Computed Properties
 
@@ -42,7 +43,6 @@ struct GoalDetailView: View {
                 VStack(alignment: .leading) {
                     calendarSection
                     notesSection
-                    milestonesSection
                     journalEntriesSection
                     statisticsSection
                     relatedHabitsSection
@@ -110,36 +110,54 @@ struct GoalDetailView: View {
 
     private var notesSection: some View {
         Group {
-            
-            if (!goal.notes.isEmpty) {
+            if !goal.notes.isEmpty || !goal.milestones.isEmpty {
                 Divider()
-                CollapsibleSectionView(title: "Notes", content: goal.notes)
-                    .background(Color(.systemBackground))
-                    .cornerRadius(10)
-            }
-        }
-    }
-
-    private var milestonesSection: some View {
-        Group {
-            if !goal.milestones.isEmpty {
-                Divider()
-                MilestoneListView(
-                    milestones: .init( // Create binding
-                        get: { goal.milestones },
-                        set: { goal.milestones = $0 }
-                    ),
-                    selectedDate: calendarViewModel.selectedDate
-                )
+                VStack(alignment: .leading, spacing: 10) {
+                    Button(action: { withAnimation { isExpanded.toggle() } }) {
+                        HStack {
+                            Text("Notes")
+                                .font(.headline)
+                            Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                        }
+                        .foregroundColor(.blue)
+                    }
+                    
+                    if isExpanded {
+                        if !goal.notes.isEmpty {
+                            Text(goal.notes)
+                                .font(.subheadline)
+                                .padding()
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(Color(.systemGray6))
+                                .cornerRadius(8)
+                        }
+                        
+                        if !goal.milestones.isEmpty {
+                            Text("Milestones")
+                                .font(.headline)
+                                .foregroundColor(.secondary)
+                                .padding(.top, 8)
+                            MilestoneListView(
+                                milestones: .init(
+                                    get: { goal.milestones },
+                                    set: { goal.milestones = $0 }
+                                ),
+                                selectedDate: calendarViewModel.selectedDate,
+                                showHeader: false
+                            )
+                        }
+                    }
+                }
                 .background(Color(.systemBackground))
                 .cornerRadius(10)
-                Divider()
             }
         }
     }
 
     private var journalEntriesSection: some View {
         Group {
+            Divider()
+
             JournalEntriesListView(
                 entries: currentTimeframeEntries,
                 onEntryTapped: { entry in

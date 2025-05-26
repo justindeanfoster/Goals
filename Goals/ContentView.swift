@@ -16,7 +16,7 @@ struct ContentView: View {
                 
             CombinedTrackerView()
                 .tabItem {
-                    Label("HOG", systemImage: "list.bullet")
+                    Label("HoG", systemImage: "checkmark.circle")
                 }
                 .tag(1)
 

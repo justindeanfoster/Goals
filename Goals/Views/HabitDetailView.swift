@@ -11,6 +11,7 @@ struct HabitDetailView: View {
     @State private var dayViewData: (goals: [Goal], habits: [Habit], date: Date)?
     @State private var showingDayView = false
     @State private var entries: [JournalEntry] = []
+    @State private var isExpanded = false
 
     // MARK: - Computed Properties
 
@@ -27,7 +28,6 @@ struct HabitDetailView: View {
                 VStack(alignment: .leading) {
                     calendarSection
                     notesSection
-                    milestonesSection
                     journalEntriesSection
                     statisticsSection
                 }
@@ -87,57 +87,70 @@ struct HabitDetailView: View {
 
     private var notesSection: some View {
         Group {
-            if !habit.notes.isEmpty {
+            if !habit.notes.isEmpty || !habit.milestones.isEmpty {
                 Divider()
-                CollapsibleSectionView(title: "Notes", content: habit.notes)
-                    .background(Color(.systemBackground))
-                    .cornerRadius(10)
-            }
-        }
-    }
-
-    private var milestonesSection: some View {
-        Group {
-            if !habit.milestones.isEmpty {
-                Divider()
-                MilestoneListView(
-                    milestones: .init( // Create binding
-                        get: { habit.milestones },
-                        set: { habit.milestones = $0 }
-                    ),
-                    selectedDate: calendarViewModel.selectedDate
-                )
+                VStack(alignment: .leading, spacing: 10) {
+                    Button(action: { withAnimation { isExpanded.toggle() } }) {
+                        HStack {
+                            Text("Notes")
+                                .font(.headline)
+                            Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                        }
+                        .foregroundColor(.blue)
+                    }
+                    
+                    if isExpanded {
+                        if !habit.notes.isEmpty {
+                            Text(habit.notes)
+                                .font(.subheadline)
+                                .padding()
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(Color(.systemGray6))
+                                .cornerRadius(8)
+                        }
+                        
+                        if !habit.milestones.isEmpty {
+                            Text("Milestones")
+                                .font(.headline)
+                                .foregroundColor(.secondary)
+                                .padding(.top, 8)
+                            MilestoneListView(
+                                milestones: .init(
+                                    get: { habit.milestones },
+                                    set: { habit.milestones = $0 }
+                                ),
+                                selectedDate: calendarViewModel.selectedDate,
+                                showHeader: false
+                            )
+                        }
+                    }
+                }
                 .background(Color(.systemBackground))
                 .cornerRadius(10)
-                Divider()
             }
         }
     }
 
     private var journalEntriesSection: some View {
         Group {
-            if !currentTimeframeEntries.isEmpty {
-                Divider()
-                JournalEntriesListView(
-                    entries: currentTimeframeEntries,
-                    onEntryTapped: { entry in
-                        selectedDate = entry.timestamp
-                        showingDayView = true
-                    },
-                    canEdit: { _ in true },
-                    onEditEntry: { entry in
-                        selectedEntry = entry
-                    },
-                    onDeleteEntry: { entry in
-                        habit.journalEntries.removeAll { $0.id == entry.id }
-                    },
-                    sourceLabel: nil
-                )
-                .background(Color(.systemBackground))
-                .cornerRadius(10)
-            } else {
-                EmptyView()
-            }
+            Divider()
+            JournalEntriesListView(
+                entries: currentTimeframeEntries,
+                onEntryTapped: { entry in
+                    selectedDate = entry.timestamp
+                    showingDayView = true
+                },
+                canEdit: { _ in true },
+                onEditEntry: { entry in
+                    selectedEntry = entry
+                },
+                onDeleteEntry: { entry in
+                    habit.journalEntries.removeAll { $0.id == entry.id }
+                },
+                sourceLabel: nil
+            )
+            .background(Color(.systemBackground))
+            .cornerRadius(10)
         }
     }
 

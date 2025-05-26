@@ -5,27 +5,43 @@ struct StatisticsListView: View {
     @Query private var goals: [Goal]
     @Query private var habits: [Habit]
     @StateObject private var calendarViewModel = CalendarViewModel()
-    @State private var showGoals = true
-    @State private var showHabits = true
+    @State private var selectedTab = Tab.hog
+    
+    enum Tab {
+        case goals, hog, habits
+    }
     
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
+                // Tab Selection
                 HStack(spacing: 0) {
-                    FilterButton(
-                        isSelected: $showGoals,
+                    TabButton(
                         title: "Goals",
                         icon: "target",
-                        isLeftButton: true,
-                        onToggle: { toggleFilter(true) }
-                    )
-                    FilterButton(
-                        isSelected: $showHabits,
+                        isSelected: selectedTab == .goals,
+                        position: .left
+                    ) {
+                        selectedTab = .goals
+                    }
+                    
+                    TabButton(
+                        title: "HoG",
+                        icon: "checkmark.circle",
+                        isSelected: selectedTab == .hog,
+                        position: .middle
+                    ) {
+                        selectedTab = .hog
+                    }
+                    
+                    TabButton(
                         title: "Habits",
                         icon: "repeat",
-                        isLeftButton: false,
-                        onToggle: { toggleFilter(false) }
-                    )
+                        isSelected: selectedTab == .habits,
+                        position: .right
+                    ) {
+                        selectedTab = .habits
+                    }
                 }
                 .background(Color(.systemGray6))
                 .cornerRadius(8)
@@ -34,19 +50,27 @@ struct StatisticsListView: View {
                 
                 ScrollView {
                     VStack(spacing: 16) {
+                        // Always show GeneralStatisticsView with filtered content
                         GeneralStatisticsView(
-                            goals: showGoals ? goals : [],
-                            habits: showHabits ? habits : []
+                            goals: selectedTab == .habits ? [] : goals,
+                            habits: selectedTab == .goals ? [] : habits
                         )
                         .padding(.horizontal)
                         
-                        if showGoals {
+                        // Show filtered items based on selected tab
+                        switch selectedTab {
+                        case .goals:
                             ForEach(goals) { goal in
                                 statisticsCard(for: goal)
                             }
-                        }
-                        
-                        if showHabits {
+                        case .hog:
+                            ForEach(goals) { goal in
+                                statisticsCard(for: goal)
+                            }
+                            ForEach(habits) { habit in
+                                statisticsCard(for: habit)
+                            }
+                        case .habits:
                             ForEach(habits) { habit in
                                 statisticsCard(for: habit)
                             }
@@ -56,24 +80,6 @@ struct StatisticsListView: View {
                 }
             }
             .navigationTitle("Statistics")
-        }
-    }
-    
-    private func toggleFilter(_ isGoals: Bool) {
-        if isGoals {
-            // If trying to deselect goals while habits is also deselected
-            if !showHabits {
-                showGoals = true // Force goals to stay selected
-            } else {
-                showGoals.toggle()
-            }
-        } else {
-            // If trying to deselect habits while goals is also deselected
-            if !showGoals {
-                showHabits = true // Force habits to stay selected
-            } else {
-                showHabits.toggle()
-            }
         }
     }
     
@@ -142,25 +148,37 @@ struct StatisticsListView: View {
     }
 }
 
-private struct FilterButton: View {
-    @Binding var isSelected: Bool
+private struct TabButton: View {
     let title: String
     let icon: String
-    let isLeftButton: Bool
-    var onToggle: () -> Void
+    let isSelected: Bool
+    let position: Position
+    let action: () -> Void
+    
+    enum Position {
+        case left, middle, right
+        
+        var corners: UIRectCorner {
+            switch self {
+            case .left: return [.topLeft, .bottomLeft]
+            case .middle: return []
+            case .right: return [.topRight, .bottomRight]
+            }
+        }
+    }
     
     var body: some View {
-        Button(action: onToggle) {
+        Button(action: action) {
             HStack(spacing: 4) {
                 Image(systemName: icon)
                 Text(title)
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 8)
-            .background(isSelected ? Color(.systemGray4) : Color.clear)
-            .cornerRadius(8, corners: isLeftButton ? [.topLeft, .bottomLeft] : [.topRight, .bottomRight])
+            .background(isSelected ? Color.blue.opacity(0.15) : Color.clear)
+            .foregroundColor(isSelected ? .blue : .secondary)
+            .cornerRadius(8, corners: position.corners)
         }
-        .foregroundColor(.primary)
     }
 }
 
