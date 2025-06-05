@@ -61,7 +61,7 @@ struct CombinedTrackerView: View {
                 }
                 .padding(.vertical)
             }
-            .navigationTitle("Habits Over Goals")
+            .navigationTitle("Habits | Goals")
             .sheet(isPresented: $showingAddGoalForm) { AddGoalForm() }
             .sheet(isPresented: $showingAddHabitForm) { AddHabitForm() }
             .sheet(item: $selectedGoal) { goal in EditGoalForm(goal: goal) }

@@ -77,7 +77,6 @@ struct GeneralStatisticsView: View {
                         Menu {
                             Picker("Time Range", selection: $selectedTimeRange) {
                                 Text("All Time").tag(TimeRange.allTime)
-                                Text("Last Week").tag(TimeRange.lastWeek)
                                 Text("Last Month").tag(TimeRange.lastMonth)
                                 Text("Last 3 Months").tag(TimeRange.last3Months)
                                 Text("Last 6 Months").tag(TimeRange.last6Months)

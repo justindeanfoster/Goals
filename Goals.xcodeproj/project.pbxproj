@@ -92,7 +92,7 @@
 		0CAD69952DDA631000014F93 /* CombinedTrackerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombinedTrackerView.swift; sourceTree = "<group>"; };
 		0CAD69972DDBDF4700014F93 /* CalendarHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarHeaderView.swift; sourceTree = "<group>"; };
 		0CAD69992DDBE5DE00014F93 /* GeneralStatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralStatisticsView.swift; sourceTree = "<group>"; };
-		0CFFC84C2D1B81F700C8F272 /* Goals.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Goals.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0CFFC84C2D1B81F700C8F272 /* HoG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HoG.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0CFFC84F2D1B81F700C8F272 /* GoalsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsApp.swift; sourceTree = "<group>"; };
 		0CFFC8512D1B81F700C8F272 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		0CFFC8552D1B81FB00C8F272 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -208,7 +208,7 @@
 		0CFFC84D2D1B81F700C8F272 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				0CFFC84C2D1B81F700C8F272 /* Goals.app */,
+				0CFFC84C2D1B81F700C8F272 /* HoG.app */,
 				0C5792C62D48414F00DB774D /* GoalsApp.app */,
 			);
 			name = Products;
@@ -259,9 +259,9 @@
 			productReference = 0C5792C62D48414F00DB774D /* GoalsApp.app */;
 			productType = "com.apple.product-type.application";
 		};
-		0CFFC84B2D1B81F700C8F272 /* Goals */ = {
+		0CFFC84B2D1B81F700C8F272 /* HoG */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0CFFC85C2D1B81FB00C8F272 /* Build configuration list for PBXNativeTarget "Goals" */;
+			buildConfigurationList = 0CFFC85C2D1B81FB00C8F272 /* Build configuration list for PBXNativeTarget "HoG" */;
 			buildPhases = (
 				0CFFC8482D1B81F700C8F272 /* Sources */,
 				0CFFC8492D1B81F700C8F272 /* Frameworks */,
@@ -271,9 +271,9 @@
 			);
 			dependencies = (
 			);
-			name = Goals;
+			name = HoG;
 			productName = Goals;
-			productReference = 0CFFC84C2D1B81F700C8F272 /* Goals.app */;
+			productReference = 0CFFC84C2D1B81F700C8F272 /* HoG.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -307,7 +307,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				0CFFC84B2D1B81F700C8F272 /* Goals */,
+				0CFFC84B2D1B81F700C8F272 /* HoG */,
 				0C5792C52D48414F00DB774D /* GoalsApp */,
 			);
 		};
@@ -647,7 +647,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		0CFFC85C2D1B81FB00C8F272 /* Build configuration list for PBXNativeTarget "Goals" */ = {
+		0CFFC85C2D1B81FB00C8F272 /* Build configuration list for PBXNativeTarget "HoG" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0CFFC85D2D1B81FB00C8F272 /* Debug */,

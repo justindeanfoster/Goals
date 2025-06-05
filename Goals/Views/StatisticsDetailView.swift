@@ -16,16 +16,14 @@ enum StatisticsItem {
 
 enum TimeRange {
     case allTime
-    case lastWeek
     case lastMonth
     case last3Months
     case last6Months
-    case year  // Moved to end
+    case year
     
     var description: String {
         switch self {
         case .allTime: return "All Time"
-        case .lastWeek: return "Last Week"
         case .lastMonth: return "Last Month"
         case .last3Months: return "Last 3 Months"
         case .last6Months: return "Last 6 Months"
@@ -115,7 +113,6 @@ struct StatisticsDetailView: View {
                 Menu {
                     Picker("Time Range", selection: $selectedTimeRange) {
                         Text("All Time").tag(TimeRange.allTime)
-                        Text("Last Week").tag(TimeRange.lastWeek)
                         Text("Last Month").tag(TimeRange.lastMonth)
                         Text("Last 3 Months").tag(TimeRange.last3Months)
                         Text("Last 6 Months").tag(TimeRange.last6Months)
@@ -442,19 +439,17 @@ struct StatisticsDetailView: View {
         
         switch timeRange {
         case .year:
-            return getEntriesForSelectedYear()
-        case .lastWeek:
-            let startDate = calendar.date(byAdding: .day, value: -7, to: now)!
-            return allEntries.filter { $0 >= startDate }
+            let startDate = calendar.date(byAdding: .weekOfYear, value: -52, to: now)!
+            return allEntries.filter { $0 >= startDate && $0 <= now }
         case .lastMonth:
-            let startDate = calendar.date(byAdding: .month, value: -1, to: now)!
-            return allEntries.filter { $0 >= startDate }
+            let startDate = calendar.date(byAdding: .weekOfYear, value: -4, to: now)!
+            return allEntries.filter { $0 >= startDate && $0 <= now }
         case .last3Months:
-            let startDate = calendar.date(byAdding: .month, value: -3, to: now)!
-            return allEntries.filter { $0 >= startDate }
+            let startDate = calendar.date(byAdding: .weekOfYear, value: -12, to: now)!
+            return allEntries.filter { $0 >= startDate && $0 <= now }
         case .last6Months:
-            let startDate = calendar.date(byAdding: .month, value: -6, to: now)!
-            return allEntries.filter { $0 >= startDate }
+            let startDate = calendar.date(byAdding: .weekOfYear, value: -24, to: now)!
+            return allEntries.filter { $0 >= startDate && $0 <= now }
         case .allTime:
             return allEntries
         }
@@ -466,15 +461,13 @@ struct StatisticsDetailView: View {
         
         switch timeRange {
         case .year:
-            return calendar.range(of: .day, in: .year, for: calendarViewModel.selectedYearStartDate)?.count ?? 365
-        case .lastWeek:
-            return 7
+            return 7 * 52  // 52 weeks
         case .lastMonth:
-            return 30
+            return 7 * 4   // 4 weeks
         case .last3Months:
-            return 90
+            return 7 * 12  // 12 weeks
         case .last6Months:
-            return 180
+            return 7 * 24  // 24 weeks
         case .allTime:
             guard let firstEntry = getEntries().min() else { return 0 }
             return calendar.dateComponents([.day], from: firstEntry, to: now).day ?? 0
@@ -529,9 +522,6 @@ struct StatisticsDetailView: View {
         switch timeRange {
         case .year:
             return calendar.component(.year, from: date) == calendarViewModel.selectedYear
-        case .lastWeek:
-            let startDate = calendar.date(byAdding: .day, value: -7, to: now)!
-            return date >= startDate
         case .lastMonth:
             let startDate = calendar.date(byAdding: .month, value: -1, to: now)!
             return date >= startDate

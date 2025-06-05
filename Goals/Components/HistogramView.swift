@@ -122,6 +122,8 @@ struct HistogramView: View {
                                         ForEach(monthSections, id: \.month) { section in
                                             Text(section.month)
                                                 .font(.caption)
+                                                .lineLimit(1)
+                                                .minimumScaleFactor(0.5)
                                                 .frame(width: CGFloat(section.bins.count) * (metrics.barWidth + metrics.spacing) - metrics.spacing)
                                                 .frame(height: labelHeight)
                                         }
