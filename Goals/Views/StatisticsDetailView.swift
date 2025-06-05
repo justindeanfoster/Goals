@@ -185,43 +185,57 @@ struct StatisticsDetailView: View {
     }
 
     private var pieChartsSection: some View {
-        VStack(spacing: 20) {
-            if case .goal(let goal) = item {
-                VStack(alignment: .leading) {
-                    HStack(alignment: .center, spacing: 20) {
+        VStack(alignment: .leading, spacing: 20) {
+            LazyVGrid(columns: [
+                GridItem(.flexible()),
+                GridItem(.flexible())
+            ], spacing: 16) {
+                if case .goal(let goal) = item {
+                    VStack(alignment: .leading) {
                         Text("Journal Entry Sources")
                             .font(.headline)
                             .padding(.horizontal)
-                        Spacer()
+                        PieChartView(
+                            slices: getJournalEntrySourceBreakdown(goal: goal),
+                            title: "",
+                            alignment: .left
+                        )
                     }
-                    PieChartView(
-                        slices: getJournalEntrySourceBreakdown(goal: goal),
-                        title: "",
-                        alignment: .left
-                    )
+                    .padding()
+                    .background(Color(.systemGray6))
+                    .cornerRadius(10)
+                    .shadow(radius: 2, x: 0, y: 2)
                 }
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(10)
-                .shadow(radius: 2, x: 0, y: 2)
-            }
-            
-            if case .all(let goals, let habits) = item {
-                VStack(alignment: .leading) {
-                    HStack(alignment: .center, spacing: 20) {
+                
+                if case .all(let goals, let habits) = item {
+                    VStack(alignment: .leading) {
                         Text("Journal Entry Distribution")
                             .font(.headline)
                             .padding(.horizontal)
-                        Spacer()
+                        PieChartView(
+                            slices: getOverallJournalEntryBreakdown(
+                                goals: goals,
+                                habits: habits,
+                                timeRange: selectedTimeRange
+                            ),
+                            title: "",
+                            alignment: .left
+                        )
                     }
+                    .padding()
+                    .background(Color(.systemGray6))
+                    .cornerRadius(10)
+                    .shadow(radius: 2, x: 0, y: 2)
+                }
+                
+                VStack(alignment: .leading) {
+                    Text("Activity by Day of Week")
+                        .font(.headline)
+                        .padding(.horizontal)
                     PieChartView(
-                        slices: getOverallJournalEntryBreakdown(
-                            goals: goals,
-                            habits: habits,
-                            timeRange: selectedTimeRange
-                        ),
+                        slices: getDayOfWeekBreakdown(entries: getFilteredEntries(for: selectedTimeRange)),
                         title: "",
-                        alignment: .left
+                        alignment: .right
                     )
                 }
                 .padding()
@@ -229,24 +243,6 @@ struct StatisticsDetailView: View {
                 .cornerRadius(10)
                 .shadow(radius: 2, x: 0, y: 2)
             }
-            
-            VStack(alignment: .leading) {
-                HStack(alignment: .center, spacing: 20) {
-                    Text("Activity by Day of Week")
-                        .font(.headline)
-                        .padding(.horizontal)
-                    Spacer()
-                }
-                PieChartView(
-                    slices: getDayOfWeekBreakdown(entries: getFilteredEntries(for: selectedTimeRange)),
-                    title: "",
-                    alignment: .right
-                )
-            }
-            .padding()
-            .background(Color(.systemGray6))
-            .cornerRadius(10)
-            .shadow(radius: 2, x: 0, y: 2)
         }
     }
 

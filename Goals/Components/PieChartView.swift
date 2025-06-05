@@ -20,7 +20,7 @@ enum PieChartAlignment {
 struct PieChartView: View {
     let slices: [PieSlice]
     let title: String
-    let alignment: PieChartAlignment
+    let alignment: PieChartAlignment  // This property is no longer needed but kept for compatibility
     
     @State private var selectedSlice: PieSlice?
     @State private var highlightLocation: CGPoint = .zero
@@ -48,34 +48,23 @@ struct PieChartView: View {
     }
     
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 8) {
             if !title.isEmpty {
                 Text(title)
                     .font(.headline)
-                    .padding(.bottom, 4)
             }
             
             GeometryReader { geometry in
-                HStack(alignment: .center, spacing: 8) {
-                    if alignment == .left {
-                        pieChart
-                            .frame(width: geometry.size.width * 0.75)
-                        legend
-                            .frame(width: geometry.size.width * 0.25)
-                    } else {
-                        legend
-                            .frame(width: geometry.size.width * 0.25)
-                        pieChart
-                            .frame(width: geometry.size.width * 0.75)
-                    }
-                }
-                .frame(maxHeight: 150) // Set fixed height for the chart section
+                pieChart
+                    .frame(
+                        width: min(geometry.size.width, geometry.size.height),
+                        height: min(geometry.size.width, geometry.size.height)
+                    )
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .frame(height: 150) // Ensure GeometryReader has fixed height
-            .padding()
-            .background(Color(.systemGray6))
-            .cornerRadius(10)
         }
+        .frame(maxWidth: .infinity)
+        .frame(height: 150)
     }
     
     private var pieChart: some View {
@@ -161,27 +150,5 @@ struct PieChartView: View {
             }
         }
         selectedSlice = nil
-    }
-    
-    private var legend: some View {
-        // Use the same order as slicesData for the legend
-        ScrollView {
-            VStack(alignment: .leading, spacing: 4) {
-                ForEach(Array(slices.enumerated()), id: \.element.id) { (index, slice) in
-                    HStack(spacing: 4) {
-                        Circle()
-                            .fill(slice.color)
-                            .frame(width: 8, height: 8)
-                        Text(slice.label)
-                            .font(.caption2)
-                            .lineLimit(1)
-                        Spacer(minLength: 2)
-                        Text("\(Int((slice.value / total) * 100))%")
-                            .font(.caption2)
-                            .foregroundColor(.gray)
-                    }
-                }
-            }
-        }
     }
 }
