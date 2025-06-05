@@ -1,10 +1,16 @@
 import SwiftUI
 
-struct PieSlice: Identifiable {
+struct PieSlice: Identifiable, Equatable {
     let id = UUID()
     let value: Double
     let color: Color
     let label: String
+    
+    static func == (lhs: PieSlice, rhs: PieSlice) -> Bool {
+        lhs.id == rhs.id && 
+        lhs.value == rhs.value && 
+        lhs.label == rhs.label
+    }
 }
 
 struct SliceData {
@@ -49,7 +55,7 @@ struct PieChartView: View {
     
     var body: some View {
         VStack(spacing: 8) {
-            if !title.isEmpty {
+            if (!title.isEmpty) {
                 Text(title)
                     .font(.headline)
             }
@@ -61,6 +67,8 @@ struct PieChartView: View {
                         height: min(geometry.size.width, geometry.size.height)
                     )
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    // Add animation modifier here
+                    .animation(nil, value: slices) // Disable implicit animations
             }
         }
         .frame(maxWidth: .infinity)
@@ -70,7 +78,7 @@ struct PieChartView: View {
     private var pieChart: some View {
         Canvas { context, size in
             let center = CGPoint(x: size.width / 2, y: size.height / 2)
-            let radius = min(size.width, size.height) / 2
+            let radius = min(size.width, size.height) / 2.2 // Slightly reduce radius to prevent edge artifacts
             
             for sliceData in slicesData {
                 let path = Path { p in
@@ -94,11 +102,13 @@ struct PieChartView: View {
                     .gesture(
                         DragGesture(minimumDistance: 0)
                             .onChanged { value in
-                                updateSelectedSlice(at: value.location, in: geometry.size)
-                                highlightLocation = value.location
+                                withAnimation(.easeOut(duration: 0.1)) {
+                                    updateSelectedSlice(at: value.location, in: geometry.size)
+                                    highlightLocation = value.location
+                                }
                             }
                             .onEnded { _ in
-                                withAnimation {
+                                withAnimation(.easeOut(duration: 0.2)) {
                                     selectedSlice = nil
                                 }
                             }
