@@ -14,8 +14,10 @@ struct StatisticsSectionView: View {
             ForEach(statistics) { stat in
                 HStack {
                     Text(stat.label)
+                        .foregroundColor(.secondary)
                     Spacer()
                     Text(stat.value)
+                        .foregroundColor(.secondary)
                 }
                 .padding(.bottom, 2)
             }

@@ -3,7 +3,7 @@ import SwiftUI
 struct CollapsibleSectionView: View {
     let title: String
     let content: String
-    @State private var isExpanded = false
+    @State private var isExpanded = true
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {

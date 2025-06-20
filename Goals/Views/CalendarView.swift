@@ -21,7 +21,6 @@ struct CalendarView: View {
             ZStack(alignment: .topLeading) {
                 ScrollView {
                     VStack(spacing: 20) {
-                        filterAndCalendarControls
                         calendarGridSection
                         Divider().padding(.horizontal)
                         combinedDateAndDeadlinesSection
@@ -37,67 +36,70 @@ struct CalendarView: View {
     }
 
     // MARK: - Sections
-
-    private var filterAndCalendarControls: some View {
-        HStack {
-            Button(action: { withAnimation { showingFilter.toggle() } }) {
-                Image(systemName: "line.3.horizontal.decrease.circle")
-                    .font(.title2)
-                    .foregroundColor(showingFilter ? .primary : .blue)
-            }
-            Spacer()
-            monthNavigation
-            Spacer()
-            Button(action: {
-                calendarViewModel.selectedDate = Date()
-                calendarViewModel.currentMonth = Date()
-            }) {
-                Text("Today").font(.headline)
-            }
-        }
-        .padding(.horizontal)
-        .zIndex(1)
-    }
-
-    private var monthNavigation: some View {
-        HStack {
-            Spacer()
-            Button(action: { calendarViewModel.moveMonth(by: -1) }) {
-                Image(systemName: "chevron.left")
-            }
-            Spacer()
-            Text(calendarViewModel.startOfMonth, formatter: monthYearFormatter)
-                .font(.headline)
-            Spacer()
-            Button(action: { calendarViewModel.moveMonth(by: 1) }) {
-                Image(systemName: "chevron.right")
-            }
-            Spacer()
-        }
-    }
-
+    
     private var calendarGridSection: some View {
-        VStack {
+        VStack(spacing: 16) {
+            // Top Controls Row
             HStack {
-                ForEach(calendarViewModel.daysOfWeek, id: \.self) { day in
-                    Text(day)
-                        .font(.subheadline)
-                        .frame(maxWidth: .infinity)
+                Button(action: { withAnimation { showingFilter.toggle() } }) {
+                    Image(systemName: "line.3.horizontal.decrease.circle")
+                        .font(.title2)
+                        .foregroundColor(showingFilter ? .primary : .blue)
                 }
-            }
-            .padding(.bottom, 5)
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
-                ForEach(0..<calendarViewModel.startingWeekday, id: \.self) { index in
-                    Text("").frame(width: 30, height: 30).id("empty-\(index)")
+                
+                Spacer()
+                
+                // Month Navigation
+                Button(action: { calendarViewModel.moveMonth(by: -1) }) {
+                    Image(systemName: "chevron.left")
                 }
-                ForEach(0..<calendarViewModel.daysInMonth, id: \.self) { offset in
-                    let date = Calendar.current.date(byAdding: .day, value: offset, to: calendarViewModel.startOfMonth)!
-                    let isSelected = Calendar.current.isDate(date, inSameDayAs: calendarViewModel.selectedDate)
-                    let hasDeadline = calendarViewModel.hasDeadlines(on: date, goals: goals)
-                    calendarDayCell(date: date, isSelected: isSelected, hasDeadline: hasDeadline)
+                Spacer()
+                Text(calendarViewModel.startOfMonth, formatter: monthYearFormatter)
+                    .font(.headline)
+                Spacer()
+                Button(action: { calendarViewModel.moveMonth(by: 1) }) {
+                    Image(systemName: "chevron.right")
+                }
+            
+                
+                Spacer()
+                
+                Button(action: {
+                    calendarViewModel.selectedDate = Date()
+                    calendarViewModel.currentMonth = Date()
+                }) {
+                    Text("Today").font(.headline)
+                }
+            }.padding(.top)
+            Divider()
+            // Calendar Grid
+            VStack {
+                HStack {
+                    ForEach(calendarViewModel.daysOfWeek, id: \.self) { day in
+                        Text(day)
+                            .font(.subheadline)
+                            .frame(maxWidth: .infinity)
+                    }
+                }
+                .padding(.bottom, 5)
+                
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
+                    ForEach(0..<calendarViewModel.startingWeekday, id: \.self) { index in
+                        Text("").frame(width: 30, height: 30).id("empty-\(index)")
+                    }
+                    ForEach(0..<calendarViewModel.daysInMonth, id: \.self) { offset in
+                        let date = Calendar.current.date(byAdding: .day, value: offset, to: calendarViewModel.startOfMonth)!
+                        let isSelected = Calendar.current.isDate(date, inSameDayAs: calendarViewModel.selectedDate)
+                        let hasDeadline = calendarViewModel.hasDeadlines(on: date, goals: goals)
+                        calendarDayCell(date: date, isSelected: isSelected, hasDeadline: hasDeadline)
+                    }
                 }
             }
         }
+        .padding()
+        .background(Color(.systemGray6))
+        .cornerRadius(10)
+        .shadow(radius: 2, x: 0, y: 2)
         .padding(.horizontal)
         .gesture(
             DragGesture()
@@ -162,6 +164,7 @@ struct CalendarView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .background(Color(.systemGray6))
                     .cornerRadius(10)
+                    .shadow(radius: 2, x: 0, y: 2)
                 }
                 .padding(.horizontal)
             }
@@ -198,6 +201,7 @@ struct CalendarView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .background(Color(.systemGray6))
                         .cornerRadius(10)
+                        .shadow(radius: 2, x: 0, y: 2)
                     }
                     .padding(.horizontal)
                 }
@@ -225,6 +229,7 @@ struct CalendarView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .background(Color(.systemGray6))
                     .cornerRadius(10)
+                    .shadow(radius: 2, x: 0, y: 2)
                     .padding(.horizontal)
                 }
             }

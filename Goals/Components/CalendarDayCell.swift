@@ -19,7 +19,7 @@ struct CalendarDayCell: View {
                 }
                 if hasMilestone {
                     RoundedRectangle(cornerRadius: 5)
-                        .fill(.indigo.opacity(0.8))
+                        .fill(Color.indigo.opacity(0.8))
                         .frame(width: 35, height: 35)
                         .zIndex(0)
                 }

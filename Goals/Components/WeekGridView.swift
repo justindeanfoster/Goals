@@ -6,34 +6,22 @@ struct WeekGridView: View {
     let isDeadlineDate: ((Date) -> Bool)?
     let milestoneCompletions: ((Date) -> Bool)?
     let getDateColor: (Date) -> Color
+    @Binding var showCalendar: Bool
     
     var body: some View {
         VStack {
-            HStack {
-                Spacer()
-                Spacer()
-                Spacer()
-
-                Button(action: { calendarViewModel.moveWeek(by: -1) }) {
-                    Image(systemName: "chevron.left")
-                }
-                Text(weekRange)
-                    .font(.headline)
-                    .padding()
-                Button(action: { calendarViewModel.moveWeek(by: 1) }) {
-                    Image(systemName: "chevron.right")
-                }
-                Spacer()
-                Button(action: {
+            CalendarHeaderView(
+                title: weekRange,
+                onPrevious: { calendarViewModel.moveWeek(by: -1) },
+                onNext: { calendarViewModel.moveWeek(by: 1) },
+                onToday: {
                     calendarViewModel.selectedDate = Date()
                     calendarViewModel.currentMonth = Date()
-                }) {
-                    Image(systemName: "arrow.counterclockwise")
-                        .font(.title3)
                 }
-                Spacer()
-            }
+            )
+            
             Divider()
+            
             // Days of the week header
             HStack {
                 ForEach(calendarViewModel.daysOfWeek, id: \.self) { day in
@@ -43,7 +31,6 @@ struct WeekGridView: View {
                 }
             }
             .padding(.bottom, 5)
-            Divider()
         LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
             ForEach(0..<7) { offset in
                 let date = Calendar.current.date(byAdding: .day, value: offset, to: calendarViewModel.startOfWeek)!

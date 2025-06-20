@@ -11,6 +11,7 @@ struct HabitDetailView: View {
     @State private var dayViewData: (goals: [Goal], habits: [Habit], date: Date)?
     @State private var showingDayView = false
     @State private var entries: [JournalEntry] = []
+    @State private var isExpanded = false
 
     // MARK: - Computed Properties
 
@@ -26,11 +27,8 @@ struct HabitDetailView: View {
             ScrollView {
                 VStack(alignment: .leading) {
                     calendarSection
-                    Divider()
                     notesSection
-                    milestonesSection
                     journalEntriesSection
-                    Divider()
                     statisticsSection
                 }
                 .padding()
@@ -79,6 +77,9 @@ struct HabitDetailView: View {
             },
             showCalendar: $showCalendar
         )
+        .background(Color(.systemBackground))
+        .cornerRadius(10)
+        .shadow(radius: 2, x: 0, y: 2)
         .onChange(of: showCalendar) { oldValue, newValue in
             if (!newValue) { calendarViewModel.currentMonth = Date() }
         }
@@ -86,66 +87,93 @@ struct HabitDetailView: View {
 
     private var notesSection: some View {
         Group {
-            if !habit.notes.isEmpty {
-                CollapsibleSectionView(title: "Notes", content: habit.notes)
+            if !habit.notes.isEmpty || !habit.milestones.isEmpty {
                 Divider()
-            }
-        }
-    }
-
-    private var milestonesSection: some View {
-        Group {
-            if !habit.milestones.isEmpty {
-                MilestoneListView(
-                    milestones: .init( // Create binding
-                        get: { habit.milestones },
-                        set: { habit.milestones = $0 }
-                    ),
-                    selectedDate: calendarViewModel.selectedDate
-                )
-                Divider()
+                VStack(alignment: .leading, spacing: 10) {
+                    Button(action: { withAnimation { isExpanded.toggle() } }) {
+                        HStack {
+                            Text("Notes")
+                                .font(.headline)
+                            Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                        }
+                        .foregroundColor(.blue)
+                    }
+                    
+                    if isExpanded {
+                        if !habit.notes.isEmpty {
+                            Text(habit.notes)
+                                .font(.subheadline)
+                                .padding()
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(Color(.systemGray6))
+                                .cornerRadius(8)
+                        }
+                        
+                        if !habit.milestones.isEmpty {
+                            Text("Milestones")
+                                .font(.headline)
+                                .foregroundColor(.secondary)
+                                .padding(.top, 8)
+                            MilestoneListView(
+                                milestones: .init(
+                                    get: { habit.milestones },
+                                    set: { habit.milestones = $0 }
+                                ),
+                                selectedDate: calendarViewModel.selectedDate,
+                                showHeader: false
+                            )
+                        }
+                    }
+                }
+                .background(Color(.systemBackground))
+                .cornerRadius(10)
             }
         }
     }
 
     private var journalEntriesSection: some View {
         Group {
-            if !currentTimeframeEntries.isEmpty {
-                JournalEntriesListView(
-                    entries: currentTimeframeEntries,
-                    onEntryTapped: { entry in
-                        selectedDate = entry.timestamp
-                        showingDayView = true
-                    },
-                    canEdit: { _ in true },
-                    onEditEntry: { entry in
-                        selectedEntry = entry
-                    },
-                    onDeleteEntry: { entry in
-                        habit.journalEntries.removeAll { $0.id == entry.id }
-                    },
-                    sourceLabel: nil
-                )
-            } else {
-                EmptyView()
-            }
+            Divider()
+            JournalEntriesListView(
+                entries: currentTimeframeEntries,
+                onEntryTapped: { entry in
+                    selectedDate = entry.timestamp
+                    showingDayView = true
+                },
+                canEdit: { _ in true },
+                onEditEntry: { entry in
+                    selectedEntry = entry
+                },
+                onDeleteEntry: { entry in
+                    habit.journalEntries.removeAll { $0.id == entry.id }
+                },
+                sourceLabel: nil
+            )
+            .background(Color(.systemBackground))
+            .cornerRadius(10)
         }
     }
 
     private var statisticsSection: some View {
-        VStack(alignment: .leading, spacing: 15) {
+        Group {
+            Divider()
             NavigationLink(destination: StatisticsDetailView(item: .habit(habit))) {
-                Text("Statistics")
-                    .font(.headline)
-                    .foregroundColor(.blue)
+                VStack(alignment: .leading, spacing: 15) {
+                    Text("Statistics")
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                    StatisticsSectionView(statistics: [
+                        StatisticRow(label: "Days Worked:", value: "\(habit.daysWorked)")
+                    ])
+                }
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color(.systemGray6))
+                .cornerRadius(10)
+                .shadow(radius: 2, x: 0, y: 2)
             }
-            StatisticsSectionView(statistics: [
-                StatisticRow(label: "Days Worked:", value: "\(habit.daysWorked)")
-            ])
+            .buttonStyle(PlainButtonStyle())
         }
-        .padding()
-        .background(Color(.systemGray6))
-        .cornerRadius(10)
     }
 
     // MARK: - Sheets

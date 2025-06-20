@@ -43,6 +43,9 @@
 		0CAD698B2DD58C4100014F93 /* CalendarDayCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAD698A2DD58C4100014F93 /* CalendarDayCell.swift */; };
 		0CAD698D2DD5969C00014F93 /* MonthGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAD698C2DD5969C00014F93 /* MonthGridView.swift */; };
 		0CAD698F2DD8194C00014F93 /* EditMilestoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAD698E2DD8194C00014F93 /* EditMilestoneView.swift */; };
+		0CAD69962DDA631000014F93 /* CombinedTrackerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAD69952DDA631000014F93 /* CombinedTrackerView.swift */; };
+		0CAD69982DDBDF4700014F93 /* CalendarHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAD69972DDBDF4700014F93 /* CalendarHeaderView.swift */; };
+		0CAD699A2DDBE5DE00014F93 /* GeneralStatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAD69992DDBE5DE00014F93 /* GeneralStatisticsView.swift */; };
 		0CFFC8502D1B81F700C8F272 /* GoalsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CFFC84F2D1B81F700C8F272 /* GoalsApp.swift */; };
 		0CFFC8522D1B81F700C8F272 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CFFC8512D1B81F700C8F272 /* ContentView.swift */; };
 		0CFFC8562D1B81FB00C8F272 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0CFFC8552D1B81FB00C8F272 /* Assets.xcassets */; };
@@ -86,7 +89,10 @@
 		0CAD698A2DD58C4100014F93 /* CalendarDayCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarDayCell.swift; sourceTree = "<group>"; };
 		0CAD698C2DD5969C00014F93 /* MonthGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthGridView.swift; sourceTree = "<group>"; };
 		0CAD698E2DD8194C00014F93 /* EditMilestoneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditMilestoneView.swift; sourceTree = "<group>"; };
-		0CFFC84C2D1B81F700C8F272 /* Goals.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Goals.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0CAD69952DDA631000014F93 /* CombinedTrackerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombinedTrackerView.swift; sourceTree = "<group>"; };
+		0CAD69972DDBDF4700014F93 /* CalendarHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarHeaderView.swift; sourceTree = "<group>"; };
+		0CAD69992DDBE5DE00014F93 /* GeneralStatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralStatisticsView.swift; sourceTree = "<group>"; };
+		0CFFC84C2D1B81F700C8F272 /* HoG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HoG.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0CFFC84F2D1B81F700C8F272 /* GoalsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsApp.swift; sourceTree = "<group>"; };
 		0CFFC8512D1B81F700C8F272 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		0CFFC8552D1B81FB00C8F272 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -114,6 +120,8 @@
 		0C9717A92DBC4FAA0072B569 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				0CAD69992DDBE5DE00014F93 /* GeneralStatisticsView.swift */,
+				0CAD69972DDBDF4700014F93 /* CalendarHeaderView.swift */,
 				0CAD698C2DD5969C00014F93 /* MonthGridView.swift */,
 				0CAD698A2DD58C4100014F93 /* CalendarDayCell.swift */,
 				0CAD697E2DC706F800014F93 /* CollapsibleSectionView.swift */,
@@ -167,6 +175,7 @@
 		0C9717C22DBC4FAA0072B569 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				0CAD69952DDA631000014F93 /* CombinedTrackerView.swift */,
 				0C9717E02DC2F62D0072B569 /* StatisticsDetailView.swift */,
 				0C9717B92DBC4FAA0072B569 /* CalendarView.swift */,
 				0C9717BA2DBC4FAA0072B569 /* DayView.swift */,
@@ -199,7 +208,7 @@
 		0CFFC84D2D1B81F700C8F272 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				0CFFC84C2D1B81F700C8F272 /* Goals.app */,
+				0CFFC84C2D1B81F700C8F272 /* HoG.app */,
 				0C5792C62D48414F00DB774D /* GoalsApp.app */,
 			);
 			name = Products;
@@ -250,9 +259,9 @@
 			productReference = 0C5792C62D48414F00DB774D /* GoalsApp.app */;
 			productType = "com.apple.product-type.application";
 		};
-		0CFFC84B2D1B81F700C8F272 /* Goals */ = {
+		0CFFC84B2D1B81F700C8F272 /* HoG */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0CFFC85C2D1B81FB00C8F272 /* Build configuration list for PBXNativeTarget "Goals" */;
+			buildConfigurationList = 0CFFC85C2D1B81FB00C8F272 /* Build configuration list for PBXNativeTarget "HoG" */;
 			buildPhases = (
 				0CFFC8482D1B81F700C8F272 /* Sources */,
 				0CFFC8492D1B81F700C8F272 /* Frameworks */,
@@ -262,9 +271,9 @@
 			);
 			dependencies = (
 			);
-			name = Goals;
+			name = HoG;
 			productName = Goals;
-			productReference = 0CFFC84C2D1B81F700C8F272 /* Goals.app */;
+			productReference = 0CFFC84C2D1B81F700C8F272 /* HoG.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -298,7 +307,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				0CFFC84B2D1B81F700C8F272 /* Goals */,
+				0CFFC84B2D1B81F700C8F272 /* HoG */,
 				0C5792C52D48414F00DB774D /* GoalsApp */,
 			);
 		};
@@ -336,7 +345,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0CAD69962DDA631000014F93 /* CombinedTrackerView.swift in Sources */,
 				0CFFC8522D1B81F700C8F272 /* ContentView.swift in Sources */,
+				0CAD699A2DDBE5DE00014F93 /* GeneralStatisticsView.swift in Sources */,
 				0CFFC8502D1B81F700C8F272 /* GoalsApp.swift in Sources */,
 				0C9717C32DBC4FAA0072B569 /* EditGoalForm.swift in Sources */,
 				0C9717C42DBC4FAA0072B569 /* GoalHabitRelation.swift in Sources */,
@@ -357,6 +368,7 @@
 				0C9717D02DBC4FAA0072B569 /* AddGoalForm.swift in Sources */,
 				0C9717D12DBC4FAA0072B569 /* CalendarSectionView.swift in Sources */,
 				0C9717D22DBC4FAA0072B569 /* EditJournalEntryView.swift in Sources */,
+				0CAD69982DDBDF4700014F93 /* CalendarHeaderView.swift in Sources */,
 				0C9717D32DBC4FAA0072B569 /* DayView.swift in Sources */,
 				0C9717D42DBC4FAA0072B569 /* JournalEntry.swift in Sources */,
 				0C9717D52DBC4FAA0072B569 /* AddHabitForm.swift in Sources */,
@@ -635,7 +647,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		0CFFC85C2D1B81FB00C8F272 /* Build configuration list for PBXNativeTarget "Goals" */ = {
+		0CFFC85C2D1B81FB00C8F272 /* Build configuration list for PBXNativeTarget "HoG" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0CFFC85D2D1B81FB00C8F272 /* Debug */,

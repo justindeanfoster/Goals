@@ -4,28 +4,27 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
+    @State private var selectedTab = 1  // Add this line to set HOG as default
 
     var body: some View {
-        TabView {
-            GoalsListView()
-                .tabItem {
-                    Label("Goals", systemImage: "list.bullet")
-                }
-
-            HabitsListView()
-                .tabItem {
-                    Label("Habits", systemImage: "checkmark.circle")
-                }
-
+        TabView(selection: $selectedTab) {  // Add selection parameter
             CalendarView()
                 .tabItem {
                     Label("Calendar", systemImage: "calendar")
                 }
+                .tag(0)
+                
+            CombinedTrackerView()
+                .tabItem {
+                    Label("HoG", systemImage: "checkmark.circle")
+                }
+                .tag(1)
 
             StatisticsListView()
                 .tabItem {
                     Label("Statistics", systemImage: "chart.bar.fill")
                 }
+                .tag(2)
         }
         .background(Color(UIColor.systemBackground))
     }

@@ -6,35 +6,20 @@ struct MonthGridView: View {
     let isDeadlineDate: ((Date) -> Bool)?
     let milestoneCompletions: ((Date) -> Bool)?
     let getDateColor: (Date) -> Color
+    @Binding var showCalendar: Bool
     
     var body: some View {
         VStack {
-            HStack {
-                Spacer()
-                Spacer()
-                Spacer()
-
-                Button(action: { calendarViewModel.moveMonth(by: -1) }) {
-                    Image(systemName: "chevron.left")
-                }
-                Text(calendarViewModel.startOfMonth, formatter: monthFormatter)
-                    .font(.headline)
-                    .padding()
-                Button(action: { calendarViewModel.moveMonth(by: 1) }) {
-                    Image(systemName: "chevron.right")
-                }
-                
-                Spacer()
-                
-                Button(action: {
+            CalendarHeaderView(
+                title: monthFormatter.string(from: calendarViewModel.startOfMonth),
+                onPrevious: { calendarViewModel.moveMonth(by: -1) },
+                onNext: { calendarViewModel.moveMonth(by: 1) },
+                onToday: {
                     calendarViewModel.selectedDate = Date()
                     calendarViewModel.currentMonth = Date()
-                }) {
-                    Image(systemName: "arrow.counterclockwise")
-                        .font(.title3)
                 }
-                Spacer()
-            }
+            )
+            
             Divider()
 
             // Days of the week header
@@ -46,7 +31,6 @@ struct MonthGridView: View {
                 }
             }
             .padding(.bottom, 5)
-            Divider()
             
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
                 ForEach(0..<calendarViewModel.startingWeekday, id: \.self) { index in

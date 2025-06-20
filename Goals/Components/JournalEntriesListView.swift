@@ -8,7 +8,7 @@ struct JournalEntriesListView: View {
     let onEditEntry: (JournalEntry) -> Void
     let onDeleteEntry: (JournalEntry) -> Void
     let sourceLabel: ((JournalEntry) -> String)?
-    @AppStorage("journalEntriesExpanded") private var isExpanded = false
+    @State private var isExpanded = true
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -26,7 +26,7 @@ struct JournalEntriesListView: View {
             }
             
             if isExpanded {
-                VStack {
+                VStack(spacing: 8) {  // Add spacing between entries
                     ForEach(entries.sorted(by: { $0.timestamp > $1.timestamp })) { entry in
                         VStack(alignment: .leading, spacing: 8) {
                             Text(entry.text)
@@ -43,16 +43,15 @@ struct JournalEntriesListView: View {
                         }
                         .padding()
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(
-                            RoundedRectangle(cornerRadius: 10)
-                                .fill(Color(.systemGray6))
-                        )
+                        .background(Color(.systemGray6))
+                        .cornerRadius(10)
+                        .shadow(radius: 2, x: 0, y: 2)
                         .padding(.vertical, 4)
                         .onTapGesture {
                             onEntryTapped(entry)
                         }
                         .contextMenu {
-                            if canEdit(entry) {
+                            if (canEdit(entry)) {
                                 Button(action: { onEditEntry(entry) }) {
                                     Label("Edit", systemImage: "pencil")
                                 }
@@ -74,7 +73,7 @@ struct JournalEntriesListView: View {
                 ))
             }
         }
-        .animation(.spring(response: 0.4, dampingFraction: 0.8), value: isExpanded)
+        .animation(.spring(response: isExpanded ? 0.4 : 0.2, dampingFraction: 0.8), value: isExpanded)
         .transition(.asymmetric(
             insertion: .move(edge: .top).combined(with: .opacity),
             removal: .move(edge: .bottom).combined(with: .opacity)

@@ -9,30 +9,41 @@ struct GoalsListView: View {
     @State private var selectedGoal: Goal?
     @State private var showEditGoalForm = false
     @State private var goalToDelete: Goal? // Add this state
+    var isEmbedded: Bool = false
 
     var body: some View {
-        NavigationView {
-            List{
-                ForEach(goals) { goal in
-                    goalRow(goal)
+        Group {
+            if isEmbedded {
+                goalsList
+            } else {
+                NavigationView {
+                    goalsList
+                        .navigationTitle("Goals")
+                        .toolbar { addButton }
                 }
             }
-            .navigationTitle("Goals")
-            .toolbar { addButton }
-            .sheet(isPresented: $showAddGoalForm) { AddGoalForm() }
-            .sheet(item: $selectedGoal) { goal in EditGoalForm(goal: goal) }
-            .alert("Delete Goal", isPresented: .constant(goalToDelete != nil), actions: {
-                Button("Cancel", role: .cancel) {
-                    goalToDelete = nil
+        }
+        .sheet(isPresented: $showAddGoalForm) { AddGoalForm() }
+        .sheet(item: $selectedGoal) { goal in EditGoalForm(goal: goal) }
+        .alert("Delete Goal", isPresented: .constant(goalToDelete != nil), actions: {
+            Button("Cancel", role: .cancel) {
+                goalToDelete = nil
+            }
+            Button("Delete", role: .destructive) {
+                if let goal = goalToDelete {
+                    safelyDeleteGoal(goal)
                 }
-                Button("Delete", role: .destructive) {
-                    if let goal = goalToDelete {
-                        safelyDeleteGoal(goal)
-                    }
-                    goalToDelete = nil
-                }
-            })
-            .background(Color(UIColor.systemBackground))
+                goalToDelete = nil
+            }
+        })
+        .background(Color(UIColor.systemBackground))
+    }
+
+    private var goalsList: some View {
+        List {
+            ForEach(goals) { goal in
+                goalRow(goal)
+            }
         }
     }
 
