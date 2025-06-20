@@ -17,6 +17,7 @@ struct AddHabitForm: View {
     @State private var milestones: [String] = []
     @State private var newMilestone: String = ""
     @State private var notes: String = ""
+    @State private var isPrivate: Bool = false
     @State private var showValidationError: Bool = false
     @State private var showError: Bool = false
     @State private var errorMessage: String = ""
@@ -37,6 +38,7 @@ struct AddHabitForm: View {
                                 .padding(.vertical, 8)
                         }
                     }
+                    Toggle("Private", isOn: $isPrivate)
                 }
 
                 Section(header: Text("Milestones")) {
@@ -80,7 +82,7 @@ struct AddHabitForm: View {
                             showValidationError = true
                         } else {
                             do {
-                                let newHabit = Habit(title: title, milestones: milestones, notes: notes)
+                                let newHabit = Habit(title: title, milestones: milestones, notes: notes, isPrivate: isPrivate)
                                 modelContext.insert(newHabit)
                                 try modelContext.save()
                                 presentationMode.wrappedValue.dismiss()

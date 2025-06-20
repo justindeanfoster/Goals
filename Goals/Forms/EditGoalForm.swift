@@ -17,7 +17,8 @@ struct EditGoalForm: View {
             deadline: goal.deadline,
             milestones: goal.milestones,
             notes: goal.notes,
-            selectedHabits: Array(goal.relatedHabits)
+            selectedHabits: Array(goal.relatedHabits),
+            isPrivate: goal.isPrivate
         ))
     }
     
@@ -32,6 +33,7 @@ struct EditGoalForm: View {
                         .frame(minHeight: 100)
                         .border(Color.gray, width: 1)
                         .padding(.top, 5)
+                    Toggle("Private", isOn: $formData.isPrivate)
                 }
 
                 Section(header: Text("Milestones")) {
@@ -39,6 +41,15 @@ struct EditGoalForm: View {
                         HStack {
                             Text(milestone.text)
                             Spacer()
+                            Toggle("Completion Criteria", isOn: Binding(
+                                get: { milestone.completionCriteria },
+                                set: { newValue in
+                                    if let index = formData.milestones.firstIndex(of: milestone) {
+                                        formData.milestones[index].completionCriteria = newValue
+                                    }
+                                }
+                            ))
+                            .labelsHidden()
                             Button(action: {
                                 if let index = formData.milestones.firstIndex(of: milestone) {
                                     formData.milestones.remove(at: index)
@@ -98,6 +109,7 @@ struct EditGoalForm: View {
         goal.deadline = formData.deadline
         goal.milestones = formData.milestones
         goal.notes = formData.notes
+        goal.isPrivate = formData.isPrivate
         updateRelatedHabits(with: formData.selectedHabits)
         try? modelContext.save()
     }
@@ -132,4 +144,5 @@ private struct GoalFormData {
     var notes: String
     var selectedHabits: [Habit]
     var newMilestone: String = ""
+    var isPrivate: Bool
 }

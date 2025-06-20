@@ -6,9 +6,23 @@ struct StatisticsListView: View {
     @Query private var habits: [Habit]
     @StateObject private var calendarViewModel = CalendarViewModel()
     @State private var selectedTab = Tab.hog
+    @AppStorage("showCompletedGoals") private var showCompletedGoals = false
+    @AppStorage("showPrivateItems") private var showPrivateItems = false
     
     enum Tab {
         case goals, hog, habits
+    }
+    
+    var filteredGoals: [Goal] {
+        var filtered = showCompletedGoals ? goals : goals.filter { !$0.isCompleted }
+        if !showPrivateItems {
+            filtered = filtered.filter { !$0.isPrivate }
+        }
+        return filtered
+    }
+    
+    var filteredHabits: [Habit] {
+        return showPrivateItems ? habits : habits.filter { !$0.isPrivate }
     }
     
     var body: some View {
@@ -52,26 +66,26 @@ struct StatisticsListView: View {
                     VStack(spacing: 16) {
                         // Always show GeneralStatisticsView with filtered content
                         GeneralStatisticsView(
-                            goals: selectedTab == .habits ? [] : goals,
-                            habits: selectedTab == .goals ? [] : habits
+                            goals: selectedTab == .habits ? [] : filteredGoals,
+                            habits: selectedTab == .goals ? [] : filteredHabits
                         )
                         .padding(.horizontal)
                         
                         // Show filtered items based on selected tab
                         switch selectedTab {
                         case .goals:
-                            ForEach(goals) { goal in
+                            ForEach(filteredGoals) { goal in
                                 statisticsCard(for: goal)
                             }
                         case .hog:
-                            ForEach(goals) { goal in
+                            ForEach(filteredGoals) { goal in
                                 statisticsCard(for: goal)
                             }
-                            ForEach(habits) { habit in
+                            ForEach(filteredHabits) { habit in
                                 statisticsCard(for: habit)
                             }
                         case .habits:
-                            ForEach(habits) { habit in
+                            ForEach(filteredHabits) { habit in
                                 statisticsCard(for: habit)
                             }
                         }
@@ -80,6 +94,22 @@ struct StatisticsListView: View {
                 }
             }
             .navigationTitle("Statistics")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Menu {
+                        Button(action: { showCompletedGoals.toggle() }) {
+                            Label(showCompletedGoals ? "Hide Completed Goals" : "Show Completed Goals",
+                                  systemImage: showCompletedGoals ? "eye.slash" : "eye")
+                        }
+                        Button(action: { showPrivateItems.toggle() }) {
+                            Label(showPrivateItems ? "Hide Private Items" : "Show Private Items",
+                                  systemImage: showPrivateItems ? "eye.slash" : "eye")
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                    }
+                }
+            }
         }
     }
     

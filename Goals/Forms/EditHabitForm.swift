@@ -11,12 +11,14 @@ struct EditHabitForm: View {
     @State private var milestones: [Milestone]  // Changed from [String]
     @State private var newMilestone: String = ""
     @State private var notes: String
+    @State private var isPrivate: Bool
 
     init(habit: Habit) {
         self.habit = habit
         _title = State(initialValue: habit.title)
         _milestones = State(initialValue: habit.milestones)
         _notes = State(initialValue: habit.notes)
+        _isPrivate = State(initialValue: habit.isPrivate)
     }
 
     var body: some View {
@@ -29,6 +31,7 @@ struct EditHabitForm: View {
                         .frame(minHeight: 100)
                         .border(Color.gray, width: 1)
                         .padding(.top, 5)
+                    Toggle("Private", isOn: $isPrivate)
                 }
 
                 Section(header: Text("Milestones")) {
@@ -79,8 +82,15 @@ struct EditHabitForm: View {
     
     private func updateHabit() {
         habit.title = title
-        habit.milestones = milestones  // Direct assignment since types match
         habit.notes = notes
+        habit.isPrivate = isPrivate
+        
+        // Ensure all milestones have completionCriteria set to false
+        milestones.forEach { milestone in
+            milestone.completionCriteria = false
+        }
+        habit.milestones = milestones
+        
         try? modelContext.save()
         presentationMode.wrappedValue.dismiss()
     }

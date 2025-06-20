@@ -12,6 +12,9 @@ struct HabitDetailView: View {
     @State private var showingDayView = false
     @State private var entries: [JournalEntry] = []
     @State private var isExpanded = false
+    @State private var areMilestonesExpanded = true
+    @State private var newMilestoneText = ""
+    @State private var isAddingMilestone = false
 
     // MARK: - Computed Properties
 
@@ -28,6 +31,7 @@ struct HabitDetailView: View {
                 VStack(alignment: .leading) {
                     calendarSection
                     notesSection
+                    milestonesSection
                     journalEntriesSection
                     statisticsSection
                 }
@@ -87,7 +91,7 @@ struct HabitDetailView: View {
 
     private var notesSection: some View {
         Group {
-            if !habit.notes.isEmpty || !habit.milestones.isEmpty {
+            if !habit.notes.isEmpty {
                 Divider()
                 VStack(alignment: .leading, spacing: 10) {
                     Button(action: { withAnimation { isExpanded.toggle() } }) {
@@ -100,33 +104,60 @@ struct HabitDetailView: View {
                     }
                     
                     if isExpanded {
-                        if !habit.notes.isEmpty {
-                            Text(habit.notes)
-                                .font(.subheadline)
-                                .padding()
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(Color(.systemGray6))
-                                .cornerRadius(8)
-                        }
-                        
-                        if !habit.milestones.isEmpty {
-                            Text("Milestones")
-                                .font(.headline)
-                                .foregroundColor(.secondary)
-                                .padding(.top, 8)
-                            MilestoneListView(
-                                milestones: .init(
-                                    get: { habit.milestones },
-                                    set: { habit.milestones = $0 }
-                                ),
-                                selectedDate: calendarViewModel.selectedDate,
-                                showHeader: false
-                            )
-                        }
+                        Text(habit.notes)
+                            .font(.subheadline)
+                            .padding()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color(.systemGray6))
+                            .cornerRadius(8)
                     }
                 }
                 .background(Color(.systemBackground))
                 .cornerRadius(10)
+            }
+        }
+    }
+
+    private var milestonesSection: some View {
+        Group {
+            if !habit.milestones.isEmpty || isAddingMilestone {
+                Divider()
+                VStack(alignment: .leading, spacing: 10) {
+                    HStack {
+                        Button(action: { withAnimation { areMilestonesExpanded.toggle() } }) {
+                            HStack {
+                                Text("Milestones")
+                                    .font(.headline)
+                                Image(systemName: areMilestonesExpanded ? "chevron.up" : "chevron.down")
+                            }
+                            .foregroundColor(.blue)
+                        }
+                        Spacer()
+                        Button(action: { isAddingMilestone = true }) {
+                            Image(systemName: "plus.circle.fill")
+                                .foregroundColor(.blue)
+                        }
+                    }
+                    
+                    if areMilestonesExpanded {
+                        MilestoneListView(
+                            milestones: .init(
+                                get: { habit.milestones },
+                                set: { habit.milestones = $0 }
+                            ),
+                            selectedDate: calendarViewModel.selectedDate,
+                            showHeader: false,
+                            isForGoal: false
+                        )
+                    }
+                }
+                .background(Color(.systemBackground))
+                .cornerRadius(10)
+            }
+        }
+        .sheet(isPresented: $isAddingMilestone) {
+            AddMilestoneView(isForGoal: false) { milestone in
+                habit.milestones.append(milestone)
             }
         }
     }

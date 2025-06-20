@@ -6,6 +6,7 @@ final class Habit {
     @Attribute(.unique) var id: UUID = UUID()
     var title: String
     var notes: String = ""
+    var isPrivate: Bool = false
     
     @Relationship(deleteRule: .cascade) 
     var milestones: [Milestone] = []
@@ -25,9 +26,10 @@ final class Habit {
         return uniqueDays.count
     }
 
-    init(title: String, milestones: [String] = [], notes: String = "") {
+    init(title: String, milestones: [String] = [], notes: String = "", isPrivate: Bool = false) {
         self.title = title
         self.notes = notes
+        self.isPrivate = isPrivate
         self.milestones = milestones.map { Milestone(text: $0) }
     }
 }

@@ -1,30 +1,27 @@
 import SwiftUI
 import SwiftData
 
-struct EditMilestoneView: View {
+struct AddMilestoneView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
-    @Bindable var milestone: Milestone
-    @State private var editedText: String
-    let isForGoal: Bool
     
-    init(milestone: Milestone, isForGoal: Bool) {
-        self.milestone = milestone
-        self.isForGoal = isForGoal
-        _editedText = State(initialValue: milestone.text)
-    }
-
+    let isForGoal: Bool
+    let onSave: (Milestone) -> Void
+    @State private var text: String = ""
+    @State private var completionCriteria: Bool = false
+    
     var body: some View {
         NavigationView {
             Form {
                 Section {
-                    TextField("Milestone text", text: $editedText)
+                    TextField("Milestone text", text: $text)
+                        .textFieldStyle(DefaultTextFieldStyle())
                     if isForGoal {
-                        Toggle("Completion Criteria", isOn: $milestone.completionCriteria)
+                        Toggle("Completion Criteria", isOn: $completionCriteria)
                     }
                 }
             }
-            .navigationTitle("Edit Milestone")
+            .navigationTitle("Add Milestone")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -33,13 +30,17 @@ struct EditMilestoneView: View {
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        milestone.text = editedText
-                        try? modelContext.save()
-                        dismiss()
+                    Button("Add") {
+                        if !text.isEmpty {
+                            let milestone = Milestone(text: text, completionCriteria: completionCriteria)
+                            onSave(milestone)
+                            dismiss()
+                        }
                     }
+                    .disabled(text.isEmpty)
                 }
             }
+            .background(Color(UIColor.systemBackground))
         }
         .presentationDetents([.medium])
         .presentationDragIndicator(.visible)

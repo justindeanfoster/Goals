@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C7F47852E05ACCE00602B58 /* AddMilestoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7F47842E05ACCE00602B58 /* AddMilestoneView.swift */; };
+		0C7F47892E05B20600602B58 /* ModelSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7F47882E05B20600602B58 /* ModelSchemas.swift */; };
 		0C9717C32DBC4FAA0072B569 /* EditGoalForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9717AD2DBC4FAA0072B569 /* EditGoalForm.swift */; };
 		0C9717C42DBC4FAA0072B569 /* GoalHabitRelation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9717B22DBC4FAA0072B569 /* GoalHabitRelation.swift */; };
 		0C9717C52DBC4FAA0072B569 /* StatisticsSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9717A62DBC4FAA0072B569 /* StatisticsSectionView.swift */; };
@@ -54,6 +56,8 @@
 
 /* Begin PBXFileReference section */
 		0C5792C62D48414F00DB774D /* GoalsApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GoalsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0C7F47842E05ACCE00602B58 /* AddMilestoneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMilestoneView.swift; sourceTree = "<group>"; };
+		0C7F47882E05B20600602B58 /* ModelSchemas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelSchemas.swift; sourceTree = "<group>"; };
 		0C9717A42DBC4FAA0072B569 /* CalendarSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarSectionView.swift; sourceTree = "<group>"; };
 		0C9717A52DBC4FAA0072B569 /* JournalEntriesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalEntriesListView.swift; sourceTree = "<group>"; };
 		0C9717A62DBC4FAA0072B569 /* StatisticsSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsSectionView.swift; sourceTree = "<group>"; };
@@ -141,6 +145,7 @@
 		0C9717B02DBC4FAA0072B569 /* Forms */ = {
 			isa = PBXGroup;
 			children = (
+				0C7F47842E05ACCE00602B58 /* AddMilestoneView.swift */,
 				0CAD698E2DD8194C00014F93 /* EditMilestoneView.swift */,
 				0C9717AA2DBC4FAA0072B569 /* AddGoalForm.swift */,
 				0C9717AB2DBC4FAA0072B569 /* AddHabitForm.swift */,
@@ -155,6 +160,7 @@
 		0C9717B62DBC4FAA0072B569 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				0C7F47882E05B20600602B58 /* ModelSchemas.swift */,
 				0CAD697A2DC6FC5A00014F93 /* Milestone.swift */,
 				0C9717B12DBC4FAA0072B569 /* Goal.swift */,
 				0C9717B22DBC4FAA0072B569 /* GoalHabitRelation.swift */,
@@ -354,6 +360,7 @@
 				0C9717C52DBC4FAA0072B569 /* StatisticsSectionView.swift in Sources */,
 				0C9717C62DBC4FAA0072B569 /* CalendarView.swift in Sources */,
 				0C9717C72DBC4FAA0072B569 /* CalendarViewModel.swift in Sources */,
+				0C7F47852E05ACCE00602B58 /* AddMilestoneView.swift in Sources */,
 				0C9717C82DBC4FAA0072B569 /* WeekGridView.swift in Sources */,
 				0C9717C92DBC4FAA0072B569 /* FilterMenu.swift in Sources */,
 				0C9717CA2DBC4FAA0072B569 /* Habit.swift in Sources */,
@@ -366,6 +373,7 @@
 				0C9717DF2DC2F5EF0072B569 /* PieChartView.swift in Sources */,
 				0C9717E12DC2F62D0072B569 /* StatisticsDetailView.swift in Sources */,
 				0C9717D02DBC4FAA0072B569 /* AddGoalForm.swift in Sources */,
+				0C7F47892E05B20600602B58 /* ModelSchemas.swift in Sources */,
 				0C9717D12DBC4FAA0072B569 /* CalendarSectionView.swift in Sources */,
 				0C9717D22DBC4FAA0072B569 /* EditJournalEntryView.swift in Sources */,
 				0CAD69982DDBDF4700014F93 /* CalendarHeaderView.swift in Sources */,

@@ -5,6 +5,8 @@ struct CombinedTrackerView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var goals: [Goal]
     @Query private var habits: [Habit]
+    @AppStorage("showCompletedGoals") private var showCompletedGoals = false
+    @AppStorage("showPrivateItems") private var showPrivateItems = false
     
     // Goal states
     @State private var showingAddGoalForm = false
@@ -21,6 +23,18 @@ struct CombinedTrackerView: View {
     // Journal Entry states
     @State private var journalEntryTarget: JournalEntryTarget?
     
+    var filteredGoals: [Goal] {
+        var filtered = showCompletedGoals ? goals : goals.filter { !$0.isCompleted }
+        if !showPrivateItems {
+            filtered = filtered.filter { !$0.isPrivate }
+        }
+        return filtered
+    }
+    
+    var filteredHabits: [Habit] {
+        return showPrivateItems ? habits : habits.filter { !$0.isPrivate }
+    }
+    
     var body: some View {
         NavigationView {
             ScrollView {
@@ -34,7 +48,7 @@ struct CombinedTrackerView: View {
                     }
                     .padding(.horizontal)
                     
-                    ForEach(goals) { goal in
+                    ForEach(filteredGoals) { goal in
                         goalRow(goal)
                             .padding(.horizontal)
                     }
@@ -53,7 +67,7 @@ struct CombinedTrackerView: View {
                         GridItem(.flexible()),
                         GridItem(.flexible())
                     ], spacing: 16) {
-                        ForEach(habits) { habit in
+                        ForEach(filteredHabits) { habit in
                             habitCell(habit)
                         }
                     }
@@ -62,6 +76,22 @@ struct CombinedTrackerView: View {
                 .padding(.vertical)
             }
             .navigationTitle("Habits | Goals")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Menu {
+                        Button(action: { showCompletedGoals.toggle() }) {
+                            Label(showCompletedGoals ? "Hide Completed Goals" : "Show Completed Goals",
+                                  systemImage: showCompletedGoals ? "eye.slash" : "eye")
+                        }
+                        Button(action: { showPrivateItems.toggle() }) {
+                            Label(showPrivateItems ? "Hide Private Items" : "Show Private Items",
+                                  systemImage: showPrivateItems ? "eye.slash" : "eye")
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                    }
+                }
+            }
             .sheet(isPresented: $showingAddGoalForm) { AddGoalForm() }
             .sheet(isPresented: $showingAddHabitForm) { AddHabitForm() }
             .sheet(item: $selectedGoal) { goal in EditGoalForm(goal: goal) }
@@ -113,9 +143,16 @@ struct CombinedTrackerView: View {
     private func goalRow(_ goal: Goal) -> some View {
         NavigationLink(destination: GoalDetailView(goal: goal)) {
             VStack(alignment: .leading) {
-                Text(goal.title)
-                    .font(.headline)
-                    .foregroundColor(.primary)
+                HStack {
+                    Text(goal.title)
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                    Spacer()
+                    if goal.isCompleted {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundColor(.green)
+                    }
+                }
                 HStack {
                     Text("Days Worked: \(goal.daysWorked)")
                     Spacer()
@@ -140,8 +177,15 @@ struct CombinedTrackerView: View {
             }
             .padding()
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(.systemGray6))
-            .cornerRadius(10)
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(Color(.systemGray6))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .strokeBorder(goal.isCompleted ? Color.green : Color.clear, lineWidth: 2)
+                    )
+            )
+            .opacity(goal.isCompleted ? 0.8 : 1.0)
             .shadow(radius: 2, x: 0, y: 2)
         }
         .contextMenu {

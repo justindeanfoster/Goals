@@ -8,16 +8,18 @@ struct MilestoneListView: View {
     @State private var isExpanded = true // Changed from false to true
     @State private var selectedMilestone: Milestone?
     let showHeader: Bool
+    let isForGoal: Bool  // Add this parameter
     
     private let columns = [
         GridItem(.flexible()),
         GridItem(.flexible())
     ]
     
-    init(milestones: Binding<[Milestone]>, selectedDate: Date, showHeader: Bool = true) {
+    init(milestones: Binding<[Milestone]>, selectedDate: Date, showHeader: Bool = true, isForGoal: Bool) {
         self._milestones = milestones
         self.selectedDate = selectedDate
         self.showHeader = showHeader
+        self.isForGoal = isForGoal
     }
     
     var body: some View {
@@ -85,7 +87,7 @@ struct MilestoneListView: View {
             }
         }
         .sheet(item: $selectedMilestone) { milestone in
-            EditMilestoneView(milestone: milestone)
+            EditMilestoneView(milestone: milestone, isForGoal: isForGoal)
         }
     }
 }

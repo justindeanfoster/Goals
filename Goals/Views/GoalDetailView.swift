@@ -25,6 +25,10 @@ struct GoalDetailView: View {
     @State private var showingDayView = false
     @State private var isExpanded = false
 
+    @State private var areMilestonesExpanded = true
+    @State private var newMilestoneText = ""
+    @State private var isAddingMilestone = false
+
     // MARK: - Computed Properties
 
     private var allJournalEntries: [JournalEntry] {
@@ -43,6 +47,7 @@ struct GoalDetailView: View {
                 VStack(alignment: .leading) {
                     calendarSection
                     notesSection
+                    milestonesSection
                     journalEntriesSection
                     statisticsSection
                     relatedHabitsSection
@@ -110,7 +115,7 @@ struct GoalDetailView: View {
 
     private var notesSection: some View {
         Group {
-            if !goal.notes.isEmpty || !goal.milestones.isEmpty {
+            if !goal.notes.isEmpty {
                 Divider()
                 VStack(alignment: .leading, spacing: 10) {
                     Button(action: { withAnimation { isExpanded.toggle() } }) {
@@ -123,33 +128,60 @@ struct GoalDetailView: View {
                     }
                     
                     if isExpanded {
-                        if !goal.notes.isEmpty {
-                            Text(goal.notes)
-                                .font(.subheadline)
-                                .padding()
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(Color(.systemGray6))
-                                .cornerRadius(8)
-                        }
-                        
-                        if !goal.milestones.isEmpty {
-                            Text("Milestones")
-                                .font(.headline)
-                                .foregroundColor(.secondary)
-                                .padding(.top, 8)
-                            MilestoneListView(
-                                milestones: .init(
-                                    get: { goal.milestones },
-                                    set: { goal.milestones = $0 }
-                                ),
-                                selectedDate: calendarViewModel.selectedDate,
-                                showHeader: false
-                            )
-                        }
+                        Text(goal.notes)
+                            .font(.subheadline)
+                            .padding()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color(.systemGray6))
+                            .cornerRadius(8)
                     }
                 }
                 .background(Color(.systemBackground))
                 .cornerRadius(10)
+            }
+        }
+    }
+
+    private var milestonesSection: some View {
+        Group {
+            if !goal.milestones.isEmpty || isAddingMilestone {
+                Divider()
+                VStack(alignment: .leading, spacing: 10) {
+                    HStack {
+                        Button(action: { withAnimation { areMilestonesExpanded.toggle() } }) {
+                            HStack {
+                                Text("Milestones")
+                                    .font(.headline)
+                                Image(systemName: areMilestonesExpanded ? "chevron.up" : "chevron.down")
+                            }
+                            .foregroundColor(.blue)
+                        }
+                        Spacer()
+                        Button(action: { isAddingMilestone = true }) {
+                            Image(systemName: "plus.circle.fill")
+                                .foregroundColor(.blue)
+                        }
+                    }
+                    
+                    if areMilestonesExpanded {
+                        MilestoneListView(
+                            milestones: .init(
+                                get: { goal.milestones },
+                                set: { goal.milestones = $0 }
+                            ),
+                            selectedDate: calendarViewModel.selectedDate,
+                            showHeader: false,
+                            isForGoal: true
+                        )
+                    }
+                }
+                .background(Color(.systemBackground))
+                .cornerRadius(10)
+            }
+        }
+        .sheet(isPresented: $isAddingMilestone) {
+            AddMilestoneView(isForGoal: true) { milestone in
+                goal.milestones.append(milestone)
             }
         }
     }

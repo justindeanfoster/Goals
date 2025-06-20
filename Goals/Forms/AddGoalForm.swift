@@ -13,6 +13,7 @@ struct AddGoalForm: View {
     @State private var milestones: [String] = []
     @State private var newMilestone: String = ""
     @State private var notes: String = ""
+    @State private var isPrivate: Bool = false
     @State private var selectedHabits: [Habit] = []
     @State private var showValidationError: Bool = false
     @State private var showError: Bool = false
@@ -35,6 +36,7 @@ struct AddGoalForm: View {
                                 .padding(.vertical, 8)
                         }
                     }
+                    Toggle("Private", isOn: $isPrivate)
                 }
 
                 Section(header: Text("Milestones")) {
@@ -100,7 +102,7 @@ struct AddGoalForm: View {
     }
     
     private func saveGoal() {
-        let newGoal = Goal(title: title, deadline: deadline, milestones: milestones, notes: notes)
+        let newGoal = Goal(title: title, deadline: deadline, milestones: milestones, notes: notes, isPrivate: isPrivate)
         modelContext.insert(newGoal)
         
         // Create relationships after goal is inserted
