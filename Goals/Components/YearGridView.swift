@@ -27,18 +27,6 @@ struct YearGridView: View {
             }
             .frame(height: 60)
             .padding(.vertical, 1)
-            .gesture(
-                DragGesture()
-                    .onEnded { value in
-                        if value.translation.width > 50 {
-                            // Swipe right - previous year
-                            calendarViewModel.moveYear(by: -1)
-                        } else if value.translation.width < -50 {
-                            // Swipe left - next year
-                            calendarViewModel.moveYear(by: 1)
-                        }
-                    }
-            )
         }
     }
 }

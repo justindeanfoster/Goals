@@ -39,23 +39,6 @@ struct AddHabitForm: View {
                     }
                 }
 
-                Section(header: Text("Milestones")) {
-                    ForEach(milestones, id: \ .self) { milestone in
-                        Text(milestone)
-                    }
-                    HStack {
-                        TextField("New Milestone", text: $newMilestone)
-                        Button(action: {
-                            if !newMilestone.isEmpty {
-                                milestones.append(newMilestone)
-                                newMilestone = ""
-                            }
-                        }) {
-                            Image(systemName: "plus.circle.fill")
-                                .foregroundColor(.green)
-                        }
-                    }
-                }
             }
             .alert(isPresented: $showValidationError) {
                 Alert(title: Text("Validation Error"),

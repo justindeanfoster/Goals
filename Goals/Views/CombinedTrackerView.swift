@@ -11,6 +11,8 @@ struct CombinedTrackerView: View {
     @State private var selectedGoal: Goal?
     @State private var showEditGoalForm = false
     @State private var goalToDelete: Goal?
+    @State private var showCompletedGoals = true
+
     
     // Habit states
     @State private var showingAddHabitForm = false
@@ -34,7 +36,7 @@ struct CombinedTrackerView: View {
                     }
                     .padding(.horizontal)
                     
-                    ForEach(goals) { goal in
+                    ForEach(goals.filter { showCompletedGoals || !$0.isCompleted }) { goal in
                         goalRow(goal)
                             .padding(.horizontal)
                     }
@@ -62,6 +64,21 @@ struct CombinedTrackerView: View {
                 .padding(.vertical)
             }
             .navigationTitle("Habits | Goals")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Menu {
+                        Button(action: { showCompletedGoals.toggle() }) {
+                            Label(showCompletedGoals ? "Hide Completed Goals" : "Show Completed Goals",
+                                  systemImage: showCompletedGoals ? "eye.slash" : "eye")
+                        }
+                        // Future options can go here too
+                        // Button("Sort by Date") { ... }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                            .font(.title2)
+                    }
+                }
+            }
             .sheet(isPresented: $showingAddGoalForm) { AddGoalForm() }
             .sheet(isPresented: $showingAddHabitForm) { AddHabitForm() }
             .sheet(item: $selectedGoal) { goal in EditGoalForm(goal: goal) }
@@ -109,13 +126,19 @@ struct CombinedTrackerView: View {
         }
     }
     
-    // MARK: - Goal Row
     private func goalRow(_ goal: Goal) -> some View {
         NavigationLink(destination: GoalDetailView(goal: goal)) {
             VStack(alignment: .leading) {
-                Text(goal.title)
-                    .font(.headline)
-                    .foregroundColor(.primary)
+                HStack {
+                    Text(goal.title)
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                    if goal.isCompleted {
+                        Spacer()
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundColor(.green)
+                    }
+                }
                 HStack {
                     Text("Days Worked: \(goal.daysWorked)")
                     Spacer()
@@ -123,6 +146,7 @@ struct CombinedTrackerView: View {
                 }
                 .font(.caption)
                 .foregroundColor(.gray)
+
                 let currentWeekStart = Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: Date()))!
                 HStack(spacing: 2) {
                     ForEach(0..<7, id: \.self) { dayOffset in
@@ -143,21 +167,19 @@ struct CombinedTrackerView: View {
             .background(Color(.systemGray6))
             .cornerRadius(10)
             .shadow(radius: 2, x: 0, y: 2)
+            .overlay(
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(goal.isCompleted ? Color.green : Color.clear, lineWidth: 2)
+            )
         }
         .contextMenu {
-            Button(action: {
-                journalEntryTarget = .goal(goal)
-            }) {
-                Label("Add Journal Entry", systemImage: "square.and.pencil")
-            }
-            Button(action: { selectedGoal = goal }) {
-                Label("Edit Goal", systemImage: "pencil")
-            }
-            Button(action: { goalToDelete = goal }) {
-                Label("Delete Goal", systemImage: "trash")
-            }
+            Button { journalEntryTarget = .goal(goal) } label: { Label("Add Journal Entry", systemImage: "square.and.pencil") }
+            Button { selectedGoal = goal } label: { Label("Edit Goal", systemImage: "pencil") }
+            Button { goalToDelete = goal } label: { Label("Delete Goal", systemImage: "trash") }
         }
     }
+
+
     
     // MARK: - Habit Cell
     private func habitCell(_ habit: Habit) -> some View {

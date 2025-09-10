@@ -37,24 +37,6 @@ struct AddGoalForm: View {
                     }
                 }
 
-                Section(header: Text("Milestones")) {
-                    ForEach(milestones, id: \ .self) { milestone in
-                        Text(milestone)
-                    }
-                    HStack {
-                        TextField("New Milestone", text: $newMilestone)
-                        Button(action: {
-                            if !newMilestone.isEmpty {
-                                milestones.append(newMilestone)
-                                newMilestone = ""
-                            }
-                        }) {
-                            Image(systemName: "plus.circle.fill")
-                                .foregroundColor(.green)
-                        }
-                    }
-                }
-
                 Section(header: Text("Related Habits")) {
                     ForEach(availableHabits) { habit in
                         MultipleSelectionRow(title: habit.title, isSelected: selectedHabits.contains(where: { $0.id == habit.id })) {
