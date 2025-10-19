@@ -16,6 +16,7 @@ struct GoalDetailView: View {
     @State private var showingAddJournalEntryForm = false
     @State private var showCalendar = false // State to toggle calendar visibility
     @State private var showingEditJournalEntry = false
+    @State private var showingAddMilestoneForm = false
     @State private var selectedEntry: JournalEntry?
     @State private var selectedDate: Date?
     @State private var dayViewData: (goals: [Goal], habits: [Habit], date: Date)?
@@ -55,6 +56,14 @@ struct GoalDetailView: View {
         .background(Color(UIColor.systemBackground))
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showingAddJournalEntryForm) { addJournalEntrySheet }
+        .sheet(isPresented: $showingAddMilestoneForm) {
+            AddMilestoneView(
+                isForGoal: true,
+                onSave: { milestone in
+                    goal.milestones.append(milestone)
+                }
+            )
+        }
         .onChange(of: selectedDate) { _, newValue in handleSelectedDateChange(newValue) }
         .sheet(isPresented: $showingDayView) { dayViewSheet }
         .onChange(of: showCalendar) { _, _ in timeframeUpdateTrigger = Date() }
@@ -146,16 +155,25 @@ struct GoalDetailView: View {
     
     private var milestonesSection: some View{
         Group{
-            if !goal.milestones.isEmpty {
                 Divider()
                 VStack(alignment: .leading, spacing: 10) {
-                    Button(action: { withAnimation { isExpanded.toggle() } }) {
-                        HStack {
-                            Text("Milestones")
-                                .font(.headline)
-                            Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                    HStack {
+                        Button(action: { withAnimation { isExpanded.toggle() } }) {
+                            HStack {
+                                Text("Milestones")
+                                    .font(.headline)
+                                Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                            }
+                            .foregroundColor(.blue)
                         }
-                        .foregroundColor(.blue)
+                        Spacer()
+                        Button(action: { 
+                            showingAddMilestoneForm = true
+                        }) {
+                            Image(systemName: "plus")
+                                .font(.headline)
+                                .foregroundColor(.blue)
+                        }
                     }
                     if isExpanded {
                         MilestoneListView(
@@ -170,7 +188,6 @@ struct GoalDetailView: View {
                     
                 }
             }
-        }
     }
 
     private var journalEntriesSection: some View {

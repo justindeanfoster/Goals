@@ -29,7 +29,6 @@ struct CalendarView: View {
                 }
                 if showingFilter { filterOverlay }
             }
-            .navigationTitle("Calendar")
         }
         .background(Color(UIColor.systemBackground))
         .onAppear { calendarViewModel.initializeFilters(goals: goals, habits: habits) }

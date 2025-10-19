@@ -46,6 +46,11 @@
 		0CAD69962DDA631000014F93 /* CombinedTrackerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAD69952DDA631000014F93 /* CombinedTrackerView.swift */; };
 		0CAD69982DDBDF4700014F93 /* CalendarHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAD69972DDBDF4700014F93 /* CalendarHeaderView.swift */; };
 		0CAD699A2DDBE5DE00014F93 /* GeneralStatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAD69992DDBE5DE00014F93 /* GeneralStatisticsView.swift */; };
+		0CEEA9542EA56E16008704A8 /* AddMilestoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CEEA9532EA56E16008704A8 /* AddMilestoneView.swift */; };
+		0CEEA95C2EA57323008704A8 /* CompactMonthGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CEEA95B2EA57323008704A8 /* CompactMonthGridView.swift */; };
+		0CEEA95F2EA57330008704A8 /* DetailSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CEEA95E2EA57330008704A8 /* DetailSectionHeader.swift */; };
+		0CEEA9602EA57330008704A8 /* CalendarGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CEEA95D2EA57330008704A8 /* CalendarGridView.swift */; };
+		0CEEA9622EA57550008704A8 /* HalfYearGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CEEA9612EA57550008704A8 /* HalfYearGridView.swift */; };
 		0CFFC8502D1B81F700C8F272 /* GoalsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CFFC84F2D1B81F700C8F272 /* GoalsApp.swift */; };
 		0CFFC8522D1B81F700C8F272 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CFFC8512D1B81F700C8F272 /* ContentView.swift */; };
 		0CFFC8562D1B81FB00C8F272 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0CFFC8552D1B81FB00C8F272 /* Assets.xcassets */; };
@@ -92,6 +97,11 @@
 		0CAD69952DDA631000014F93 /* CombinedTrackerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombinedTrackerView.swift; sourceTree = "<group>"; };
 		0CAD69972DDBDF4700014F93 /* CalendarHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarHeaderView.swift; sourceTree = "<group>"; };
 		0CAD69992DDBE5DE00014F93 /* GeneralStatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralStatisticsView.swift; sourceTree = "<group>"; };
+		0CEEA9532EA56E16008704A8 /* AddMilestoneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMilestoneView.swift; sourceTree = "<group>"; };
+		0CEEA95B2EA57323008704A8 /* CompactMonthGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactMonthGridView.swift; sourceTree = "<group>"; };
+		0CEEA95D2EA57330008704A8 /* CalendarGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarGridView.swift; sourceTree = "<group>"; };
+		0CEEA95E2EA57330008704A8 /* DetailSectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailSectionHeader.swift; sourceTree = "<group>"; };
+		0CEEA9612EA57550008704A8 /* HalfYearGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HalfYearGridView.swift; sourceTree = "<group>"; };
 		0CFFC84C2D1B81F700C8F272 /* HoG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HoG.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0CFFC84F2D1B81F700C8F272 /* GoalsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsApp.swift; sourceTree = "<group>"; };
 		0CFFC8512D1B81F700C8F272 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -120,6 +130,10 @@
 		0C9717A92DBC4FAA0072B569 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				0CEEA9612EA57550008704A8 /* HalfYearGridView.swift */,
+				0CEEA95D2EA57330008704A8 /* CalendarGridView.swift */,
+				0CEEA95E2EA57330008704A8 /* DetailSectionHeader.swift */,
+				0CEEA95B2EA57323008704A8 /* CompactMonthGridView.swift */,
 				0CAD69992DDBE5DE00014F93 /* GeneralStatisticsView.swift */,
 				0CAD69972DDBDF4700014F93 /* CalendarHeaderView.swift */,
 				0CAD698C2DD5969C00014F93 /* MonthGridView.swift */,
@@ -141,6 +155,7 @@
 		0C9717B02DBC4FAA0072B569 /* Forms */ = {
 			isa = PBXGroup;
 			children = (
+				0CEEA9532EA56E16008704A8 /* AddMilestoneView.swift */,
 				0CAD698E2DD8194C00014F93 /* EditMilestoneView.swift */,
 				0C9717AA2DBC4FAA0072B569 /* AddGoalForm.swift */,
 				0C9717AB2DBC4FAA0072B569 /* AddHabitForm.swift */,
@@ -354,6 +369,9 @@
 				0C9717C52DBC4FAA0072B569 /* StatisticsSectionView.swift in Sources */,
 				0C9717C62DBC4FAA0072B569 /* CalendarView.swift in Sources */,
 				0C9717C72DBC4FAA0072B569 /* CalendarViewModel.swift in Sources */,
+				0CEEA9542EA56E16008704A8 /* AddMilestoneView.swift in Sources */,
+				0CEEA95F2EA57330008704A8 /* DetailSectionHeader.swift in Sources */,
+				0CEEA9602EA57330008704A8 /* CalendarGridView.swift in Sources */,
 				0C9717C82DBC4FAA0072B569 /* WeekGridView.swift in Sources */,
 				0C9717C92DBC4FAA0072B569 /* FilterMenu.swift in Sources */,
 				0C9717CA2DBC4FAA0072B569 /* Habit.swift in Sources */,
@@ -367,12 +385,14 @@
 				0C9717E12DC2F62D0072B569 /* StatisticsDetailView.swift in Sources */,
 				0C9717D02DBC4FAA0072B569 /* AddGoalForm.swift in Sources */,
 				0C9717D12DBC4FAA0072B569 /* CalendarSectionView.swift in Sources */,
+				0CEEA9622EA57550008704A8 /* HalfYearGridView.swift in Sources */,
 				0C9717D22DBC4FAA0072B569 /* EditJournalEntryView.swift in Sources */,
 				0CAD69982DDBDF4700014F93 /* CalendarHeaderView.swift in Sources */,
 				0C9717D32DBC4FAA0072B569 /* DayView.swift in Sources */,
 				0C9717D42DBC4FAA0072B569 /* JournalEntry.swift in Sources */,
 				0C9717D52DBC4FAA0072B569 /* AddHabitForm.swift in Sources */,
 				0C9717D62DBC4FAA0072B569 /* HabitDetailView.swift in Sources */,
+				0CEEA95C2EA57323008704A8 /* CompactMonthGridView.swift in Sources */,
 				0CAD69822DCAEBE200014F93 /* (null) in Sources */,
 				0C9717D82DBC4FAA0072B569 /* EditHabitForm.swift in Sources */,
 				0CAD697B2DC6FC5A00014F93 /* Milestone.swift in Sources */,

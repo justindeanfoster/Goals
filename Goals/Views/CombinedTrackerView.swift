@@ -11,7 +11,7 @@ struct CombinedTrackerView: View {
     @State private var selectedGoal: Goal?
     @State private var showEditGoalForm = false
     @State private var goalToDelete: Goal?
-    @State private var showCompletedGoals = true
+    @State private var showCompletedGoals = false
 
     
     // Habit states
@@ -63,7 +63,6 @@ struct CombinedTrackerView: View {
                 }
                 .padding(.vertical)
             }
-            .navigationTitle("Habits | Goals")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Menu {

@@ -150,7 +150,6 @@ struct StatisticsListView: View {
                     .padding(.vertical)
                 }
             }
-            .navigationTitle("Statistics")
         }
     }
     
@@ -232,7 +231,8 @@ struct StatisticsListView: View {
 
     private func statisticsCard<D: View>(title: String, percent: Int, days: Int, gridEntries: [Date], destination: D, itemType: String) -> some View {
         NavigationLink(destination: destination) {
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 8) {
+                // Header section
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(title)
@@ -247,16 +247,27 @@ struct StatisticsListView: View {
                         .foregroundColor(.secondary)
                     }
                     Spacer()
-                    VStack(alignment: .trailing) {
-                        Text("\(percent)%")
-                            .bold()
-                            .foregroundColor(.primary)
-                        Text("\(days) days")
-                            .font(.caption)
-                            .foregroundColor(.gray)
+                    HStack {
+                        VStack(alignment: .trailing) {
+                            Text("\(percent)%")
+                                .bold()
+                                .foregroundColor(.primary)
+                            Text("\(days) days")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
+                        if let goal = destination as? StatisticsDetailView, case .goal(let goalItem) = goal.item, goalItem.isCompleted {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(.green)
+                                .font(.title3)
+                        }
                     }
                 }
-                YearGridView(
+                
+                Divider()
+                
+                // Grid section
+                HalfYearGridView(
                     entries: gridEntries,
                     calendarViewModel: calendarViewModel
                 )
@@ -266,6 +277,14 @@ struct StatisticsListView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(Color(.systemGray6))
             .cornerRadius(10)
+            .overlay(
+                Group {
+                    if let goal = destination as? StatisticsDetailView, case .goal(let goalItem) = goal.item, goalItem.isCompleted {
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.green, lineWidth: 2)
+                    }
+                }
+            )
             .shadow(radius: 2, x: 0, y: 2)
         }
     }
