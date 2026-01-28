@@ -25,43 +25,64 @@ struct CombinedTrackerView: View {
     
     var body: some View {
         NavigationView {
-            ScrollView {
-                VStack(spacing: 16) {
-                    HStack {
-                        Text("Goals").font(.title2).bold()
-                        Spacer()
-                        Button(action: { showingAddGoalForm = true }) {
-                            Image(systemName: "plus.circle.fill")
+            ZStack {
+                ScrollView {
+                    VStack(spacing: 16) {
+                        HStack {
+                            Text("Goals").font(.title2).bold()
+                            Spacer()
                         }
-                    }
-                    .padding(.horizontal)
-                    
-                    ForEach(goals.filter { showCompletedGoals || !$0.isCompleted }) { goal in
-                        goalRow(goal)
-                            .padding(.horizontal)
-                    }
-                    
-                    HStack {
-                        Text("Habits").font(.title2).bold()
-                        Spacer()
-                        Button(action: { showingAddHabitForm = true }) {
-                            Image(systemName: "plus.circle.fill")
+                        .padding(.horizontal)
+                        
+                        ForEach(goals.filter { showCompletedGoals || !$0.isCompleted }) { goal in
+                            goalRow(goal)
+                                .padding(.horizontal)
                         }
-                    }
-                    .padding(.horizontal)
-                    .padding(.top)
-                    
-                    LazyVGrid(columns: [
-                        GridItem(.flexible()),
-                        GridItem(.flexible())
-                    ], spacing: 16) {
-                        ForEach(habits) { habit in
-                            habitCell(habit)
+                        
+                        HStack {
+                            Text("Habits").font(.title2).bold()
+                            Spacer()
                         }
+                        .padding(.horizontal)
+                        .padding(.top)
+                        
+                        LazyVGrid(columns: [
+                            GridItem(.flexible()),
+                            GridItem(.flexible())
+                        ], spacing: 16) {
+                            ForEach(habits) { habit in
+                                habitCell(habit)
+                            }
+                        }
+                        .padding(.horizontal)
                     }
-                    .padding(.horizontal)
+                    .padding(.vertical)
                 }
-                .padding(.vertical)
+                
+                // Floating Action Button
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Menu {
+                            Button(action: { showingAddGoalForm = true }) {
+                                Label("New Goal", systemImage: "target")
+                            }
+                            Button(action: { showingAddHabitForm = true }) {
+                                Label("New Habit", systemImage: "repeat")
+                            }
+                        } label: {
+                            Image(systemName: "plus")
+                                .font(.title)
+                                .foregroundColor(.white)
+                                .frame(width: 56, height: 56)
+                                .background(Color.blue)
+                                .clipShape(Circle())
+                                .shadow(radius: 4)
+                        }
+                        .padding()
+                    }
+                }
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
