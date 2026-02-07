@@ -34,6 +34,11 @@ final class Goal {
         let remaining = Calendar.current.dateComponents([.day], from: Date(), to: deadline).day ?? 0
         return max(remaining, 0)
     }
+    
+    var isCompleted: Bool {
+            let relevantMilestones = milestones.filter { $0.completionCriteria }
+            return !relevantMilestones.isEmpty && relevantMilestones.allSatisfy { $0.isCompleted }
+        }
 
     init(id: UUID = UUID(), title: String, deadline: Date, milestones: [String] = [], notes: String = "", relatedHabits: [Habit] = []) {
         self.id = id

@@ -19,12 +19,6 @@ struct ContentView: View {
                     Label("HoG", systemImage: "checkmark.circle")
                 }
                 .tag(1)
-
-            StatisticsListView()
-                .tabItem {
-                    Label("Statistics", systemImage: "chart.bar.fill")
-                }
-                .tag(2)
         }
         .background(Color(UIColor.systemBackground))
     }

@@ -1,16 +1,32 @@
 import SwiftUI
 
-struct YearGridView: View {
+struct HalfYearGridView: View {
     let entries: [Date]
     @ObservedObject var calendarViewModel: CalendarViewModel
-    let rows = Array(repeating: GridItem(.fixed(8), spacing: 1), count: 7)
+    private let rows = Array(repeating: GridItem(.fixed(8), spacing: 1), count: 7)
+    
+    private var lastSixMonthsDates: [(Date, Bool)] {
+        let calendar = Calendar.current
+        let today = Date()
+        let sixMonthsAgo = calendar.date(byAdding: .month, value: -6, to: today)!
+        let startOfSixMonthsAgo = calendar.startOfDay(for: sixMonthsAgo)
+        
+        var dates: [(Date, Bool)] = []
+        var currentDate = startOfSixMonthsAgo
+        
+        while currentDate <= today {
+            let hasEntry = entries.contains { calendar.isDate($0, inSameDayAs: currentDate) }
+            dates.append((currentDate, hasEntry))
+            currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate)!
+        }
+        
+        return dates
+    }
     
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             LazyHGrid(rows: rows, spacing: 1) {
-                ForEach(0..<calendarViewModel.daysInYear(calendarViewModel.selectedYear), id: \.self) { dayOffset in
-                    let date = Calendar.current.date(byAdding: .day, value: dayOffset, to: calendarViewModel.selectedYearStartDate) ?? calendarViewModel.selectedYearStartDate
-                    let hasEntry = entries.contains { Calendar.current.isDate($0, inSameDayAs: date) }
+                ForEach(lastSixMonthsDates, id: \.0) { date, hasEntry in
                     let isToday = calendarViewModel.isDateToday(date)
                     
                     Rectangle()

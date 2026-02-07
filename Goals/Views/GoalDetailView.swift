@@ -16,6 +16,7 @@ struct GoalDetailView: View {
     @State private var showingAddJournalEntryForm = false
     @State private var showCalendar = false // State to toggle calendar visibility
     @State private var showingEditJournalEntry = false
+    @State private var showingAddMilestoneForm = false
     @State private var selectedEntry: JournalEntry?
     @State private var selectedDate: Date?
     @State private var dayViewData: (goals: [Goal], habits: [Habit], date: Date)?
@@ -23,7 +24,8 @@ struct GoalDetailView: View {
     @State private var entries: [JournalEntry] = []
 
     @State private var showingDayView = false
-    @State private var isExpanded = false
+    @State private var showingEditForm = false
+    @State private var selectedTab = 0  // 0: Notes, 1: Milestones, 2: Journal Entries
 
     // MARK: - Computed Properties
 
@@ -37,22 +39,96 @@ struct GoalDetailView: View {
     // MARK: - Body
 
     var body: some View {
-        VStack {
-            headerSection
-            ScrollView {
-                VStack(alignment: .leading) {
-                    calendarSection
-                    notesSection
-                    journalEntriesSection
-                    statisticsSection
-                    relatedHabitsSection
+        ZStack {
+            VStack {
+                headerSection
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 0) {
+                        calendarSection
+                        
+                        // Tab Navigation
+                        HStack(spacing: 0) {
+                            TabButton(
+                                title: "Notes",
+                                isSelected: selectedTab == 0,
+                                position: .left
+                            ) {
+                                selectedTab = 0
+                            }
+                            
+                            TabButton(
+                                title: "Milestones",
+                                isSelected: selectedTab == 1,
+                                position: .middle
+                            ) {
+                                selectedTab = 1
+                            }
+                            
+                            TabButton(
+                                title: "Journal",
+                                isSelected: selectedTab == 2,
+                                position: .right
+                            ) {
+                                selectedTab = 2
+                            }
+                        }
+                        .background(Color(.systemGray6))
+                        .cornerRadius(8)
+                        .padding()
+                        
+                        // Tab Content
+                        if selectedTab == 0 {
+                            notesSection
+                                .padding()
+                        } else if selectedTab == 1 {
+                            milestonesSection
+                                .padding()
+                        } else {
+                            journalEntriesSection
+                                .padding()
+                        }
+                    }
                 }
-                .padding()
+            }
+            .background(Color(UIColor.systemBackground))
+            
+            // Floating Action Button
+            VStack {
+                Spacer()
+                HStack {
+                    Spacer()
+                    Menu {
+                        Button(action: { showingAddJournalEntryForm = true }) {
+                            Label("Add Journal Entry", systemImage: "note.text.badge.plus")
+                        }
+                        Button(action: { showingAddMilestoneForm = true }) {
+                            Label("Add Milestone", systemImage: "flag.badge.checkmark")
+                        }
+                    } label: {
+                        Image(systemName: "plus")
+                            .font(.title)
+                            .foregroundColor(.white)
+                            .frame(width: 56, height: 56)
+                            .background(Color.blue)
+                            .clipShape(Circle())
+                            .shadow(radius: 4)
+                    }
+                    .padding()
+                }
             }
         }
-        .background(Color(UIColor.systemBackground))
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarItems(trailing: menuButton)
         .sheet(isPresented: $showingAddJournalEntryForm) { addJournalEntrySheet }
+        .sheet(isPresented: $showingEditForm) { editGoalSheet }
+        .sheet(isPresented: $showingAddMilestoneForm) {
+            AddMilestoneView(
+                isForGoal: true,
+                onSave: { milestone in
+                    goal.milestones.append(milestone)
+                }
+            )
+        }
         .onChange(of: selectedDate) { _, newValue in handleSelectedDateChange(newValue) }
         .sheet(isPresented: $showingDayView) { dayViewSheet }
         .onChange(of: showCalendar) { _, _ in timeframeUpdateTrigger = Date() }
@@ -63,15 +139,24 @@ struct GoalDetailView: View {
 
     // MARK: - Sections
 
+    private var menuButton: some View {
+        Menu {
+            Button(action: { showingEditForm = true }) {
+                Label("Edit", systemImage: "pencil")
+            }
+        } label: {
+            Image(systemName: "ellipsis.circle.fill")
+                .font(.title2)
+                .foregroundColor(.blue)
+        }
+    }
+
     private var headerSection: some View {
         HStack {
             Text(goal.title)
                 .font(.largeTitle)
                 .bold()
             Spacer()
-            Button(action: { showingAddJournalEntryForm = true }) {
-                Image(systemName: "plus").font(.title)
-            }
         }
         .padding()
     }
@@ -109,55 +194,72 @@ struct GoalDetailView: View {
     }
 
     private var notesSection: some View {
-        Group {
-            if !goal.notes.isEmpty || !goal.milestones.isEmpty {
-                Divider()
+        VStack(alignment: .leading, spacing: 16) {            
+            // Statistics - Clickable to StatisticsDetailView
+            NavigationLink(destination: StatisticsDetailView(item: .goal(goal))) {
+                VStack(alignment: .leading, spacing: 12) {
+                    // Statistics
+                    Text(goal.notes)
+                        .font(.headline)
+                    Text("Statistics")
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                    StatisticsSectionView(statistics: [
+                        StatisticRow(label: "Days Worked:", value: "\(goal.daysWorked)"),
+                        StatisticRow(label: "Days Remaining:", value: "\(goal.daysRemaining)"),
+                        StatisticRow(label: "Total Journal Entries:", value: "\(allJournalEntries.count)")
+                    ])
+                }
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color(.systemGray6))
+                .cornerRadius(10)
+                .shadow(radius: 2, x: 0, y: 2)
+            }
+            .buttonStyle(PlainButtonStyle())
+            
+            // Related Habits
+            if !goal.relatedHabits.isEmpty {
                 VStack(alignment: .leading, spacing: 10) {
-                    Button(action: { withAnimation { isExpanded.toggle() } }) {
-                        HStack {
-                            Text("Notes")
-                                .font(.headline)
-                            Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                    Text("Related Habits")
+                        .font(.headline)
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 8) {
+                            ForEach(goal.relatedHabits) { habit in
+                                NavigationLink(destination: HabitDetailView(habit: habit)) {
+                                    Text(habit.title)
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 6)
+                                        .background(Color.blue.opacity(0.2))
+                                        .foregroundColor(.blue)
+                                        .cornerRadius(16)
+                                }
+                            }
                         }
-                        .foregroundColor(.blue)
-                    }
-                    
-                    if isExpanded {
-                        if !goal.notes.isEmpty {
-                            Text(goal.notes)
-                                .font(.subheadline)
-                                .padding()
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(Color(.systemGray6))
-                                .cornerRadius(8)
-                        }
-                        
-                        if !goal.milestones.isEmpty {
-                            Text("Milestones")
-                                .font(.headline)
-                                .foregroundColor(.secondary)
-                                .padding(.top, 8)
-                            MilestoneListView(
-                                milestones: .init(
-                                    get: { goal.milestones },
-                                    set: { goal.milestones = $0 }
-                                ),
-                                selectedDate: calendarViewModel.selectedDate,
-                                showHeader: false
-                            )
-                        }
+                        .padding(.vertical, 4)
                     }
                 }
-                .background(Color(.systemBackground))
-                .cornerRadius(10)
             }
+        }
+    }
+    
+    private var milestonesSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+//            Text("Milestones")
+//                .font(.headline)
+            MilestoneListView(
+                milestones: .init(
+                    get: { goal.milestones },
+                    set: { goal.milestones = $0 }
+                ),
+                selectedDate: calendarViewModel.selectedDate,
+                showHeader: false
+            )
         }
     }
 
     private var journalEntriesSection: some View {
         Group {
-            Divider()
-
             JournalEntriesListView(
                 entries: currentTimeframeEntries,
                 onEntryTapped: { entry in
@@ -175,56 +277,6 @@ struct GoalDetailView: View {
             .id(timeframeUpdateTrigger)
             .background(Color(.systemBackground))
             .cornerRadius(10)
-        
-        }
-    }
-
-    private var statisticsSection: some View {
-        Group {
-            Divider()
-            NavigationLink(destination: StatisticsDetailView(item: .goal(goal))) {
-                VStack(alignment: .leading, spacing: 15) {
-                    Text("Statistics")
-                        .font(.headline)
-                        .foregroundColor(.primary)
-                    StatisticsSectionView(statistics: [
-                        StatisticRow(label: "Days Worked:", value: "\(goal.daysWorked)"),
-                        StatisticRow(label: "Days Remaining:", value: "\(goal.daysRemaining)"),
-                        StatisticRow(label: "Total Journal Entries:", value: "\(allJournalEntries.count)")
-                    ])
-                }
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color(.systemGray6))
-                .cornerRadius(10)
-                .shadow(radius: 2, x: 0, y: 2)
-            }
-            .buttonStyle(PlainButtonStyle())
-        }
-    }
-
-    private var relatedHabitsSection: some View {
-        Group {
-            if (!goal.relatedHabits.isEmpty) {
-                Divider()
-                Text("Related Habits")
-                    .font(.headline)
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        ForEach(goal.relatedHabits) { habit in
-                            NavigationLink(destination: HabitDetailView(habit: habit)) {
-                                Text(habit.title)
-                                    .padding(.horizontal, 12)
-                                    .padding(.vertical, 6)
-                                    .background(Color.blue.opacity(0.2))
-                                    .foregroundColor(.blue)
-                                    .cornerRadius(16)
-                            }
-                        }
-                    }
-                    .padding(.vertical, 4)
-                }
-            }
         }
     }
 
@@ -233,6 +285,12 @@ struct GoalDetailView: View {
     private var addJournalEntrySheet: some View {
         AddJournalEntryForm(goal: goal, habit: nil)
             .presentationDetents([.medium])
+            .presentationDragIndicator(.visible)
+    }
+
+    private var editGoalSheet: some View {
+        EditGoalForm(goal: goal)
+            .presentationDetents([.large])
             .presentationDragIndicator(.visible)
     }
 
@@ -290,6 +348,36 @@ struct GoalDetailView: View {
         if let date = newValue {
             dayViewData = (goals: [goal], habits: Array(goal.relatedHabits), date: date)
             showingDayView = true
+        }
+    }
+}
+
+private struct TabButton: View {
+    let title: String
+    let isSelected: Bool
+    let position: Position
+    let action: () -> Void
+    
+    enum Position {
+        case left, middle, right
+        
+        var corners: UIRectCorner {
+            switch self {
+            case .left: return [.topLeft, .bottomLeft]
+            case .middle: return []
+            case .right: return [.topRight, .bottomRight]
+            }
+        }
+    }
+    
+    var body: some View {
+        Button(action: action) {
+            Text(title)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 8)
+                .background(isSelected ? Color.blue.opacity(0.15) : Color.clear)
+                .foregroundColor(isSelected ? .blue : .secondary)
+                .cornerRadius(8, corners: position.corners)
         }
     }
 }

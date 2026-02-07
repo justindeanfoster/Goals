@@ -11,7 +11,8 @@ struct HabitDetailView: View {
     @State private var dayViewData: (goals: [Goal], habits: [Habit], date: Date)?
     @State private var showingDayView = false
     @State private var entries: [JournalEntry] = []
-    @State private var isExpanded = false
+    @State private var showingEditForm = false
+    @State private var selectedTab = 0  // 0: Notes, 1: Milestones, 2: Journal Entries
 
     // MARK: - Computed Properties
 
@@ -22,21 +23,85 @@ struct HabitDetailView: View {
     // MARK: - Body
 
     var body: some View {
-        VStack {
-            headerSection
-            ScrollView {
-                VStack(alignment: .leading) {
-                    calendarSection
-                    notesSection
-                    journalEntriesSection
-                    statisticsSection
+        ZStack {
+            VStack {
+                headerSection
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 0) {
+                        calendarSection
+                        
+                        // Tab Navigation
+                        HStack(spacing: 0) {
+                            TabButton(
+                                title: "Notes",
+                                isSelected: selectedTab == 0,
+                                position: .left
+                            ) {
+                                selectedTab = 0
+                            }
+                            
+                            TabButton(
+                                title: "Milestones",
+                                isSelected: selectedTab == 1,
+                                position: .middle
+                            ) {
+                                selectedTab = 1
+                            }
+                            
+                            TabButton(
+                                title: "Journal",
+                                isSelected: selectedTab == 2,
+                                position: .right
+                            ) {
+                                selectedTab = 2
+                            }
+                        }
+                        .background(Color(.systemGray6))
+                        .cornerRadius(8)
+                        .padding()
+                        
+                        // Tab Content
+                        if selectedTab == 0 {
+                            notesSection
+                                .padding()
+                        } else if selectedTab == 1 {
+                            milestonesSection
+                                .padding()
+                        } else {
+                            journalEntriesSection
+                                .padding()
+                        }
+                    }
                 }
-                .padding()
+            }
+            .background(Color(UIColor.systemBackground))
+            
+            // Floating Action Button
+            VStack {
+                Spacer()
+                HStack {
+                    Spacer()
+                    Menu {
+                        Button(action: { showingAddJournalEntryForm = true }) {
+                            Label("Add Journal Entry", systemImage: "note.text.badge.plus")
+                        }
+                    } label: {
+                        Image(systemName: "plus")
+                            .font(.title)
+                            .foregroundColor(.white)
+                            .frame(width: 56, height: 56)
+                            .background(Color.blue)
+                            .clipShape(Circle())
+                            .shadow(radius: 4)
+                    }
+                    .padding()
+                }
             }
         }
-        .background(Color(UIColor.systemBackground))
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarItems(trailing: menuButton)
         .sheet(isPresented: $showingAddJournalEntryForm) { addJournalEntrySheet }
+        .sheet(isPresented: $showingEditForm) { editHabitSheet }
         .onChange(of: selectedDate) { oldValue, newValue in handleSelectedDateChange(newValue) }
         .sheet(isPresented: $showingDayView) { dayViewSheet }
         .onAppear { entries = Array(habit.journalEntries) }
@@ -45,15 +110,24 @@ struct HabitDetailView: View {
 
     // MARK: - Sections
 
+    private var menuButton: some View {
+        Menu {
+            Button(action: { showingEditForm = true }) {
+                Label("Edit", systemImage: "pencil")
+            }
+        } label: {
+            Image(systemName: "ellipsis.circle.fill")
+                .font(.title2)
+                .foregroundColor(.blue)
+        }
+    }
+
     private var headerSection: some View {
         HStack {
             Text(habit.title)
                 .font(.largeTitle)
                 .bold()
             Spacer()
-            Button(action: { showingAddJournalEntryForm = true }) {
-                Image(systemName: "plus").font(.title)
-            }
         }
         .padding()
     }
@@ -86,56 +160,59 @@ struct HabitDetailView: View {
     }
 
     private var notesSection: some View {
-        Group {
-            if !habit.notes.isEmpty || !habit.milestones.isEmpty {
-                Divider()
-                VStack(alignment: .leading, spacing: 10) {
-                    Button(action: { withAnimation { isExpanded.toggle() } }) {
-                        HStack {
-                            Text("Notes")
-                                .font(.headline)
-                            Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                        }
-                        .foregroundColor(.blue)
-                    }
-                    
-                    if isExpanded {
-                        if !habit.notes.isEmpty {
-                            Text(habit.notes)
-                                .font(.subheadline)
-                                .padding()
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(Color(.systemGray6))
-                                .cornerRadius(8)
-                        }
-                        
-                        if !habit.milestones.isEmpty {
-                            Text("Milestones")
-                                .font(.headline)
-                                .foregroundColor(.secondary)
-                                .padding(.top, 8)
-                            MilestoneListView(
-                                milestones: .init(
-                                    get: { habit.milestones },
-                                    set: { habit.milestones = $0 }
-                                ),
-                                selectedDate: calendarViewModel.selectedDate,
-                                showHeader: false
-                            )
-                        }
-                    }
+        VStack(alignment: .leading, spacing: 16) {
+            
+            // Statistics with Notes - Clickable to StatisticsDetailView
+            NavigationLink(destination: StatisticsDetailView(item: .habit(habit))) {
+                VStack(alignment: .leading, spacing: 12) {
+                    // Statistics
+                    Text(habit.notes)
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                    Text("Statistics")
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                    StatisticsSectionView(statistics: [
+                        StatisticRow(label: "Days Worked:", value: "\(habit.daysWorked)")
+                    ])
                 }
-                .background(Color(.systemBackground))
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color(.systemGray6))
                 .cornerRadius(10)
+                .shadow(radius: 2, x: 0, y: 2)
+            }
+            .buttonStyle(PlainButtonStyle())
+        }
+    }
+    
+    private var milestonesSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            if !habit.milestones.isEmpty {
+                Text("Milestones")
+                    .font(.headline)
+                MilestoneListView(
+                    milestones: .init(
+                        get: { habit.milestones },
+                        set: { habit.milestones = $0 }
+                    ),
+                    selectedDate: calendarViewModel.selectedDate,
+                    showHeader: false
+                )
+            } else {
+                Text("No milestones yet")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding()
             }
         }
     }
 
     private var journalEntriesSection: some View {
         Group {
-            Divider()
             JournalEntriesListView(
-                entries: currentTimeframeEntries,
+                entries: habit.journalEntries.sorted { $0.timestamp > $1.timestamp },
                 onEntryTapped: { entry in
                     selectedDate = entry.timestamp
                     showingDayView = true
@@ -154,33 +231,17 @@ struct HabitDetailView: View {
         }
     }
 
-    private var statisticsSection: some View {
-        Group {
-            Divider()
-            NavigationLink(destination: StatisticsDetailView(item: .habit(habit))) {
-                VStack(alignment: .leading, spacing: 15) {
-                    Text("Statistics")
-                        .font(.headline)
-                        .foregroundColor(.primary)
-                    StatisticsSectionView(statistics: [
-                        StatisticRow(label: "Days Worked:", value: "\(habit.daysWorked)")
-                    ])
-                }
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color(.systemGray6))
-                .cornerRadius(10)
-                .shadow(radius: 2, x: 0, y: 2)
-            }
-            .buttonStyle(PlainButtonStyle())
-        }
-    }
-
     // MARK: - Sheets
 
     private var addJournalEntrySheet: some View {
         AddJournalEntryForm(goal: nil, habit: habit)
             .presentationDetents([.medium])
+            .presentationDragIndicator(.visible)
+    }
+
+    private var editHabitSheet: some View {
+        EditHabitForm(habit: habit)
+            .presentationDetents([.large])
             .presentationDragIndicator(.visible)
     }
 
@@ -209,6 +270,36 @@ struct HabitDetailView: View {
         if let date = newValue {
             dayViewData = (goals: [], habits: [habit], date: date)
             showingDayView = true
+        }
+    }
+}
+
+private struct TabButton: View {
+    let title: String
+    let isSelected: Bool
+    let position: Position
+    let action: () -> Void
+    
+    enum Position {
+        case left, middle, right
+        
+        var corners: UIRectCorner {
+            switch self {
+            case .left: return [.topLeft, .bottomLeft]
+            case .middle: return []
+            case .right: return [.topRight, .bottomRight]
+            }
+        }
+    }
+    
+    var body: some View {
+        Button(action: action) {
+            Text(title)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 8)
+                .background(isSelected ? Color.blue.opacity(0.15) : Color.clear)
+                .foregroundColor(isSelected ? .blue : .secondary)
+                .cornerRadius(8, corners: position.corners)
         }
     }
 }

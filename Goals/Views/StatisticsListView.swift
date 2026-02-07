@@ -7,6 +7,82 @@ struct StatisticsListView: View {
     @StateObject private var calendarViewModel = CalendarViewModel()
     @State private var selectedTab = Tab.hog
     
+    private var completedGoalsCount: Int {
+        goals.filter { $0.isCompleted }.count
+    }
+    
+    private var totalMilestonesCompleted: Int {
+        let goalMilestones = goals.flatMap { $0.milestones }.filter { $0.isCompleted }.count
+        let habitMilestones = habits.flatMap { $0.milestones }.filter { $0.isCompleted }.count
+        return goalMilestones + habitMilestones
+    }
+    
+    private var goalCompletionRate: Int {
+        guard !goals.isEmpty else { return 0 }
+        return Int((Double(completedGoalsCount) / Double(goals.count)) * 100)
+    }
+    
+    private var mostActiveHabit: Habit? {
+        habits.max(by: { $0.daysWorked < $1.daysWorked })
+    }
+    
+    private var totalJournalEntries: Int {
+        let goalEntries = goals.flatMap { $0.journalEntries }.count
+        let habitEntries = habits.flatMap { $0.journalEntries }.count
+        return goalEntries + habitEntries
+    }
+    
+    private var longestStreak: Int {
+        let allTimestamps = (goals.flatMap { $0.journalEntries.map { $0.timestamp } }) + (habits.flatMap { $0.journalEntries.map { $0.timestamp } })
+        guard !allTimestamps.isEmpty else { return 0 }
+
+        let calendar = Calendar.current
+        let uniqueDates = Set(allTimestamps.map { calendar.startOfDay(for: $0) }).sorted()
+
+        var longest = 0
+        var current = 0
+        var previousDate: Date?
+
+        for date in uniqueDates {
+            if let prev = previousDate, calendar.isDate(date, inSameDayAs: calendar.date(byAdding: .day, value: 1, to: prev)!) {
+                current += 1
+            } else {
+                current = 1
+            }
+            if current > longest {
+                longest = current
+            }
+            previousDate = date
+        }
+        return longest
+    }
+    
+    private var overallMilestoneCompletionRate: Int {
+        let totalGoalMilestones = goals.flatMap { $0.milestones }.count
+        let totalHabitMilestones = habits.flatMap { $0.milestones }.count
+        let totalMilestones = totalGoalMilestones + totalHabitMilestones
+        
+        guard totalMilestones > 0 else { return 0 }
+        
+        return Int((Double(totalMilestonesCompleted) / Double(totalMilestones)) * 100)
+    }
+    
+    private var mostProductiveDay: String {
+        let allTimestamps = (goals.flatMap { $0.journalEntries.map { $0.timestamp } }) + (habits.flatMap { $0.journalEntries.map { $0.timestamp } })
+        guard !allTimestamps.isEmpty else { return "N/A" }
+
+        let calendar = Calendar.current
+        let weekdays = allTimestamps.map { calendar.component(.weekday, from: $0) }
+        
+        let counts = weekdays.reduce(into: [:]) { $0[$1, default: 0] += 1 }
+        
+        if let (weekday, _) = counts.max(by: { $0.value < $1.value }) {
+            return calendar.weekdaySymbols[weekday - 1]
+        }
+        
+        return "N/A"
+    }
+    
     enum Tab {
         case goals, hog, habits
     }
@@ -50,26 +126,21 @@ struct StatisticsListView: View {
                 
                 ScrollView {
                     VStack(spacing: 16) {
-                        // Always show GeneralStatisticsView with filtered content
-                        GeneralStatisticsView(
-                            goals: selectedTab == .habits ? [] : goals,
-                            habits: selectedTab == .goals ? [] : habits
-                        )
-                        .padding(.horizontal)
-                        
-                        // Show filtered items based on selected tab
                         switch selectedTab {
+                        case .hog:
+                            GeneralStatisticsView(
+                                goals: goals,
+                                habits: habits
+                            )
+                            .padding(.horizontal)
+                            
+                            progressMetricsSection
+                            
                         case .goals:
                             ForEach(goals) { goal in
                                 statisticsCard(for: goal)
                             }
-                        case .hog:
-                            ForEach(goals) { goal in
-                                statisticsCard(for: goal)
-                            }
-                            ForEach(habits) { habit in
-                                statisticsCard(for: habit)
-                            }
+                            
                         case .habits:
                             ForEach(habits) { habit in
                                 statisticsCard(for: habit)
@@ -79,8 +150,59 @@ struct StatisticsListView: View {
                     .padding(.vertical)
                 }
             }
-            .navigationTitle("Statistics")
         }
+    }
+    
+    private var progressMetricsSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Progress Overview")
+                .font(.title2)
+                .bold()
+                .padding(.horizontal)
+
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
+                metricCard(title: "Goals Completed", value: "\(completedGoalsCount)")
+                metricCard(title: "Milestones Done", value: "\(totalMilestonesCompleted)")
+                metricCard(title: "Success Rate", value: "\(goalCompletionRate)%")
+                
+                if let habit = mostActiveHabit {
+                    metricCard(title: "Top Habit", value: habit.title, isText: true)
+                }
+                
+                metricCard(title: "Longest Streak", value: "\(longestStreak) Days")
+                metricCard(title: "Journal Entries", value: "\(totalJournalEntries)")
+                metricCard(title: "Milestone Rate", value: "\(overallMilestoneCompletionRate)%")
+                metricCard(title: "Busiest Day", value: mostProductiveDay, isText: true)
+            }
+            .padding(.horizontal)
+        }
+    }
+    
+    private func metricCard(title: String, value: String, isText: Bool = false) -> some View {
+        VStack(spacing: 8) {
+            Text(title)
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+            
+            if isText {
+                Text(value)
+                    .font(.headline)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.primary)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+            } else {
+                Text(value)
+                    .font(.title)
+                    .bold()
+                    .foregroundColor(.primary)
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding()
+        .background(Color(.systemGray6))
+        .cornerRadius(10)
+        .shadow(radius: 1)
     }
     
     private func statisticsCard(for goal: Goal) -> some View {
@@ -109,7 +231,8 @@ struct StatisticsListView: View {
 
     private func statisticsCard<D: View>(title: String, percent: Int, days: Int, gridEntries: [Date], destination: D, itemType: String) -> some View {
         NavigationLink(destination: destination) {
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 8) {
+                // Header section
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(title)
@@ -124,16 +247,27 @@ struct StatisticsListView: View {
                         .foregroundColor(.secondary)
                     }
                     Spacer()
-                    VStack(alignment: .trailing) {
-                        Text("\(percent)%")
-                            .bold()
-                            .foregroundColor(.primary)
-                        Text("\(days) days")
-                            .font(.caption)
-                            .foregroundColor(.gray)
+                    HStack {
+                        VStack(alignment: .trailing) {
+                            Text("\(percent)%")
+                                .bold()
+                                .foregroundColor(.primary)
+                            Text("\(days) days")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
+                        if let goal = destination as? StatisticsDetailView, case .goal(let goalItem) = goal.item, goalItem.isCompleted {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(.green)
+                                .font(.title3)
+                        }
                     }
                 }
-                YearGridView(
+                
+                Divider()
+                
+                // Grid section
+                HalfYearGridView(
                     entries: gridEntries,
                     calendarViewModel: calendarViewModel
                 )
@@ -143,6 +277,14 @@ struct StatisticsListView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(Color(.systemGray6))
             .cornerRadius(10)
+            .overlay(
+                Group {
+                    if let goal = destination as? StatisticsDetailView, case .goal(let goalItem) = goal.item, goalItem.isCompleted {
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.green, lineWidth: 2)
+                    }
+                }
+            )
             .shadow(radius: 2, x: 0, y: 2)
         }
     }

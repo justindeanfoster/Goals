@@ -31,35 +31,6 @@ struct EditHabitForm: View {
                         .padding(.top, 5)
                 }
 
-                Section(header: Text("Milestones")) {
-                    ForEach(milestones) { milestone in
-                        HStack {
-                            Text(milestone.text)
-                            Spacer()
-                            Button(action: {
-                                if let index = milestones.firstIndex(of: milestone) {
-                                    milestones.remove(at: index)
-                                }
-                            }) {
-                                Image(systemName: "minus.circle.fill")
-                                    .foregroundColor(.red)
-                            }
-                        }
-                    }
-                    HStack {
-                        TextField("New Milestone", text: $newMilestone)
-                        Button(action: {
-                            if !newMilestone.isEmpty {
-                                let milestone = Milestone(text: newMilestone)  // Create new Milestone object
-                                milestones.append(milestone)
-                                newMilestone = ""
-                            }
-                        }) {
-                            Image(systemName: "plus.circle.fill")
-                                .foregroundColor(.green)
-                        }
-                    }
-                }
             }
             .navigationTitle("Edit Habit")
             .toolbar {
